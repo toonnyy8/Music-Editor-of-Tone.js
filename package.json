@@ -23,6 +23,14 @@
     "@babel/polyfill": "^7.4.0",
     "parcel": "^1.12.3",
     "tone": "^13.4.9",
-    "vue": "^2.6.10"
+    "vue": "^2.6.10",
+    "vue-hot-reload-api": "^2.3.3"
+  },
+  "devDependencies": {
+    "@vue/component-compiler-utils": "^2.6.0",
+    "pug": "^2.0.3",
+    "sass": "^1.17.3",
+    "typescript": "^3.4.1",
+    "vue-template-compiler": "^2.6.10"
   }
 }
