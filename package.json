@@ -21,6 +21,8 @@
   "homepage": "https://github.com/toonnyy8/Music-Editor-of-Tone.js#readme",
   "dependencies": {
     "@babel/polyfill": "^7.4.0",
-    "parcel": "^1.12.3"
+    "parcel": "^1.12.3",
+    "tone": "^13.4.9",
+    "vue": "^2.6.10"
   }
 }
