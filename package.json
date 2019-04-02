@@ -1,0 +1,26 @@
+{
+  "name": "Music-Editor-of-Tone.js",
+  "version": "1.0.0",
+  "description": "離線單頁應用的節點式音樂編輯器",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "parcel index.html -p 8080 --open",
+    "build": "parcel build index.html --out-dir build --public-url=./"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/toonnyy8/Music-Editor-of-Tone.js.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/toonnyy8/Music-Editor-of-Tone.js/issues"
+  },
+  "homepage": "https://github.com/toonnyy8/Music-Editor-of-Tone.js#readme",
+  "dependencies": {
+    "@babel/polyfill": "^7.4.0",
+    "parcel": "^1.12.3"
+  }
+}
