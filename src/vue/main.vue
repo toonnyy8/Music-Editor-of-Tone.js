@@ -7,10 +7,16 @@
     <button v-on:click="countHate()" class="mdc-fab" aria-label="Hate">
       <span class="mdc-fab__icon material-icons">Hate</span>
     </button>
+    <test></test>
   </div>
 </template>
 
 <script>
+import Vue from "vue";
+import test from "../vue/test.vue";
+
+import Mousetrap from "mousetrap";
+import "mousetrap/plugins/bind-dictionary/mousetrap-bind-dictionary.min.js";
 import * as Tone from "tone";
 
 let frequency = 4;
@@ -18,35 +24,18 @@ var pow = new Tone.Pow(2);
 var synth = new Tone.PolySynth(6, Tone.Synth, {
   volume: 6,
   oscillator: {
-    partials: [0, 2, 3, 4]
+    partials: [0, 2, 4, 6, 8]
   },
   envelope: {
     attack: 0.05,
     decay: 0.01,
     sustain: 0,
-    release: 4,
+    release: 10,
     releaseCurve: "exponential"
   }
 })
   .connect(pow)
   .toMaster();
-
-const poly = new Tone.PolySynth(6, Tone.Synth, {
-  volume: 6,
-  oscillator: {
-    partials: [0, 2, 3, 4]
-  },
-  envelope: {
-    attack: 0.001,
-    decay: 0.17,
-    sustain: 0.0001,
-    release: 0.08,
-    releaseCurve: "exponential"
-  }
-}).toMaster();
-
-import Mousetrap from "mousetrap";
-import "../lib/mousetrap-bind-dictionary.min.js";
 
 Mousetrap.bind({
   "1": function() {
@@ -97,7 +86,9 @@ Mousetrap.bind({
     synth.triggerAttackRelease(["B" + frequency], 0.02);
   }
 });
+
 export default {
+  components: { test: test },
   data: {
     msg: "How Much You Love MET? ",
     love: 0
