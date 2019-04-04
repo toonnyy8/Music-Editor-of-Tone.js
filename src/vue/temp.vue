@@ -1,5 +1,8 @@
 <template>
   <div>
+    <div class="mdc-card__action-icons">
+      <i class="material-icons">highlight_off</i>
+    </div>
     <i class="material-icons">highlight_off</i>
     <button class="mdc-fab" v-on:click="AddBlock()">Add Block</button>
     <table>
@@ -19,33 +22,19 @@
               </div>
             </div>
             <div>
-              <div
-                v-for="plugin in block.plugins"
-                :key="plugin.id"
-                class="mdc-card__primary-action demo-card__primary-action"
-                tabindex="0"
-              >
-                <div class="mdc-select demo-width-class">
-                  <input type="hidden" name="enhanced-select">
-                  <i class="mdc-select__dropdown-icon"></i>
-                  <div class="mdc-select__selected-text">Vegetables</div>
-                  <div class="mdc-select__menu demo-width-class mdc-menu mdc-menu-surface">
-                    <ul class="mdc-list">
-                      <li class="mdc-list-item mdc-list-item--selected" data-value></li>
-                      <li
-                        class="mdc-list-item"
-                        data-value="grains"
-                        aria-selected="true"
-                      >Change Plugin</li>
-                      <li
-                        class="mdc-list-item"
-                        data-value="vegetables"
-                        v-on:click="DeletePlugin(block.plugins,plugin.id)"
-                      >Delete Plugin</li>
-                    </ul>
+              <div v-for="plugin in block.plugins" :key="plugin.id">
+                <hr>
+                <div class="mdc-card__actions">
+                  <button class="mdc-fab mdc-fab--mini mdc-ripple-upgraded">
+                    <i class="material-icons">all_out</i>
+                  </button>
+
+                  <div class="mdc-card__action-icons">
+                    <button
+                      class="mdc-icon-button material-icons"
+                      v-on:click="DeletePlugin(block.plugins,plugin.id)"
+                    >highlight_off</button>
                   </div>
-                  <span class="mdc-floating-label mdc-floating-label--float-above">Pick a Food Group</span>
-                  <div class="mdc-line-ripple"></div>
                 </div>
               </div>
             </div>
@@ -60,7 +49,10 @@ import * as material from "../lib/@material/material-components-web.min.js";
 import select from "../vue/select.vue";
 
 export default {
-  //components: { select: select },
+  components: {
+    plugin: "<div>"
+    //select: select
+  },
   data() {
     return {
       parentMessage: "Parent",
@@ -92,17 +84,6 @@ export default {
       plugins.push({
         id: plugins.length,
         dom: null
-      });
-      this.$nextTick(function() {
-        let tempQuerySelector = this.$el
-          .querySelectorAll("th")
-          [blockIndex].querySelectorAll(".mdc-select");
-
-        let select = new material.select.MDCSelect(
-          tempQuerySelector[tempQuerySelector.length - 1]
-        );
-        plugins[tempQuerySelector.length - 1].dom = select;
-        console.log(select);
       });
     },
     DeletePlugin: function(plugins, pluginIndex) {
