@@ -8,7 +8,7 @@ import main from '../vue/temp.vue'
 let tt = new Vue(main).$mount('#main')
 
 let isSub = false
-const channel = new BroadcastChannel('name');
+const channel = new BroadcastChannel('Yuuhisaka');
 
 channel.postMessage("Creat Sub")
 channel.onmessage = function (event) {

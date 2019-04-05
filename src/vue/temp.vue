@@ -158,7 +158,7 @@ export default {
       this.pluginDialog.dialog.open();
     },
     SetPlugin: function() {
-      window.open("./index.thml");
+      window.open("./index.html");
     }
   }
 };
