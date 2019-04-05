@@ -8,18 +8,28 @@ import main from '../vue/temp.vue'
 let tt = new Vue(main).$mount('#main')
 
 let isSub = false
-const channel = new BroadcastChannel('Yuuhisaka');
 
-channel.postMessage("Creat Sub")
-channel.onmessage = function (event) {
-    console.log(event.data)
-    if (isSub != true) {
-        if (event.data == "Creat Sub") {
-            channel.postMessage("You are sub")
-        } else if (event.data == "You are sub") {
-            isSub = true
-            tt.$destroy()
-            document.querySelector("#main").remove()
-        }
+console.log(window.name)
+if (window.name != "") {
+    tt.$destroy()
+    document.querySelector("#main").remove()
+    window.document.title = window.name
+    window.onbeforeunload = function (e) {
+        return "leave"
+    }
+    window.onunload = function (e) {
+        window.opener.postMessage({
+            instruction: "Sub Window Close",
+            title: window.name
+        })
     }
 }
+/*window.onmessage = function (event) {
+    console.log(event.data)
+    if (event.data.instruction == "You are sub") {
+        document.title = event.data.title
+        isSub = true
+
+    }
+}
+*/

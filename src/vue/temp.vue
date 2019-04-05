@@ -1,5 +1,5 @@
 <template>
-  <div id=main>
+  <div id="main">
     <div
       class="mdc-dialog"
       role="alertdialog"
@@ -57,7 +57,7 @@
                 <div class="mdc-card__actions">
                   <button
                     class="mdc-fab mdc-fab--mini mdc-ripple-upgraded"
-                    v-on:click="SetPlugin()"
+                    v-on:click="SetPlugin(block.id,plugin)"
                   >
                     <i class="material-icons">all_out</i>
                   </button>
@@ -88,29 +88,36 @@
 import { MDCDialog } from "@material/dialog";
 import select from "../vue/select.vue";
 
-export default {
+window.onmessage = function(event) {
+  console.log(event.data);
+  if (event.data.instruction == "Sub Window Close") {
+    let index = event.data.title.split(":")[1].split("-");
+    vm.data.blocks[index[0]].plugins[index[1]].setPluginWindow = null;
+    console.log(vm.data);
+  }
+};
+let vm;
+export default (vm = {
   components: {
     plugin: "<div>"
     //select: select
   },
-  data() {
-    return {
-      parentMessage: "Parent",
-      items: [],
-      blocks: [],
-      pluginDialog: { dialog: null, title: null }
-      /*
-       *[
-       * {id:0,plugins:{id:0,dom:}}
-       * ]
-       *
-       */
-    };
+  data: {
+    parentMessage: "Parent",
+    blocks: [],
+    pluginDialog: { dialog: null, title: null }
+    /*
+     *[
+     * {id:0,plugins:{id:0,dom:}}
+     * ]
+     *
+     */
   },
   mounted() {
     this.pluginDialog.dialog = new MDCDialog(
       document.querySelector(".mdc-dialog")
     );
+
     /*let tempQuerySelector = this.$el.querySelectorAll(".mdc-select");
     let select = new material.select.MDCSelect(
       tempQuerySelector[tempQuerySelector.length - 1]
@@ -127,12 +134,14 @@ export default {
       console.log(plugins);
       plugins.push({
         id: plugins.length,
-        title: "C1"
+        title: "C1",
+        setPluginWindow: null
       });
     },
     DeletePlugin: function(plugins, pluginIndex) {
       console.log(pluginIndex);
       console.log("DeletePlugin");
+      //if (plugins[pluginIndex].setPluginWindow != null)
       plugins.splice(pluginIndex, 1);
       for (let i = 0; i < plugins.length; i++) {
         plugins[i].id = i;
@@ -157,11 +166,24 @@ export default {
       this.pluginDialog.title = title;
       this.pluginDialog.dialog.open();
     },
-    SetPlugin: function() {
-      window.open("./index.html");
+
+    SetPlugin: function(blockIndex, plugin) {
+      if (plugin.setPluginWindow != null) {
+        plugin.setPluginWindow.close();
+        plugin.setPluginWindow = null;
+      }
+      let windowTitle = "SetPlugin:" + blockIndex + "-" + plugin.id;
+      plugin.setPluginWindow = window.open("./index.html", windowTitle);
+
+      /*plugin.setPluginWindow.onload = () => {
+          plugin.setPluginWindow.postMessage({
+            instruction: "You are sub",
+            title: windowTitle
+          });
+        };*/
     }
   }
-};
+});
 </script>
 <style>
 :root {
