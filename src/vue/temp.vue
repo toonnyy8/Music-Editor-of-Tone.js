@@ -72,7 +72,7 @@
                   <div class="mdc-card__action-icons">
                     <button
                       class="mdc-icon-button material-icons"
-                      v-on:click="DeletePlugin(block.plugins,plugin.id)"
+                      v-on:click="DeletePlugin(block.id,block.plugins,plugin.id)"
                     >highlight_off</button>
                   </div>
                 </div>
@@ -92,8 +92,11 @@ window.onmessage = function(event) {
   console.log(event.data);
   if (event.data.instruction == "Sub Window Close") {
     let index = event.data.title.split(":")[1].split("-");
-    vm.data.blocks[index[0]].plugins[index[1]].setPluginWindow = null;
+    if (vm.data.blocks[index[0]].plugins[index[1]] != null) {
+      vm.data.blocks[index[0]].plugins[index[1]].setPluginWindow = null;
+    }
     console.log(vm.data);
+  } else if (event.data.instruction == "Sub Window Creat") {
   }
 };
 let vm;
@@ -138,13 +141,22 @@ export default (vm = {
         setPluginWindow: null
       });
     },
-    DeletePlugin: function(plugins, pluginIndex) {
+    DeletePlugin: function(blockIndex, plugins, pluginIndex) {
       console.log(pluginIndex);
       console.log("DeletePlugin");
+      if (plugins[pluginIndex].setPluginWindow != null) {
+        plugins[pluginIndex].setPluginWindow.close();
+        plugins[pluginIndex].setPluginWindow = null;
+      }
       //if (plugins[pluginIndex].setPluginWindow != null)
       plugins.splice(pluginIndex, 1);
       for (let i = 0; i < plugins.length; i++) {
         plugins[i].id = i;
+        if (plugins[i].setPluginWindow != null) {
+          let windowTitle = "SetPlugin:" + blockIndex + "-" + i;
+          plugins[i].setPluginWindow.document.title = windowTitle;
+          plugins[i].setPluginWindow.name = windowTitle;
+        }
       }
     },
     AddBlock: function() {

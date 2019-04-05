@@ -14,14 +14,21 @@ if (window.name != "") {
     tt.$destroy()
     document.querySelector("#main").remove()
     window.document.title = window.name
-    window.onbeforeunload = function (e) {
+    /*window.onbeforeunload = function (e) {
         return "leave"
+    }*/
+    window.onload = function (e) {
+        window.opener.postMessage({
+            instruction: "Sub Window Creat",
+            title: window.name
+        })
     }
     window.onunload = function (e) {
         window.opener.postMessage({
             instruction: "Sub Window Close",
             title: window.name
         })
+        //window.close()
     }
 }
 /*window.onmessage = function (event) {
