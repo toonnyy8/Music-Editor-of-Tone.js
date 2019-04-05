@@ -1,5 +1,39 @@
 <template>
-  <div>
+  <div id=main>
+    <div
+      class="mdc-dialog"
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="my-dialog-title"
+      aria-describedby="my-dialog-content"
+    >
+      <div class="mdc-dialog__container">
+        <div class="mdc-dialog__surface">
+          <!-- Title cannot contain leading whitespace due to mdc-typography-baseline-top() -->
+          <h2 class="mdc-dialog__title" id="my-dialog-title">
+            <!--
+            -->
+            {{pluginDialog.title}}
+            <!--
+            -->
+          </h2>
+          <div class="mdc-dialog__content" id="my-dialog-content">Dialog body text goes here.</div>
+          <footer class="mdc-dialog__actions">
+            <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="no">
+              <span class="mdc-button__label">No</span>
+            </button>
+            <button
+              type="button"
+              class="mdc-button mdc-dialog__button"
+              data-mdc-dialog-action="yes"
+            >
+              <span class="mdc-button__label">Yes</span>
+            </button>
+          </footer>
+        </div>
+      </div>
+      <div class="mdc-dialog__scrim"></div>
+    </div>
     <button class="mdc-fab" v-on:click="AddBlock()">Add Block</button>
     <table>
       <tr>
@@ -21,11 +55,18 @@
               <div v-for="plugin in block.plugins" :key="plugin.id">
                 <hr>
                 <div class="mdc-card__actions">
-                  <button class="mdc-fab mdc-fab--mini mdc-ripple-upgraded">
+                  <button
+                    class="mdc-fab mdc-fab--mini mdc-ripple-upgraded"
+                    v-on:click="SetPlugin()"
+                  >
                     <i class="material-icons">all_out</i>
                   </button>
                   <div>
-                    <button class="mdc-button mdc-button-dark" style="width: 150%">{{plugin.title}}</button>
+                    <button
+                      class="mdc-button mdc-button-dark"
+                      style="width: 150%"
+                      v-on:click="LookPlugin(plugin.title)"
+                    >{{plugin.title}}</button>
                   </div>
 
                   <div class="mdc-card__action-icons">
@@ -44,7 +85,7 @@
   </div>
 </template>
 <script defer>
-import * as material from "../lib/@material/material-components-web.min.js";
+import { MDCDialog } from "@material/dialog";
 import select from "../vue/select.vue";
 
 export default {
@@ -56,7 +97,8 @@ export default {
     return {
       parentMessage: "Parent",
       items: [],
-      blocks: []
+      blocks: [],
+      pluginDialog: { dialog: null, title: null }
       /*
        *[
        * {id:0,plugins:{id:0,dom:}}
@@ -66,6 +108,9 @@ export default {
     };
   },
   mounted() {
+    this.pluginDialog.dialog = new MDCDialog(
+      document.querySelector(".mdc-dialog")
+    );
     /*let tempQuerySelector = this.$el.querySelectorAll(".mdc-select");
     let select = new material.select.MDCSelect(
       tempQuerySelector[tempQuerySelector.length - 1]
@@ -107,6 +152,13 @@ export default {
       for (let i = 0; i < this.blocks.length; i++) {
         this.blocks[i].id = i;
       }
+    },
+    LookPlugin: function(title) {
+      this.pluginDialog.title = title;
+      this.pluginDialog.dialog.open();
+    },
+    SetPlugin: function() {
+      window.open("./index.thml");
     }
   }
 };
