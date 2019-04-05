@@ -1,9 +1,5 @@
 <template>
   <div>
-    <div class="mdc-card__action-icons">
-      <i class="material-icons">highlight_off</i>
-    </div>
-    <i class="material-icons">highlight_off</i>
     <button class="mdc-fab" v-on:click="AddBlock()">Add Block</button>
     <table>
       <tr>
@@ -28,6 +24,9 @@
                   <button class="mdc-fab mdc-fab--mini mdc-ripple-upgraded">
                     <i class="material-icons">all_out</i>
                   </button>
+                  <div>
+                    <button class="mdc-button mdc-button-dark" style="width: 150%">{{plugin.title}}</button>
+                  </div>
 
                   <div class="mdc-card__action-icons">
                     <button
@@ -83,7 +82,7 @@ export default {
       console.log(plugins);
       plugins.push({
         id: plugins.length,
-        dom: null
+        title: "C1"
       });
     },
     DeletePlugin: function(plugins, pluginIndex) {
@@ -113,7 +112,13 @@ export default {
 };
 </script>
 <style>
+:root {
+  --mdc-theme-mytheme: #5a2765;
+}
 .my-card {
   width: 200px;
+}
+.mdc-button:not(:disabled).mdc-button-dark {
+  color: var(--mdc-theme-mytheme);
 }
 </style>
