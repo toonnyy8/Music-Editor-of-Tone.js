@@ -5,14 +5,8 @@ import Vue from 'vue'
 
 import main from '../vue/temp.vue'
 
-let tt = new Vue(main).$mount('#main')
-
-let isSub = false
-
 console.log(window.name)
-if (window.name != "") {
-    tt.$destroy()
-    document.querySelector("#main").remove()
+if (window.name.split(":")[0] == "SetPlugin") {
     window.document.title = window.name
     /*window.onbeforeunload = function (e) {
         return "leave"
@@ -30,6 +24,8 @@ if (window.name != "") {
         })
         //window.close()
     }
+} else {
+    new Vue(main).$mount('#main')
 }
 /*window.onmessage = function (event) {
     console.log(event.data)

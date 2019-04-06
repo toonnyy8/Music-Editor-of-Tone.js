@@ -93,10 +93,22 @@ window.onmessage = function(event) {
   if (event.data.instruction == "Sub Window Close") {
     let index = event.data.title.split(":")[1].split("-");
     if (vm.data.blocks[index[0]].plugins[index[1]] != null) {
-      vm.data.blocks[index[0]].plugins[index[1]].setPluginWindow = null;
+      if (vm.data.blocks[index[0]].plugins[index[1]].setPluginWindow.closed) {
+        vm.data.blocks[index[0]].plugins[index[1]].setPluginWindow = null;
+      }
     }
     console.log(vm.data);
   } else if (event.data.instruction == "Sub Window Creat") {
+    /*let index = event.data.title.split(":")[1].split("-");
+    if (vm.data.blocks[index[0]].plugins[index[1]].setPluginWindow == null) {
+      vm.data.blocks[index[0]].plugins[index[1]].setPluginWindow = window.open(
+        "./index.html",
+        event.data.title
+      );
+    }*/
+    //
+    //
+    //
   }
 };
 let vm;
