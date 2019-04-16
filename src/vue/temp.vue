@@ -93,8 +93,10 @@ window.onmessage = function(event) {
   if (event.data.instruction == "Sub Window Close") {
     let index = event.data.title.split(":")[1].split("-");
     if (vm.data.blocks[index[0]].plugins[index[1]] != null) {
-      if (vm.data.blocks[index[0]].plugins[index[1]].setPluginWindow.closed) {
-        vm.data.blocks[index[0]].plugins[index[1]].setPluginWindow = null;
+      if (vm.data.blocks[index[0]].plugins[index[1]].setPluginWindow != null) {
+        if (vm.data.blocks[index[0]].plugins[index[1]].setPluginWindow.closed) {
+          vm.data.blocks[index[0]].plugins[index[1]].setPluginWindow = null;
+        }
       }
     }
     console.log(vm.data);
