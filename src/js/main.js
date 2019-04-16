@@ -6,21 +6,36 @@ import Vue from "vue"
 import main from "../vue/temp.vue"
 import sub from "../vue/sub.vue"
 
+
 console.log(window.name)
 if (window.name.split(":")[0] == "SetPlugin") {
     new Vue(sub).$mount('#main')
     window.document.title = window.name
+
+    let channel = new BroadcastChannel(window.name)
+    function channelOnmessage(event) {
+        if (event.data.instruction == "Close Window") {
+            window.close()
+        } else if (event.data.instruction == "Rename Window") {
+            window.name = event.data.title
+            window.document.title = event.data.title
+            channel.close()
+            channel = new BroadcastChannel(window.name)
+            channel.onmessage = channelOnmessage
+        }
+    }
+    channel.onmessage = channelOnmessage
     /*window.onbeforeunload = function (e) {
         return "leave"
     }*/
     window.onload = function (e) {
-        window.opener.postMessage({
+        channel.postMessage({
             instruction: "Sub Window Creat",
             title: window.name
         })
     }
     window.onunload = function (e) {
-        window.opener.postMessage({
+        channel.postMessage({
             instruction: "Sub Window Close",
             title: window.name
         })

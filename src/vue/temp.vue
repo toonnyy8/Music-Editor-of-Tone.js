@@ -93,10 +93,9 @@ window.onmessage = function(event) {
   if (event.data.instruction == "Sub Window Close") {
     let index = event.data.title.split(":")[1].split("-");
     if (vm.data.blocks[index[0]].plugins[index[1]] != null) {
-      if (vm.data.blocks[index[0]].plugins[index[1]].setPluginWindow != null) {
-        if (vm.data.blocks[index[0]].plugins[index[1]].setPluginWindow.closed) {
-          vm.data.blocks[index[0]].plugins[index[1]].setPluginWindow = null;
-        }
+      if (vm.data.blocks[index[0]].plugins[index[1]].pluginChannel != null) {
+        vm.data.blocks[index[0]].plugins[index[1]].pluginChannel.close();
+        vm.data.blocks[index[0]].plugins[index[1]].pluginChannel = null;
       }
     }
     console.log(vm.data);
@@ -152,24 +151,32 @@ export default (vm = {
       plugins.push({
         id: plugins.length,
         title: "C1",
-        setPluginWindow: null
+        setPluginWindow: null,
+        pluginChannel: null
       });
     },
     DeletePlugin: function(blockIndex, plugins, pluginIndex) {
       console.log(pluginIndex);
       console.log("DeletePlugin");
-      if (plugins[pluginIndex].setPluginWindow != null) {
-        plugins[pluginIndex].setPluginWindow.close();
-        plugins[pluginIndex].setPluginWindow = null;
+      if (plugins[pluginIndex].pluginChannel != null) {
+        plugins[pluginIndex].pluginChannel.postMessage({
+          instruction: "Close Window"
+        });
+        plugins[pluginIndex].pluginChannel.close();
+        plugins[pluginIndex].pluginChannel = null;
       }
       //if (plugins[pluginIndex].setPluginWindow != null)
       plugins.splice(pluginIndex, 1);
       for (let i = 0; i < plugins.length; i++) {
         plugins[i].id = i;
-        if (plugins[i].setPluginWindow != null) {
+        if (plugins[i].pluginChannel != null) {
           let windowTitle = "SetPlugin:" + blockIndex + "-" + i;
-          plugins[i].setPluginWindow.document.title = windowTitle;
-          plugins[i].setPluginWindow.name = windowTitle;
+          plugins[i].pluginChannel.postMessage({
+            instruction: "Rename Window",
+            title: windowTitle
+          });
+          //plugins[i].setPluginWindow.document.title = windowTitle;
+          //plugins[i].setPluginWindow.name = windowTitle;
         }
       }
     },
@@ -194,13 +201,21 @@ export default (vm = {
     },
 
     SetPlugin: function(blockIndex, plugin) {
-      if (plugin.setPluginWindow != null) {
+      /*if (plugin.setPluginWindow != null) {
         plugin.setPluginWindow.close();
         plugin.setPluginWindow = null;
-      }
+      }*/
       let windowTitle = "SetPlugin:" + blockIndex + "-" + plugin.id;
-      plugin.setPluginWindow = window.open("./index.html", windowTitle);
-
+      window.open("./index.html", windowTitle);
+      if (plugin.pluginChannel == null) {
+        plugin.pluginChannel = new BroadcastChannel(windowTitle);
+        plugin.pluginChannel.onmessage = event => {
+          if (event.data.instruction == "Sub Window Close") {
+            plugin.pluginChannel.close();
+            plugin.pluginChannel = null;
+          }
+        };
+      }
       /*plugin.setPluginWindow.onload = () => {
           plugin.setPluginWindow.postMessage({
             instruction: "You are sub",
