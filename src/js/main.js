@@ -1,12 +1,14 @@
 import "@babel/polyfill"
 
 import "../lib/@material/material-components-web.min.css"
-import Vue from 'vue'
+import Vue from "vue"
 
-import main from '../vue/temp.vue'
+import main from "../vue/temp.vue"
+import sub from "../vue/sub.vue"
 
 console.log(window.name)
 if (window.name.split(":")[0] == "SetPlugin") {
+    new Vue(sub).$mount('#main')
     window.document.title = window.name
     /*window.onbeforeunload = function (e) {
         return "leave"
