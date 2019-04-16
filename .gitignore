@@ -66,5 +66,4 @@ typings/
 #
 dist/
 
-#
-build/
+#build/
