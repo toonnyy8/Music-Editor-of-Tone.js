@@ -179,8 +179,8 @@ export default (vm = {
           plugins[i].pluginChannel = new BroadcastChannel(windowTitle);
           plugins[i].pluginChannel.onmessage = event => {
             if (event.data.instruction == "Sub Window Close") {
-              plugin.pluginChannel.close();
-              plugin.pluginChannel = null;
+              plugins[i].pluginChannel.close();
+              plugins[i].pluginChannel = null;
             }
           };
         }
@@ -196,6 +196,13 @@ export default (vm = {
     },
     DeleteBlock: function(blockIndex) {
       console.log("DeleteBlock");
+      for (let i = 0; i < this.blocks[blockIndex].plugins.length; i++) {
+        this.blocks[blockIndex].plugins[i].pluginChannel.postMessage({
+          instruction: "Close Window"
+        });
+        this.blocks[blockIndex].plugins[i].pluginChannel.close();
+        this.blocks[blockIndex].plugins[i].pluginChannel = null;
+      }
       this.blocks.splice(blockIndex, 1);
       for (let i = 0; i < this.blocks.length; i++) {
         this.blocks[i].id = i;
@@ -213,8 +220,8 @@ export default (vm = {
             );
             this.blocks[i].plugins[j].pluginChannel.onmessage = event => {
               if (event.data.instruction == "Sub Window Close") {
-                plugin.pluginChannel.close();
-                plugin.pluginChannel = null;
+                this.blocks[i].plugins[j].pluginChannel.close();
+                this.blocks[i].plugins[j].pluginChannel = null;
               }
             };
             //plugins[i].setPluginWindow.document.title = windowTitle;
