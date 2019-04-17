@@ -195,6 +195,22 @@ export default (vm = {
       this.blocks.splice(blockIndex, 1);
       for (let i = 0; i < this.blocks.length; i++) {
         this.blocks[i].id = i;
+        for (let j = 0; j < this.blocks[i].plugins.length; j++) {
+          this.blocks[i].plugins[j].id = j;
+          if (this.blocks[i].plugins[j].pluginChannel != null) {
+            let windowTitle = "SetPlugin:" + i + "-" + j;
+            this.blocks[i].plugins[j].pluginChannel.postMessage({
+              instruction: "Rename Window",
+              title: windowTitle
+            });
+            this.blocks[i].plugins[j].pluginChannel.close();
+            this.blocks[i].plugins[j].pluginChannel = new BroadcastChannel(
+              windowTitle
+            );
+            //plugins[i].setPluginWindow.document.title = windowTitle;
+            //plugins[i].setPluginWindow.name = windowTitle;
+          }
+        }
       }
     },
     LookPlugin: function(title) {
