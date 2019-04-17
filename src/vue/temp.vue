@@ -88,30 +88,6 @@
 import { MDCDialog } from "@material/dialog";
 import select from "../vue/select.vue";
 
-window.onmessage = function(event) {
-  console.log(event.data);
-  if (event.data.instruction == "Sub Window Close") {
-    let index = event.data.title.split(":")[1].split("-");
-    if (vm.data.blocks[index[0]].plugins[index[1]] != null) {
-      if (vm.data.blocks[index[0]].plugins[index[1]].pluginChannel != null) {
-        vm.data.blocks[index[0]].plugins[index[1]].pluginChannel.close();
-        vm.data.blocks[index[0]].plugins[index[1]].pluginChannel = null;
-      }
-    }
-    console.log(vm.data);
-  } else if (event.data.instruction == "Sub Window Creat") {
-    /*let index = event.data.title.split(":")[1].split("-");
-    if (vm.data.blocks[index[0]].plugins[index[1]].setPluginWindow == null) {
-      vm.data.blocks[index[0]].plugins[index[1]].setPluginWindow = window.open(
-        "./index.html",
-        event.data.title
-      );
-    }*/
-    //
-    //
-    //
-  }
-};
 let vm;
 export default (vm = {
   components: {
@@ -151,7 +127,6 @@ export default (vm = {
       plugins.push({
         id: plugins.length,
         title: "C1",
-        setPluginWindow: null,
         pluginChannel: null
       });
     },
@@ -165,7 +140,6 @@ export default (vm = {
         plugins[pluginIndex].pluginChannel.close();
         plugins[pluginIndex].pluginChannel = null;
       }
-      //if (plugins[pluginIndex].setPluginWindow != null)
       plugins.splice(pluginIndex, 1);
       for (let i = 0; i < plugins.length; i++) {
         plugins[i].id = i;
@@ -177,12 +151,7 @@ export default (vm = {
           });
           plugins[i].pluginChannel.close();
           plugins[i].pluginChannel = new BroadcastChannel(windowTitle);
-          plugins[i].pluginChannel.onmessage = event => {
-            if (event.data.instruction == "Sub Window Close") {
-              plugins[i].pluginChannel.close();
-              plugins[i].pluginChannel = null;
-            }
-          };
+          this.BindPluginChannel(plugins[i]);
         }
       }
     },
@@ -197,11 +166,13 @@ export default (vm = {
     DeleteBlock: function(blockIndex) {
       console.log("DeleteBlock");
       for (let i = 0; i < this.blocks[blockIndex].plugins.length; i++) {
-        this.blocks[blockIndex].plugins[i].pluginChannel.postMessage({
-          instruction: "Close Window"
-        });
-        this.blocks[blockIndex].plugins[i].pluginChannel.close();
-        this.blocks[blockIndex].plugins[i].pluginChannel = null;
+        if (this.blocks[blockIndex].plugins[i].pluginChannel != null) {
+          this.blocks[blockIndex].plugins[i].pluginChannel.postMessage({
+            instruction: "Close Window"
+          });
+          this.blocks[blockIndex].plugins[i].pluginChannel.close();
+          this.blocks[blockIndex].plugins[i].pluginChannel = null;
+        }
       }
       this.blocks.splice(blockIndex, 1);
       for (let i = 0; i < this.blocks.length; i++) {
@@ -218,14 +189,7 @@ export default (vm = {
             this.blocks[i].plugins[j].pluginChannel = new BroadcastChannel(
               windowTitle
             );
-            this.blocks[i].plugins[j].pluginChannel.onmessage = event => {
-              if (event.data.instruction == "Sub Window Close") {
-                this.blocks[i].plugins[j].pluginChannel.close();
-                this.blocks[i].plugins[j].pluginChannel = null;
-              }
-            };
-            //plugins[i].setPluginWindow.document.title = windowTitle;
-            //plugins[i].setPluginWindow.name = windowTitle;
+            this.BindPluginChannel(this.blocks[i].plugins[j]);
           }
         }
       }
@@ -235,21 +199,25 @@ export default (vm = {
       this.pluginDialog.dialog.open();
     },
     SetPlugin: function(blockIndex, plugin) {
-      /*if (plugin.setPluginWindow != null) {
-        plugin.setPluginWindow.close();
-        plugin.setPluginWindow = null;
-      }*/
       let windowTitle = "SetPlugin:" + blockIndex + "-" + plugin.id;
-      window.open("./index.html", windowTitle);
-      if (plugin.pluginChannel == null) {
+      if (plugin.pluginChannel != null) {
+        plugin.pluginChannel.postMessage({
+          instruction: "Reopen Window"
+        });
+      } else {
         plugin.pluginChannel = new BroadcastChannel(windowTitle);
-        plugin.pluginChannel.onmessage = event => {
-          if (event.data.instruction == "Sub Window Close") {
-            plugin.pluginChannel.close();
-            plugin.pluginChannel = null;
-          }
-        };
+        this.BindPluginChannel(plugin);
       }
+      window.open("./index.html", windowTitle);
+    },
+    BindPluginChannel: function(plugin) {
+      plugin.pluginChannel.onmessage = function(event) {
+        if (event.data.instruction == "Sub Window Close") {
+          plugin.pluginChannel.close();
+          plugin.pluginChannel = null;
+          console.log("close", plugin);
+        }
+      };
     }
   }
 });

@@ -15,6 +15,7 @@ if (window.name.split(":")[0] == "SetPlugin") {
     let channel = new BroadcastChannel(window.name)
     function channelOnmessage(event) {
         if (event.data.instruction == "Close Window") {
+            window.onunload = null
             window.close()
         } else if (event.data.instruction == "Rename Window") {
             window.name = event.data.title
@@ -22,6 +23,9 @@ if (window.name.split(":")[0] == "SetPlugin") {
             channel.close()
             channel = new BroadcastChannel(window.name)
             channel.onmessage = channelOnmessage
+            console.log(channel.name)
+        } else if (event.data.instruction == "Reopen Window") {
+            window.onunload = null
         }
     }
     channel.onmessage = channelOnmessage
