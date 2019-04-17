@@ -177,8 +177,12 @@ export default (vm = {
           });
           plugins[i].pluginChannel.close();
           plugins[i].pluginChannel = new BroadcastChannel(windowTitle);
-          //plugins[i].setPluginWindow.document.title = windowTitle;
-          //plugins[i].setPluginWindow.name = windowTitle;
+          plugins[i].pluginChannel.onmessage = event => {
+            if (event.data.instruction == "Sub Window Close") {
+              plugin.pluginChannel.close();
+              plugin.pluginChannel = null;
+            }
+          };
         }
       }
     },
@@ -207,6 +211,12 @@ export default (vm = {
             this.blocks[i].plugins[j].pluginChannel = new BroadcastChannel(
               windowTitle
             );
+            this.blocks[i].plugins[j].pluginChannel.onmessage = event => {
+              if (event.data.instruction == "Sub Window Close") {
+                plugin.pluginChannel.close();
+                plugin.pluginChannel = null;
+              }
+            };
             //plugins[i].setPluginWindow.document.title = windowTitle;
             //plugins[i].setPluginWindow.name = windowTitle;
           }
@@ -217,7 +227,6 @@ export default (vm = {
       this.pluginDialog.title = title;
       this.pluginDialog.dialog.open();
     },
-
     SetPlugin: function(blockIndex, plugin) {
       /*if (plugin.setPluginWindow != null) {
         plugin.setPluginWindow.close();
@@ -234,12 +243,6 @@ export default (vm = {
           }
         };
       }
-      /*plugin.setPluginWindow.onload = () => {
-          plugin.setPluginWindow.postMessage({
-            instruction: "You are sub",
-            title: windowTitle
-          });
-        };*/
     }
   }
 });
