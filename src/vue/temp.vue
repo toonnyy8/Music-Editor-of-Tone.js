@@ -175,6 +175,8 @@ export default (vm = {
             instruction: "Rename Window",
             title: windowTitle
           });
+          plugins[i].pluginChannel.close();
+          plugins[i].pluginChannel = new BroadcastChannel(windowTitle);
           //plugins[i].setPluginWindow.document.title = windowTitle;
           //plugins[i].setPluginWindow.name = windowTitle;
         }
