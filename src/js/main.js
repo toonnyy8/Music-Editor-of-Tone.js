@@ -13,6 +13,8 @@ if (window.name.split(":")[0] == "SetPlugin") {
     window.document.title = window.name
 
     let channel = new BroadcastChannel(window.name)
+    let globalChannel = new BroadcastChannel("globalChannel")
+
     function channelOnmessage(event) {
         if (event.data.instruction == "Close Window") {
             window.onunload = null
@@ -33,7 +35,7 @@ if (window.name.split(":")[0] == "SetPlugin") {
         return "leave"
     }*/
     window.onload = function (e) {
-        channel.postMessage({
+        globalChannel.postMessage({
             instruction: "Sub Window Creat",
             title: window.name
         })

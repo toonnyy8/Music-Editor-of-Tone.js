@@ -221,6 +221,19 @@ export default (vm = {
     }
   }
 });
+
+let globalChannel = new BroadcastChannel("globalChannel");
+globalChannel.onmessage = function(event) {
+  if (event.data.instruction == "Sub Window Creat") {
+    let index = event.data.title.split(":")[1].split("-");
+
+    if (vm.data.blocks[index[0]].plugins[index[1]].pluginChannel == null) {
+      vm.data.blocks[index[0]].plugins[
+        index[1]
+      ].pluginChannel = new BroadcastChannel(event.data.title);
+    }
+  }
+};
 </script>
 <style>
 :root {
