@@ -222,34 +222,36 @@ export default (vm = {
   }
 });
 
-let globalChannel = new BroadcastChannel("globalChannel");
-globalChannel.onmessage = function(event) {
-  if (event.data.instruction == "Sub Window Creat") {
-    let index = event.data.title.split(":")[1].split("-");
+if (window.name.split(":")[0] != "SetPlugin") {
+  let globalChannel = new BroadcastChannel("globalChannel");
+  globalChannel.onmessage = function(event) {
+    if (event.data.instruction == "Sub Window Creat") {
+      let index = event.data.title.split(":")[1].split("-");
 
-    if (
-      vm.data.blocks[index[0]].plugins[index[1]] != null &&
-      vm.data.blocks[index[0]].plugins[index[1]].pluginChannel == null
-    ) {
-      vm.data.blocks[index[0]].plugins[
-        index[1]
-      ].pluginChannel = new BroadcastChannel(event.data.title);
-    }
-  }
-};
-window.onunload = function() {
-  for (let i = 0; i < vm.data.blocks.length; i++) {
-    for (let j = 0; j < vm.data.blocks[i].plugins.length; j++) {
-      if (vm.data.blocks[i].plugins[j].pluginChannel != null) {
-        vm.data.blocks[i].plugins[j].pluginChannel.postMessage({
-          instruction: "Close Window"
-        });
-        vm.data.blocks[i].plugins[j].pluginChannel.close();
-        vm.data.blocks[i].plugins[j].pluginChannel = null;
+      if (
+        vm.data.blocks[index[0]].plugins[index[1]] != null &&
+        vm.data.blocks[index[0]].plugins[index[1]].pluginChannel == null
+      ) {
+        vm.data.blocks[index[0]].plugins[
+          index[1]
+        ].pluginChannel = new BroadcastChannel(event.data.title);
       }
     }
-  }
-};
+  };
+  window.onunload = function() {
+    for (let i = 0; i < vm.data.blocks.length; i++) {
+      for (let j = 0; j < vm.data.blocks[i].plugins.length; j++) {
+        if (vm.data.blocks[i].plugins[j].pluginChannel != null) {
+          vm.data.blocks[i].plugins[j].pluginChannel.postMessage({
+            instruction: "Close Window"
+          });
+          vm.data.blocks[i].plugins[j].pluginChannel.close();
+          vm.data.blocks[i].plugins[j].pluginChannel = null;
+        }
+      }
+    }
+  };
+}
 </script>
 <style>
 :root {
