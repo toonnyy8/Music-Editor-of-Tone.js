@@ -4,7 +4,7 @@
       <div class="mdc-card__action-buttons">
         <button
           class="mdc-button mdc-card__action mdc-card__action--button"
-          v-on:click="AddPlugin(block.id,block.plugins)"
+          v-on:click="AddPlugin()"
         >Add Plugin</button>
         <button
           class="mdc-button mdc-card__action mdc-card__action--button"
@@ -41,11 +41,11 @@ export default (vm = {
   },
   mounted() {},
   methods: {
-    AddPlugin: function(blockIndex, plugins) {
+    AddPlugin: function() {
       console.log("AddPlugin");
-      console.log(plugins);
-      plugins.push({
-        id: plugins.length,
+      console.log(this.block.plugins);
+      this.block.plugins.push({
+        id: this.block.plugins.length,
         title: "C1",
         pluginChannel: null
       });
