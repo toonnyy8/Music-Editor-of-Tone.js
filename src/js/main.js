@@ -3,8 +3,8 @@ import "@babel/polyfill"
 import "../lib/@material/material-components-web.min.css"
 import Vue from "vue"
 
-import main from "../vue/temp.vue"
-import sub from "../vue/sub.vue"
+import main from "../vue/main.vue"
+import sub from "../vue/temp.vue"
 
 
 console.log(window.name)
