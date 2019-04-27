@@ -9,7 +9,7 @@
       role="slider"
       aria-valuemin="0.01"
       aria-valuemax="2"
-      aria-valuenow="2"
+      aria-valuenow="0.01"
       aria-label="Select Value"
     >
       <div class="mdc-slider__track-container">
@@ -30,7 +30,7 @@
       role="slider"
       aria-valuemin="0.01"
       aria-valuemax="2"
-      aria-valuenow="0"
+      aria-valuenow="0.01"
       aria-label="Select Value"
     >
       <div class="mdc-slider__track-container">
@@ -51,7 +51,7 @@
       role="slider"
       aria-valuemin="0.01"
       aria-valuemax="1"
-      aria-valuenow="0.5"
+      aria-valuenow="1"
       aria-label="Select Value"
     >
       <div class="mdc-slider__track-container">
@@ -72,7 +72,7 @@
       role="slider"
       aria-valuemin="0.01"
       aria-valuemax="4"
-      aria-valuenow="0"
+      aria-valuenow="4"
       aria-label="Select Value"
     >
       <div class="mdc-slider__track-container">
@@ -233,13 +233,84 @@ export default {
       }
     },
     decayFunc(x, decay, sustain) {
-      return (x * (sustain - 1)) / decay + 1;
+      if (false) {
+        //linear
+        return (x * (sustain - 1)) / decay + 1;
+      } else if (true) {
+        //exponential
+        return Math.exp((-x * 10) / decay) * (1 - sustain) + sustain;
+      }
     },
     releaseFunc(x, sustain, release) {
-      if (true) {
+      if (false) {
+        //linear
         return (x * -sustain) / release + sustain;
       } else if (false) {
+        //cos
         return Math.cos((x * Math.PI) / (release * 2)) * sustain;
+      } else if (false) {
+        //sin
+        return (
+          ((Math.sin((x * Math.PI) / release + Math.PI * 0.5) + 1) * sustain) /
+          2
+        );
+      } else if (false) {
+        //exponential
+        return Math.exp((-x * 10) / release) * sustain;
+      } else if (false) {
+        //step
+        let f;
+        if (x <= release / 5) {
+          if (x <= release / 50) {
+            f = 1 - (x / (release / 50)) * 0.2;
+          } else {
+            f = 0.8;
+          }
+        } else if (x <= (release * 2) / 5) {
+          if (x <= (release * 11) / 50) {
+            f = 1 - (((x - release / 5) / (release / 50)) * 0.2 + 0.2);
+          } else {
+            f = 0.6;
+          }
+        } else if (x <= (release * 3) / 5) {
+          if (x <= (release * 21) / 50) {
+            f = 1 - (((x - (release * 2) / 5) / (release / 50)) * 0.2 + 0.4);
+          } else {
+            f = 0.4;
+          }
+        } else if (x <= (release * 4) / 5) {
+          if (x <= (release * 31) / 50) {
+            f = 1 - (((x - (release * 3) / 5) / (release / 50)) * 0.2 + 0.6);
+          } else {
+            f = 0.2;
+          }
+        } else if (x <= (release * 5) / 5) {
+          if (x <= (release * 41) / 50) {
+            f = 1 - (((x - (release * 4) / 5) / (release / 50)) * 0.2 + 0.8);
+          } else {
+            f = 0;
+          }
+        }
+        return f * sustain;
+      } else if (false) {
+        //ripple
+        let f =
+          1 -
+          x / release +
+          (Math.sin((x * Math.PI * 14) / release + Math.PI * 0.5) - 1) / 12;
+        f *= sustain;
+        return f > 0 ? f : 0;
+      } else if (true) {
+        //bounce
+        let f =
+          Math.abs(
+            Math.cos(
+              (x * Math.PI * 8.5 * x * x) / (release * release * release)
+            )
+          ) *
+          (1 - x / release);
+        f *= sustain;
+        return f > 0 ? f : 0;
       }
     }
   }
