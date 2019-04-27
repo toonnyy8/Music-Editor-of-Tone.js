@@ -215,11 +215,20 @@ export default {
       } else if (false) {
         //exponential
         return 1 - Math.E ** ((-8 * x) / attack);
-      } else if (true) {
+      } else if (false) {
         //ripple
         let f =
           x / attack +
           (Math.sin((x * Math.PI * 14) / attack + Math.PI * 0.5) - 1) / 12;
+        return f > 0 ? f : 0;
+      } else if (true) {
+        //bounce
+        let f =
+          1 -
+          Math.abs(
+            Math.cos((x * Math.PI * 8.5 * x * x) / (attack * attack * attack))
+          ) *
+            (1 - x / attack);
         return f > 0 ? f : 0;
       }
     },
