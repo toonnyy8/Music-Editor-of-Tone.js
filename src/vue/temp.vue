@@ -1,12 +1,5 @@
 <template>
   <div>
-    <h1>{{ msg }} {{love}}</h1>
-    <button v-on:click="countLove()" class="mdc-fab" aria-label="Love">
-      <span class="mdc-fab__icon material-icons">Love</span>
-    </button>
-    <button v-on:click="countHate()" class="mdc-fab" aria-label="Hate">
-      <span class="mdc-fab__icon material-icons">Hate</span>
-    </button>
     <test></test>
   </div>
 </template>
@@ -89,29 +82,9 @@ Mousetrap.bind({
 
 export default {
   components: { test: test },
-  data: {
-    msg: "How Much You Love MET? ",
-    love: 0
-  },
-  methods: {
-    countLove: function() {
-      this.love += 1;
-      let frequency = Math.floor(this.love / 10) + 1;
-      console.log(frequency);
-      /*synth.triggerAttackRelease(
-        ["C" + frequency, "E" + frequency, "A" + frequency],
-        0.02
-      );*/
-    },
-    countHate: function() {
-      this.love -= 1;
-      let frequency = Math.floor(this.love / 10) + 1;
-      /*synth.triggerAttackRelease(
-        ["C" + frequency, "E" + frequency, "A" + frequency],
-        0.02
-      );*/
-    }
-  }
+  data: {},
+  mounted() {},
+  methods: {}
 };
 </script>
 
