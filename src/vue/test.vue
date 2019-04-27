@@ -9,7 +9,7 @@
       role="slider"
       aria-valuemin="0.01"
       aria-valuemax="2"
-      aria-valuenow="1"
+      aria-valuenow="2"
       aria-label="Select Value"
     >
       <div class="mdc-slider__track-container">
@@ -30,7 +30,7 @@
       role="slider"
       aria-valuemin="0.01"
       aria-valuemax="2"
-      aria-valuenow="1"
+      aria-valuenow="0"
       aria-label="Select Value"
     >
       <div class="mdc-slider__track-container">
@@ -72,7 +72,7 @@
       role="slider"
       aria-valuemin="0.01"
       aria-valuemax="4"
-      aria-valuenow="2"
+      aria-valuenow="0"
       aria-label="Select Value"
     >
       <div class="mdc-slider__track-container">
@@ -170,7 +170,58 @@ export default {
       ctx.stroke();
     },
     attackFunc(x, attack) {
-      return Math.cos((x * Math.PI) / (attack * 2) - Math.PI * 0.5);
+      if (false) {
+        //linear
+        return x / attack;
+      } else if (false) {
+        //cos
+        return Math.cos((x * Math.PI) / (attack * 2) - Math.PI * 0.5);
+      } else if (false) {
+        //sin
+        return (Math.sin((x * Math.PI) / attack - Math.PI * 0.5) + 1) / 2;
+      } else if (false) {
+        //step
+        if (x <= attack / 5) {
+          if (x <= attack / 50) {
+            return (x / (attack / 50)) * 0.2;
+          } else {
+            return 0.2;
+          }
+        } else if (x <= (attack * 2) / 5) {
+          if (x <= (attack * 11) / 50) {
+            return ((x - attack / 5) / (attack / 50)) * 0.2 + 0.2;
+          } else {
+            return 0.4;
+          }
+        } else if (x <= (attack * 3) / 5) {
+          if (x <= (attack * 21) / 50) {
+            return ((x - (attack * 2) / 5) / (attack / 50)) * 0.2 + 0.4;
+          } else {
+            return 0.6;
+          }
+        } else if (x <= (attack * 4) / 5) {
+          if (x <= (attack * 31) / 50) {
+            return ((x - (attack * 3) / 5) / (attack / 50)) * 0.2 + 0.6;
+          } else {
+            return 0.8;
+          }
+        } else if (x <= (attack * 5) / 5) {
+          if (x <= (attack * 41) / 50) {
+            return ((x - (attack * 4) / 5) / (attack / 50)) * 0.2 + 0.8;
+          } else {
+            return 1;
+          }
+        }
+      } else if (false) {
+        //exponential
+        return 1 - Math.E ** ((-8 * x) / attack);
+      } else if (true) {
+        //ripple
+        let f =
+          x / attack +
+          (Math.sin((x * Math.PI * 14) / attack + Math.PI * 0.5) - 1) / 12;
+        return f > 0 ? f : 0;
+      }
     },
     decayFunc(x, decay, sustain) {
       return (x * (sustain - 1)) / decay + 1;
