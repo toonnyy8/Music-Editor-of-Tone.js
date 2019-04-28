@@ -18,20 +18,21 @@ let frequency = 4;
 let pow = new Tone.Pow(10);
 let synth = new Tone.PolySynth(6, Tone.Synth, {
   volume: 6,
-  oscillator: {
-    partials: [0, 2, 4, 6, 8]
-  },
   envelope: {
     attack: 0.05,
     decay: 0.01,
     sustain: 0,
     release: 10,
     releaseCurve: "exponential"
+  },
+  oscillator: {
+    type: "custom",
+    partials: [0, 2, 4, 6, 8]
   }
 })
   .connect(pow)
   .toMaster();
-
+console.log("12345", synth.get());
 Mousetrap.bind({
   "1": function() {
     frequency = 1;
@@ -93,6 +94,8 @@ export default {
         envelope: synthObj.envelope || synth.get().envelope,
         oscillator: synthObj.oscillator || synth.get().oscillator
       });
+
+      console.log(synth.get());
     }
   }
 };

@@ -13,9 +13,6 @@
               <div class="demo-card__primary">
                 <h1 align="center">Oscillator</h1>
                 <div align="center" id="Oscillator"></div>
-              </div>
-              <div class="demo-card__secondary mdc-typography mdc-typography--body2">
-                <br>
                 <div align="center" id="PartialsCanvas"></div>
               </div>
             </div>
@@ -36,12 +33,11 @@ export default {
     partials.length = 32;
     partials[0] = 1;
     for (let i = 1; i < partials.length; i++) {
-      partials[i] = 1;
+      partials[i] = 0;
     }
     return {
       canvas: document.createElement("canvas"),
       Partials: partials,
-      Frequency: 440,
       PartialsCanvas: document.createElement("canvas"),
       partialsMouseMove: false
     };
@@ -92,13 +88,19 @@ export default {
         this.drawPartials();
         this.setSynth({
           oscillator: {
-            frequency: this.Frequency,
+            type: "custom",
             partials: this.Partials
           }
         });
       };
       this.PartialsCanvas.onmouseup = event => {
         this.partialsMouseMove = false;
+        this.setSynth({
+          oscillator: {
+            type: "custom",
+            partials: this.Partials
+          }
+        });
       };
       this.PartialsCanvas.onmousemove = event => {
         if (this.partialsMouseMove) {
@@ -124,12 +126,6 @@ export default {
 
           this.drawOscillator();
           this.drawPartials();
-          this.setSynth({
-            oscillator: {
-              frequency: this.Frequency,
-              partials: this.Partials
-            }
-          });
         }
       };
       this.drawPartials();
@@ -137,7 +133,7 @@ export default {
 
     this.setSynth({
       oscillator: {
-        frequency: this.Frequency,
+        type: "custom",
         partials: this.Partials
       }
     });
