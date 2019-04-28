@@ -11,7 +11,7 @@
               style="--mdc-ripple-fg-size:210px; --mdc-ripple-fg-scale:2.33984; --mdc-ripple-fg-translate-start:38.8px, 171.637px; --mdc-ripple-fg-translate-end:70px, 60.2375px;"
             >
               <div class="demo-card__primary">
-                <br>
+                <h1 align="center">Envelope</h1>
                 <div align="center" id="Envelope"></div>
               </div>
               <div class="demo-card__secondary mdc-typography mdc-typography--body2">
@@ -222,6 +222,7 @@ import { MDCSlider } from "@material/slider";
 import { MDCSelect } from "@material/select";
 
 export default {
+  props: ["setSynth"],
   data() {
     return {
       canvas: document.createElement("canvas"),
@@ -249,23 +250,126 @@ export default {
       document.querySelector("#Envelope").appendChild(this.canvas);
 
       this.drawEnvelope();
+      this.setSynth({
+        envelope: {
+          attack: this.Attack.value,
+          attackCurve: this.AttackCurve,
+          decay: this.Decay.value,
+          decayCurve: this.DecayCurve,
+          sustain: this.Sustain.value,
+          release: this.Release.value,
+          releaseCurve: this.ReleaseCurve
+        }
+      });
 
       this.Attack.listen("MDCSlider:input", this.drawEnvelope);
       this.Decay.listen("MDCSlider:input", this.drawEnvelope);
       this.Sustain.listen("MDCSlider:input", this.drawEnvelope);
       this.Release.listen("MDCSlider:input", this.drawEnvelope);
 
+      this.Attack.listen("MDCSlider:change", () => {
+        this.setSynth({
+          envelope: {
+            attack: this.Attack.value,
+            attackCurve: this.AttackCurve,
+            decay: this.Decay.value,
+            decayCurve: this.DecayCurve,
+            sustain: this.Sustain.value,
+            release: this.Release.value,
+            releaseCurve: this.ReleaseCurve
+          }
+        });
+      });
+      this.Decay.listen("MDCSlider:change", () => {
+        this.setSynth({
+          envelope: {
+            attack: this.Attack.value,
+            attackCurve: this.AttackCurve,
+            decay: this.Decay.value,
+            decayCurve: this.DecayCurve,
+            sustain: this.Sustain.value,
+            release: this.Release.value,
+            releaseCurve: this.ReleaseCurve
+          }
+        });
+      });
+      this.Sustain.listen("MDCSlider:change", () => {
+        this.setSynth({
+          envelope: {
+            attack: this.Attack.value,
+            attackCurve: this.AttackCurve,
+            decay: this.Decay.value,
+            decayCurve: this.DecayCurve,
+            sustain: this.Sustain.value,
+            release: this.Release.value,
+            releaseCurve: this.ReleaseCurve
+          }
+        });
+      });
+      this.Release.listen("MDCSlider:change", () => {
+        this.setSynth({
+          envelope: {
+            attack: this.Attack.value,
+            attackCurve: this.AttackCurve,
+            decay: this.Decay.value,
+            decayCurve: this.DecayCurve,
+            sustain: this.Sustain.value,
+            release: this.Release.value,
+            releaseCurve: this.ReleaseCurve
+          }
+        });
+      });
+
       new MDCSelect(document.querySelector("#AttackCurve")).listen(
         "MDCSelect:change",
-        this.drawEnvelope
+        () => {
+          this.drawEnvelope();
+          this.setSynth({
+            envelope: {
+              attack: this.Attack.value,
+              attackCurve: this.AttackCurve,
+              decay: this.Decay.value,
+              decayCurve: this.DecayCurve,
+              sustain: this.Sustain.value,
+              release: this.Release.value,
+              releaseCurve: this.ReleaseCurve
+            }
+          });
+        }
       );
       new MDCSelect(document.querySelector("#DecayCurve")).listen(
         "MDCSelect:change",
-        this.drawEnvelope
+        () => {
+          this.drawEnvelope();
+          this.setSynth({
+            envelope: {
+              attack: this.Attack.value,
+              attackCurve: this.AttackCurve,
+              decay: this.Decay.value,
+              decayCurve: this.DecayCurve,
+              sustain: this.Sustain.value,
+              release: this.Release.value,
+              releaseCurve: this.ReleaseCurve
+            }
+          });
+        }
       );
       new MDCSelect(document.querySelector("#ReleaseCurve")).listen(
         "MDCSelect:change",
-        this.drawEnvelope
+        () => {
+          this.drawEnvelope();
+          this.setSynth({
+            envelope: {
+              attack: this.Attack.value,
+              attackCurve: this.AttackCurve,
+              decay: this.Decay.value,
+              decayCurve: this.DecayCurve,
+              sustain: this.Sustain.value,
+              release: this.Release.value,
+              releaseCurve: this.ReleaseCurve
+            }
+          });
+        }
       );
     } else {
       // canvas-unsupported code here

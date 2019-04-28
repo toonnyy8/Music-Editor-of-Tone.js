@@ -1,20 +1,22 @@
 <template>
   <div>
-    <test></test>
+    <envelope :setSynth="setSynth"></envelope>
+    <oscillator :setSynth="setSynth"></oscillator>
   </div>
 </template>
 
 <script>
 import Vue from "vue";
-import test from "../vue/test.vue";
+import envelope from "../vue/envelope.vue";
+import oscillator from "../vue/oscillator.vue";
 
 import Mousetrap from "mousetrap";
 import "mousetrap/plugins/bind-dictionary/mousetrap-bind-dictionary.min.js";
 import * as Tone from "tone";
 
 let frequency = 4;
-var pow = new Tone.Pow(2);
-var synth = new Tone.PolySynth(6, Tone.Synth, {
+let pow = new Tone.Pow(10);
+let synth = new Tone.PolySynth(6, Tone.Synth, {
   volume: 6,
   oscillator: {
     partials: [0, 2, 4, 6, 8]
@@ -81,10 +83,18 @@ Mousetrap.bind({
 });
 
 export default {
-  components: { test: test },
+  components: { envelope: envelope, oscillator: oscillator },
   data: {},
   mounted() {},
-  methods: {}
+  methods: {
+    setSynth(synthObj) {
+      synth.set({
+        volume: 6,
+        envelope: synthObj.envelope || synth.get().envelope,
+        oscillator: synthObj.oscillator || synth.get().oscillator
+      });
+    }
+  }
 };
 </script>
 
