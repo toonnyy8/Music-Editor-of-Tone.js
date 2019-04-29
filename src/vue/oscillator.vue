@@ -13,7 +13,6 @@
               <div class="demo-card__primary">
                 <h1 align="center">Oscillator</h1>
                 <div align="center" id="Oscillator"></div>
-                <div align="center" id="PartialsCanvas"></div>
               </div>
             </div>
           </div>
@@ -38,37 +37,23 @@ export default {
     return {
       canvas: document.createElement("canvas"),
       Partials: partials,
-      PartialsCanvas: document.createElement("canvas"),
       partialsMouseMove: false
     };
   },
   mounted() {
     if (this.canvas.getContext) {
       this.canvas.width = 1044;
-      this.canvas.height = 240;
+      this.canvas.height = 260;
       this.canvas.style = "width:100%";
       document.querySelector("#Oscillator").appendChild(this.canvas);
-      this.drawOscillator();
-    }
-    if (this.PartialsCanvas.getContext) {
-      this.PartialsCanvas.width = 1044;
-      this.PartialsCanvas.height = 240;
-      this.PartialsCanvas.style = "width:100%";
-      document
-        .querySelector("#PartialsCanvas")
-        .appendChild(this.PartialsCanvas);
 
-      let ctx = this.PartialsCanvas.getContext("2d");
-      ctx.fillStyle = "rgb(75,75,75)";
-      ctx.fillRect(0, 0, 1044, 240);
-
-      this.PartialsCanvas.onmousedown = event => {
+      this.canvas.onmousedown = event => {
         this.partialsMouseMove = true;
         let x = event.offsetX;
         let y = event.offsetY;
 
-        let offsetWidth = this.PartialsCanvas.offsetWidth;
-        let offsetHeight = this.PartialsCanvas.offsetHeight;
+        let offsetWidth = this.canvas.offsetWidth;
+        let offsetHeight = this.canvas.offsetHeight;
 
         let cellWidth = 1000 / 1044 / 32;
 
@@ -78,14 +63,13 @@ export default {
         this.Partials[
           x < 0 ? 0 : x > 1000 / 1044 ? 31 : Math.floor(x / cellWidth)
         ] =
-          1 - y / offsetHeight <= 1 / 24
+          1 - y / offsetHeight <= 3 / 26
             ? 0
-            : 1 - y / offsetHeight >= 23 / 24
+            : 1 - y / offsetHeight >= 23 / 26
             ? 1
-            : 1 - y / offsetHeight;
+            : (1 - y / offsetHeight - 3 / 26) / (20 / 26);
 
         this.drawOscillator();
-        this.drawPartials();
         this.setSynth({
           oscillator: {
             type: "custom",
@@ -93,7 +77,7 @@ export default {
           }
         });
       };
-      this.PartialsCanvas.onmouseup = event => {
+      this.canvas.onmouseup = event => {
         this.partialsMouseMove = false;
         this.setSynth({
           oscillator: {
@@ -102,13 +86,13 @@ export default {
           }
         });
       };
-      this.PartialsCanvas.onmousemove = event => {
+      this.canvas.onmousemove = event => {
         if (this.partialsMouseMove) {
           let x = event.offsetX;
           let y = event.offsetY;
 
-          let offsetWidth = this.PartialsCanvas.offsetWidth;
-          let offsetHeight = this.PartialsCanvas.offsetHeight;
+          let offsetWidth = this.canvas.offsetWidth;
+          let offsetHeight = this.canvas.offsetHeight;
 
           let cellWidth = 1000 / 1044 / 32;
 
@@ -118,17 +102,16 @@ export default {
           this.Partials[
             x < 0 ? 0 : x > 1000 / 1044 ? 31 : Math.floor(x / cellWidth)
           ] =
-            1 - y / offsetHeight <= 1 / 24
+            1 - y / offsetHeight <= 3 / 26
               ? 0
-              : 1 - y / offsetHeight >= 23 / 24
+              : 1 - y / offsetHeight >= 23 / 26
               ? 1
-              : 1 - y / offsetHeight;
+              : (1 - y / offsetHeight - 3 / 26) / (20 / 26);
 
           this.drawOscillator();
-          this.drawPartials();
         }
       };
-      this.drawPartials();
+      this.drawOscillator();
     }
 
     this.setSynth({
@@ -142,8 +125,19 @@ export default {
     drawOscillator() {
       let ctx = this.canvas.getContext("2d");
       ctx.fillStyle = "rgb(75,75,75)";
-      ctx.fillRect(0, 0, 1044, 240);
+      ctx.fillRect(0, 0, 1044, 260);
+      //drawPartials
+      ctx.fillStyle = "rgb(220,220,220)";
+      for (let i = 0; i < 32; i++) {
+        ctx.fillRect(
+          22 + (i * 1000) / 32,
+          30 + 200 * (1 - this.Partials[i]),
+          Math.ceil(1000 / 32),
+          200 * this.Partials[i]
+        );
+      }
 
+      //drawOscillator
       let max = 0;
       let temp = [2000];
       for (let i = 1; i <= 2000; i++) {
@@ -152,13 +146,13 @@ export default {
       }
 
       ctx.lineWidth = 2;
-      ctx.strokeStyle = "rgb(255,255,200)";
+      ctx.strokeStyle = "rgb(255,100,100)";
 
       ctx.beginPath();
-      ctx.moveTo(22, 120 - Math.cos(-Math.PI * 0.5) * 100);
+      ctx.moveTo(22, 130 - Math.cos(-Math.PI * 0.5) * 100);
 
       for (let i = 1; i <= 2000; i++) {
-        ctx.lineTo((1000 * i) / 2000 + 22, 120 - (temp[i - 1] / max) * 100);
+        ctx.lineTo((1000 * i) / 2000 + 22, 130 - (temp[i - 1] / max) * 100);
       }
       ctx.stroke();
       temp = null;
@@ -169,21 +163,6 @@ export default {
         f += Math.sin(x * Math.PI * 2 * (i + 1)) * this.Partials[i];
       }
       return f;
-    },
-    drawPartials() {
-      let ctx = this.PartialsCanvas.getContext("2d");
-      ctx.fillStyle = "rgb(75,75,75)";
-      ctx.fillRect(0, 0, 1044, 240);
-
-      ctx.fillStyle = "rgb(220,220,220)";
-      for (let i = 0; i < 32; i++) {
-        ctx.fillRect(
-          22 + (i * 1000) / 32,
-          10 + 220 * (1 - this.Partials[i]),
-          Math.ceil(1000 / 32),
-          220 * this.Partials[i]
-        );
-      }
     }
   }
 };
