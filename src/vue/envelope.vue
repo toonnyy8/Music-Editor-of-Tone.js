@@ -46,7 +46,7 @@
                       </div>
                     </div>
                     <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8">
-                      <h3>Attack</h3>
+                      <h3>Attack:{{roundDecimal(Attack.value,3)}}</h3>
                       <div
                         id="Attack"
                         class="mdc-slider"
@@ -54,7 +54,7 @@
                         role="slider"
                         aria-valuemin="0.01"
                         aria-valuemax="2"
-                        aria-valuenow="0.01"
+                        aria-valuenow="0.05"
                         aria-label="Select Value"
                       >
                         <div class="mdc-slider__track-container">
@@ -97,7 +97,7 @@
                       </div>
                     </div>
                     <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8">
-                      <h3>Decay</h3>
+                      <h3>Decay:{{roundDecimal(Decay.value,3)}}</h3>
                       <div
                         id="Decay"
                         class="mdc-slider"
@@ -105,7 +105,7 @@
                         role="slider"
                         aria-valuemin="0.01"
                         aria-valuemax="2"
-                        aria-valuenow="0.01"
+                        aria-valuenow="0.2"
                         aria-label="Select Value"
                       >
                         <div class="mdc-slider__track-container">
@@ -126,7 +126,7 @@
                   <div class="mdc-layout-grid__inner">
                     <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2"></div>
                     <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8">
-                      <h3>Sustain</h3>
+                      <h3>Sustain:{{roundDecimal(Sustain.value,3)}}</h3>
                       <div
                         id="Sustain"
                         class="mdc-slider"
@@ -134,7 +134,7 @@
                         role="slider"
                         aria-valuemin="0.01"
                         aria-valuemax="1"
-                        aria-valuenow="1"
+                        aria-valuenow="0.2"
                         aria-label="Select Value"
                       >
                         <div class="mdc-slider__track-container">
@@ -182,7 +182,7 @@
                       </div>
                     </div>
                     <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8">
-                      <h3>Release</h3>
+                      <h3>Release:{{roundDecimal(Release.value,3)}}</h3>
                       <div
                         id="Release"
                         class="mdc-slider"
@@ -190,7 +190,7 @@
                         role="slider"
                         aria-valuemin="0.01"
                         aria-valuemax="4"
-                        aria-valuenow="4"
+                        aria-valuenow="1.5"
                         aria-label="Select Value"
                       >
                         <div class="mdc-slider__track-container">
@@ -226,12 +226,12 @@ export default {
   data() {
     return {
       canvas: document.createElement("canvas"),
-      Attack: null,
+      Attack: { value: 0.05 },
       AttackCurve: "linear",
-      Decay: null,
+      Decay: { value: 0.2 },
       DecayCurve: "linear",
-      Sustain: null,
-      Release: null,
+      Sustain: { value: 0.2 },
+      Release: { value: 1.5 },
       ReleaseCurve: "linear"
     };
   },
@@ -591,6 +591,12 @@ export default {
         default:
           break;
       }
+    },
+    roundDecimal(val, precision) {
+      return (
+        Math.round(Math.round(val * Math.pow(10, (precision || 0) + 1)) / 10) /
+        Math.pow(10, precision || 0)
+      );
     }
   }
 };
