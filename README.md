@@ -16,5 +16,5 @@ npm run dev
 
 ## 建置
 ```
-npm run 
+npm run build
 ```
