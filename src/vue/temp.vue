@@ -95,7 +95,7 @@ export default {
         oscillator: synthObj.oscillator || synth.get().oscillator
       });
 
-      console.log(synth.get());
+      //console.log(synth.get());
     }
   }
 };

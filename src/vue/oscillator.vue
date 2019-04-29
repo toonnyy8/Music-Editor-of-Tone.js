@@ -47,8 +47,7 @@ export default {
       this.canvas.style = "width:100%";
       document.querySelector("#Oscillator").appendChild(this.canvas);
 
-      this.canvas.onmousedown = event => {
-        this.partialsMouseMove = true;
+      let setPartials = event => {
         let x = event.offsetX;
         let y = event.offsetY;
 
@@ -70,6 +69,13 @@ export default {
             : (1 - y / offsetHeight - 3 / 26) / (20 / 26);
 
         this.drawOscillator();
+      };
+
+      this.canvas.onmousedown = event => {
+        this.partialsMouseMove = true;
+
+        setPartials(event);
+
         this.setSynth({
           oscillator: {
             type: "custom",
@@ -88,29 +94,66 @@ export default {
       };
       this.canvas.onmousemove = event => {
         if (this.partialsMouseMove) {
-          let x = event.offsetX;
-          let y = event.offsetY;
-
-          let offsetWidth = this.canvas.offsetWidth;
-          let offsetHeight = this.canvas.offsetHeight;
-
-          let cellWidth = 1000 / 1044 / 32;
-
-          x /= offsetWidth;
-          x -= 22 / 1044;
-
-          this.Partials[
-            x < 0 ? 0 : x > 1000 / 1044 ? 31 : Math.floor(x / cellWidth)
-          ] =
-            1 - y / offsetHeight <= 3 / 26
-              ? 0
-              : 1 - y / offsetHeight >= 23 / 26
-              ? 1
-              : (1 - y / offsetHeight - 3 / 26) / (20 / 26);
-
-          this.drawOscillator();
+          setPartials(event);
         }
       };
+
+      this.canvas.addEventListener(
+        "touchstart",
+        event => {
+          this.partialsMouseMove = true;
+          event.preventDefault();
+
+          setPartials({
+            offsetX:
+              event.touches[0].pageX -
+              (this.canvas.getBoundingClientRect().left -
+                this.canvas.scrollLeft),
+            offsetY:
+              this.canvas.offsetHeight -
+              Math.abs(event.touches[0].pageY - document.body.scrollHeight)
+          });
+
+          this.setSynth({
+            oscillator: {
+              type: "custom",
+              partials: this.Partials
+            }
+          });
+        },
+        false
+      );
+      this.canvas.addEventListener(
+        "touchend",
+        event => {
+          this.partialsMouseMove = false;
+          this.setSynth({
+            oscillator: {
+              type: "custom",
+              partials: this.Partials
+            }
+          });
+        },
+        false
+      );
+      this.canvas.addEventListener(
+        "touchmove",
+        event => {
+          if (this.partialsMouseMove) {
+            setPartials({
+              offsetX:
+                event.touches[0].pageX -
+                (this.canvas.getBoundingClientRect().left -
+                  this.canvas.scrollLeft),
+              offsetY:
+                this.canvas.offsetHeight -
+                Math.abs(event.touches[0].pageY - document.body.scrollHeight)
+            });
+          }
+        },
+        false
+      );
+
       this.drawOscillator();
     }
 
