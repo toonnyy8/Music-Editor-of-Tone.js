@@ -62,24 +62,74 @@ export default (vm = {
     blocks: [],
     /*
      *[
-     * {id:0,plugins:{id:0,dom:}}
+     * {id:0,plugins:{id:0,pluginChannel:channel,title,
+     * data:{
+     * oscillator:{
+     * type: "custom",
+     * partials:[],
+     * },
+     * envelope:{
+              attack,
+              attackCurve,
+              decay,
+              decayCurve,
+              sustain,
+              release,
+              releaseCurve
+            }
+          }
+        }
+      }
      * ]
      *
      */
     pluginDialog: { dialog: null, title: null }
   },
   mounted() {
+    let globalChannel = new BroadcastChannel("globalChannel");
+    globalChannel.onmessage = event => {
+      switch (event.data.instruction) {
+        case "Sub Window Creat": {
+          let index = event.data.title.split(":")[1].split("-");
+
+          if (
+            this.blocks[index[0]].plugins[index[1]] != null &&
+            this.blocks[index[0]].plugins[index[1]].pluginChannel == null
+          ) {
+            this.blocks[index[0]].plugins[
+              index[1]
+            ].pluginChannel = new BroadcastChannel(event.data.title);
+            this.BindPluginChannel(this.blocks[index[0]].plugins[index[1]]);
+          }
+          this.blocks[index[0]].plugins[index[1]].pluginChannel.postMessage({
+            instruction: "Init Data",
+            oscillator: this.blocks[index[0]].plugins[index[1]].data.oscillator,
+            envelope: this.blocks[index[0]].plugins[index[1]].data.envelope
+          });
+          break;
+        }
+        default:
+          break;
+      }
+    };
+
+    window.onunload = () => {
+      for (let i = 0; i < this.blocks.length; i++) {
+        for (let j = 0; j < this.blocks[i].plugins.length; j++) {
+          if (this.blocks[i].plugins[j].pluginChannel != null) {
+            this.blocks[i].plugins[j].pluginChannel.postMessage({
+              instruction: "Close Window"
+            });
+            this.blocks[i].plugins[j].pluginChannel.close();
+            this.blocks[i].plugins[j].pluginChannel = null;
+          }
+        }
+      }
+    };
+
     this.pluginDialog.dialog = new MDCDialog(
       document.querySelector(".mdc-dialog")
     );
-    /*let tempQuerySelector = this.$el.querySelectorAll(".mdc-select");
-    let select = new material.select.MDCSelect(
-      tempQuerySelector[tempQuerySelector.length - 1]
-    );
-    select.listen("MDCSelect:change", () => {
-      console.log("HI");
-    });
-    console.log(select);*/
   },
   updated() {},
   methods: {
@@ -128,46 +178,26 @@ export default (vm = {
     },
     BindPluginChannel: function(plugin) {
       plugin.pluginChannel.onmessage = function(event) {
-        if (event.data.instruction == "Sub Window Close") {
-          plugin.pluginChannel.close();
-          plugin.pluginChannel = null;
-          console.log("close", plugin);
+        switch (event.data.instruction) {
+          case "Sub Window Close": {
+            plugin.pluginChannel.close();
+            plugin.pluginChannel = null;
+            console.log("close", plugin);
+            break;
+          }
+          case "Set Plugin Data": {
+            plugin.data.oscillator =
+              event.data.oscillator || plugin.data.oscillator;
+            plugin.data.envelope = event.data.envelope || plugin.data.envelope;
+            break;
+          }
+          default:
+            break;
         }
       };
     }
   }
 });
-
-if (window.name.split(":")[0] != "SetPlugin") {
-  let globalChannel = new BroadcastChannel("globalChannel");
-  globalChannel.onmessage = function(event) {
-    if (event.data.instruction == "Sub Window Creat") {
-      let index = event.data.title.split(":")[1].split("-");
-
-      if (
-        vm.data.blocks[index[0]].plugins[index[1]] != null &&
-        vm.data.blocks[index[0]].plugins[index[1]].pluginChannel == null
-      ) {
-        vm.data.blocks[index[0]].plugins[
-          index[1]
-        ].pluginChannel = new BroadcastChannel(event.data.title);
-      }
-    }
-  };
-  window.onunload = function() {
-    for (let i = 0; i < vm.data.blocks.length; i++) {
-      for (let j = 0; j < vm.data.blocks[i].plugins.length; j++) {
-        if (vm.data.blocks[i].plugins[j].pluginChannel != null) {
-          vm.data.blocks[i].plugins[j].pluginChannel.postMessage({
-            instruction: "Close Window"
-          });
-          vm.data.blocks[i].plugins[j].pluginChannel.close();
-          vm.data.blocks[i].plugins[j].pluginChannel = null;
-        }
-      }
-    }
-  };
-}
 </script>
 <style>
 :root {

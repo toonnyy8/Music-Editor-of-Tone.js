@@ -44,10 +44,33 @@ export default (vm = {
     AddPlugin: function() {
       console.log("AddPlugin");
       console.log(this.block.plugins);
+
+      let partials = [32];
+      partials.length = 32;
+      partials[0] = 1;
+      for (let i = 1; i < partials.length; i++) {
+        partials[i] = 0;
+      }
+
       this.block.plugins.push({
         id: this.block.plugins.length,
         title: "C1",
-        pluginChannel: null
+        pluginChannel: null,
+        data: {
+          oscillator: {
+            type: "custom",
+            partials: partials
+          },
+          envelope: {
+            attack: 0.05,
+            attackCurve: "linear",
+            decay: 0.2,
+            decayCurve: "linear",
+            sustain: 0.2,
+            release: 1.5,
+            releaseCurve: "linear"
+          }
+        }
       });
     },
     BuildDeletePlugin: function(blockIndex, plugins) {

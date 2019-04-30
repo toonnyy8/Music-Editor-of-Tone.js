@@ -21,14 +21,14 @@
                       <br>
                       <div class="mdc-select mdc-select--outlined" id="AttackCurve">
                         <i class="mdc-select__dropdown-icon"></i>
-                        <select class="mdc-select__native-control" v-model="AttackCurve">
-                          <option>linear</option>
-                          <option>exponential</option>
-                          <option>bounce</option>
-                          <option>ripple</option>
-                          <option>step</option>
-                          <option>cosine</option>
-                          <option>sine</option>
+                        <select class="mdc-select__native-control">
+                          <option value="linear">linear</option>
+                          <option value="exponential">exponential</option>
+                          <option value="bounce">bounce</option>
+                          <option value="ripple">ripple</option>
+                          <option value="step">step</option>
+                          <option value="cosine">cosine</option>
+                          <option value="sine">sine</option>
                         </select>
                         <div
                           class="mdc-notched-outline mdc-notched-outline--upgraded mdc-notched-outline--notched"
@@ -77,7 +77,7 @@
                       <br>
                       <div class="mdc-select mdc-select--outlined" id="DecayCurve">
                         <i class="mdc-select__dropdown-icon"></i>
-                        <select class="mdc-select__native-control" v-model="DecayCurve">
+                        <select class="mdc-select__native-control">
                           <option>linear</option>
                           <option>exponential</option>
                         </select>
@@ -157,7 +157,7 @@
                       <br>
                       <div class="mdc-select mdc-select--outlined">
                         <i class="mdc-select__dropdown-icon"></i>
-                        <select class="mdc-select__native-control" v-model="ReleaseCurve">
+                        <select class="mdc-select__native-control">
                           <option>linear</option>
                           <option>exponential</option>
                           <option>bounce</option>
@@ -225,17 +225,20 @@ export default {
   props: ["setSynth"],
   data() {
     return {
+      channel: new BroadcastChannel(window.name),
       canvas: document.createElement("canvas"),
       Attack: { value: 0.05 },
-      AttackCurve: "linear",
+      AttackCurve: { value: "linear" },
       Decay: { value: 0.2 },
-      DecayCurve: "linear",
+      DecayCurve: { value: "linear" },
       Sustain: { value: 0.2 },
       Release: { value: 1.5 },
-      ReleaseCurve: "linear"
+      ReleaseCurve: { value: "linear" }
     };
   },
   mounted() {
+    this.channel.onmessage = this.channelOnmessage;
+
     this.Attack = new MDCSlider(document.querySelector("#Attack"));
     this.Decay = new MDCSlider(document.querySelector("#Decay"));
     this.Sustain = new MDCSlider(document.querySelector("#Sustain"));
@@ -249,19 +252,6 @@ export default {
       this.canvas.style = "width:100%";
       document.querySelector("#Envelope").appendChild(this.canvas);
 
-      this.drawEnvelope();
-      this.setSynth({
-        envelope: {
-          attack: this.Attack.value,
-          attackCurve: this.AttackCurve,
-          decay: this.Decay.value,
-          decayCurve: this.DecayCurve,
-          sustain: this.Sustain.value,
-          release: this.Release.value,
-          releaseCurve: this.ReleaseCurve
-        }
-      });
-
       this.Attack.listen("MDCSlider:input", this.drawEnvelope);
       this.Decay.listen("MDCSlider:input", this.drawEnvelope);
       this.Sustain.listen("MDCSlider:input", this.drawEnvelope);
@@ -271,12 +261,12 @@ export default {
         this.setSynth({
           envelope: {
             attack: this.Attack.value,
-            attackCurve: this.AttackCurve,
+            attackCurve: this.AttackCurve.value,
             decay: this.Decay.value,
-            decayCurve: this.DecayCurve,
+            decayCurve: this.DecayCurve.value,
             sustain: this.Sustain.value,
             release: this.Release.value,
-            releaseCurve: this.ReleaseCurve
+            releaseCurve: this.ReleaseCurve.value
           }
         });
       });
@@ -284,12 +274,12 @@ export default {
         this.setSynth({
           envelope: {
             attack: this.Attack.value,
-            attackCurve: this.AttackCurve,
+            attackCurve: this.AttackCurve.value,
             decay: this.Decay.value,
-            decayCurve: this.DecayCurve,
+            decayCurve: this.DecayCurve.value,
             sustain: this.Sustain.value,
             release: this.Release.value,
-            releaseCurve: this.ReleaseCurve
+            releaseCurve: this.ReleaseCurve.value
           }
         });
       });
@@ -297,12 +287,12 @@ export default {
         this.setSynth({
           envelope: {
             attack: this.Attack.value,
-            attackCurve: this.AttackCurve,
+            attackCurve: this.AttackCurve.value,
             decay: this.Decay.value,
-            decayCurve: this.DecayCurve,
+            decayCurve: this.DecayCurve.value,
             sustain: this.Sustain.value,
             release: this.Release.value,
-            releaseCurve: this.ReleaseCurve
+            releaseCurve: this.ReleaseCurve.value
           }
         });
       });
@@ -310,67 +300,64 @@ export default {
         this.setSynth({
           envelope: {
             attack: this.Attack.value,
-            attackCurve: this.AttackCurve,
+            attackCurve: this.AttackCurve.value,
             decay: this.Decay.value,
-            decayCurve: this.DecayCurve,
+            decayCurve: this.DecayCurve.value,
             sustain: this.Sustain.value,
             release: this.Release.value,
-            releaseCurve: this.ReleaseCurve
+            releaseCurve: this.ReleaseCurve.value
           }
         });
       });
 
-      new MDCSelect(document.querySelector("#AttackCurve")).listen(
-        "MDCSelect:change",
-        () => {
-          this.drawEnvelope();
-          this.setSynth({
-            envelope: {
-              attack: this.Attack.value,
-              attackCurve: this.AttackCurve,
-              decay: this.Decay.value,
-              decayCurve: this.DecayCurve,
-              sustain: this.Sustain.value,
-              release: this.Release.value,
-              releaseCurve: this.ReleaseCurve
-            }
-          });
-        }
+      this.AttackCurve = new MDCSelect(document.querySelector("#AttackCurve"));
+      this.DecayCurve = new MDCSelect(document.querySelector("#DecayCurve"));
+      this.ReleaseCurve = new MDCSelect(
+        document.querySelector("#ReleaseCurve")
       );
-      new MDCSelect(document.querySelector("#DecayCurve")).listen(
-        "MDCSelect:change",
-        () => {
-          this.drawEnvelope();
-          this.setSynth({
-            envelope: {
-              attack: this.Attack.value,
-              attackCurve: this.AttackCurve,
-              decay: this.Decay.value,
-              decayCurve: this.DecayCurve,
-              sustain: this.Sustain.value,
-              release: this.Release.value,
-              releaseCurve: this.ReleaseCurve
-            }
-          });
-        }
-      );
-      new MDCSelect(document.querySelector("#ReleaseCurve")).listen(
-        "MDCSelect:change",
-        () => {
-          this.drawEnvelope();
-          this.setSynth({
-            envelope: {
-              attack: this.Attack.value,
-              attackCurve: this.AttackCurve,
-              decay: this.Decay.value,
-              decayCurve: this.DecayCurve,
-              sustain: this.Sustain.value,
-              release: this.Release.value,
-              releaseCurve: this.ReleaseCurve
-            }
-          });
-        }
-      );
+
+      this.AttackCurve.listen("MDCSelect:change", () => {
+        this.drawEnvelope();
+        this.setSynth({
+          envelope: {
+            attack: this.Attack.value,
+            attackCurve: this.AttackCurve.value,
+            decay: this.Decay.value,
+            decayCurve: this.DecayCurve.value,
+            sustain: this.Sustain.value,
+            release: this.Release.value,
+            releaseCurve: this.ReleaseCurve.value
+          }
+        });
+      });
+      this.DecayCurve.listen("MDCSelect:change", () => {
+        this.drawEnvelope();
+        this.setSynth({
+          envelope: {
+            attack: this.Attack.value,
+            attackCurve: this.AttackCurve.value,
+            decay: this.Decay.value,
+            decayCurve: this.DecayCurve.value,
+            sustain: this.Sustain.value,
+            release: this.Release.value,
+            releaseCurve: this.ReleaseCurve.value
+          }
+        });
+      });
+      this.ReleaseCurve.listen("MDCSelect:change", () => {
+        this.drawEnvelope();
+        this.setSynth({
+          envelope: {
+            attack: this.Attack.value,
+            attackCurve: this.AttackCurve.value,
+            decay: this.Decay.value,
+            decayCurve: this.DecayCurve.value,
+            sustain: this.Sustain.value,
+            release: this.Release.value,
+            releaseCurve: this.ReleaseCurve.value
+          }
+        });
+      });
     } else {
       // canvas-unsupported code here
     }
@@ -379,6 +366,34 @@ export default {
     console.log("hi");
   },
   methods: {
+    channelOnmessage(event) {
+      switch (event.data.instruction) {
+        case "Init Data": {
+          this.Attack.value = event.data.envelope.attack;
+          this.AttackCurve.value = event.data.envelope.attackCurve;
+          this.Decay.value = event.data.envelope.decay;
+          this.DecayCurve.value = event.data.envelope.decayCurve;
+          this.Sustain.value = event.data.envelope.sustain;
+          this.Release.value = event.data.envelope.release;
+          this.ReleaseCurve.value = event.data.envelope.releaseCurve;
+          this.drawEnvelope();
+          this.setSynth({
+            envelope: {
+              attack: this.Attack.value,
+              attackCurve: this.AttackCurve.value,
+              decay: this.Decay.value,
+              decayCurve: this.DecayCurve.value,
+              sustain: this.Sustain.value,
+              release: this.Release.value,
+              releaseCurve: this.ReleaseCurve.value
+            }
+          });
+          break;
+        }
+        default:
+          break;
+      }
+    },
     drawEnvelope() {
       let attack =
         this.Attack.value /
@@ -423,7 +438,7 @@ export default {
       ctx.stroke();
     },
     attackFunc(x, attack) {
-      switch (this.AttackCurve) {
+      switch (this.AttackCurve.value) {
         case "linear": {
           //linear
           return x / attack;
@@ -496,7 +511,7 @@ export default {
       }
     },
     decayFunc(x, decay, sustain) {
-      switch (this.DecayCurve) {
+      switch (this.DecayCurve.value) {
         case "linear": {
           //linear
           return (x * (sustain - 1)) / decay + 1;
@@ -510,7 +525,7 @@ export default {
       }
     },
     releaseFunc(x, sustain, release) {
-      switch (this.ReleaseCurve) {
+      switch (this.ReleaseCurve.value) {
         case "linear": {
           //linear
           return (x * -sustain) / release + sustain;

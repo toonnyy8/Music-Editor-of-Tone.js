@@ -35,12 +35,15 @@ export default {
       partials[i] = 0;
     }
     return {
+      channel: new BroadcastChannel(window.name),
       canvas: document.createElement("canvas"),
       Partials: partials,
       partialsMouseMove: false
     };
   },
   mounted() {
+    this.channel.onmessage = this.channelOnmessage;
+
     if (this.canvas.getContext) {
       this.canvas.width = 1044;
       this.canvas.height = 260;
@@ -153,18 +156,26 @@ export default {
         },
         false
       );
-
-      this.drawOscillator();
     }
-
-    this.setSynth({
-      oscillator: {
-        type: "custom",
-        partials: this.Partials
-      }
-    });
   },
   methods: {
+    channelOnmessage(event) {
+      switch (event.data.instruction) {
+        case "Init Data": {
+          this.Partials = event.data.oscillator.partials;
+          this.drawOscillator();
+          this.setSynth({
+            oscillator: {
+              type: "custom",
+              partials: this.Partials
+            }
+          });
+          break;
+        }
+        default:
+          break;
+      }
+    },
     drawOscillator() {
       let ctx = this.canvas.getContext("2d");
       ctx.fillStyle = "rgb(75,75,75)";
