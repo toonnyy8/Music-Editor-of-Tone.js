@@ -85,10 +85,24 @@ export default {
             partials: this.Partials
           }
         });
+        this.channel.postMessage({
+          instruction: "Set Plugin Data",
+          oscillator: {
+            type: "custom",
+            partials: this.Partials
+          }
+        });
       };
       this.canvas.onmouseup = event => {
         this.partialsMouseMove = false;
         this.setSynth({
+          oscillator: {
+            type: "custom",
+            partials: this.Partials
+          }
+        });
+        this.channel.postMessage({
+          instruction: "Set Plugin Data",
           oscillator: {
             type: "custom",
             partials: this.Partials
@@ -123,6 +137,13 @@ export default {
               partials: this.Partials
             }
           });
+          this.channel.postMessage({
+            instruction: "Set Plugin Data",
+            oscillator: {
+              type: "custom",
+              partials: this.Partials
+            }
+          });
         },
         false
       );
@@ -131,6 +152,13 @@ export default {
         event => {
           this.partialsMouseMove = false;
           this.setSynth({
+            oscillator: {
+              type: "custom",
+              partials: this.Partials
+            }
+          });
+          this.channel.postMessage({
+            instruction: "Set Plugin Data",
             oscillator: {
               type: "custom",
               partials: this.Partials
@@ -165,6 +193,13 @@ export default {
           this.Partials = event.data.oscillator.partials;
           this.drawOscillator();
           this.setSynth({
+            oscillator: {
+              type: "custom",
+              partials: this.Partials
+            }
+          });
+          this.channel.postMessage({
+            instruction: "Set Plugin Data",
             oscillator: {
               type: "custom",
               partials: this.Partials

@@ -269,9 +269,33 @@ export default {
             releaseCurve: this.ReleaseCurve.value
           }
         });
+        this.channel.postMessage({
+          instruction: "Set Plugin Data",
+          envelope: {
+            attack: this.Attack.value,
+            attackCurve: this.AttackCurve.value,
+            decay: this.Decay.value,
+            decayCurve: this.DecayCurve.value,
+            sustain: this.Sustain.value,
+            release: this.Release.value,
+            releaseCurve: this.ReleaseCurve.value
+          }
+        });
       });
       this.Decay.listen("MDCSlider:change", () => {
         this.setSynth({
+          envelope: {
+            attack: this.Attack.value,
+            attackCurve: this.AttackCurve.value,
+            decay: this.Decay.value,
+            decayCurve: this.DecayCurve.value,
+            sustain: this.Sustain.value,
+            release: this.Release.value,
+            releaseCurve: this.ReleaseCurve.value
+          }
+        });
+        this.channel.postMessage({
+          instruction: "Set Plugin Data",
           envelope: {
             attack: this.Attack.value,
             attackCurve: this.AttackCurve.value,
@@ -295,9 +319,33 @@ export default {
             releaseCurve: this.ReleaseCurve.value
           }
         });
+        this.channel.postMessage({
+          instruction: "Set Plugin Data",
+          envelope: {
+            attack: this.Attack.value,
+            attackCurve: this.AttackCurve.value,
+            decay: this.Decay.value,
+            decayCurve: this.DecayCurve.value,
+            sustain: this.Sustain.value,
+            release: this.Release.value,
+            releaseCurve: this.ReleaseCurve.value
+          }
+        });
       });
       this.Release.listen("MDCSlider:change", () => {
         this.setSynth({
+          envelope: {
+            attack: this.Attack.value,
+            attackCurve: this.AttackCurve.value,
+            decay: this.Decay.value,
+            decayCurve: this.DecayCurve.value,
+            sustain: this.Sustain.value,
+            release: this.Release.value,
+            releaseCurve: this.ReleaseCurve.value
+          }
+        });
+        this.channel.postMessage({
+          instruction: "Set Plugin Data",
           envelope: {
             attack: this.Attack.value,
             attackCurve: this.AttackCurve.value,
@@ -329,6 +377,18 @@ export default {
             releaseCurve: this.ReleaseCurve.value
           }
         });
+        this.channel.postMessage({
+          instruction: "Set Plugin Data",
+          envelope: {
+            attack: this.Attack.value,
+            attackCurve: this.AttackCurve.value,
+            decay: this.Decay.value,
+            decayCurve: this.DecayCurve.value,
+            sustain: this.Sustain.value,
+            release: this.Release.value,
+            releaseCurve: this.ReleaseCurve.value
+          }
+        });
       });
       this.DecayCurve.listen("MDCSelect:change", () => {
         this.drawEnvelope();
@@ -343,10 +403,34 @@ export default {
             releaseCurve: this.ReleaseCurve.value
           }
         });
+        this.channel.postMessage({
+          instruction: "Set Plugin Data",
+          envelope: {
+            attack: this.Attack.value,
+            attackCurve: this.AttackCurve.value,
+            decay: this.Decay.value,
+            decayCurve: this.DecayCurve.value,
+            sustain: this.Sustain.value,
+            release: this.Release.value,
+            releaseCurve: this.ReleaseCurve.value
+          }
+        });
       });
       this.ReleaseCurve.listen("MDCSelect:change", () => {
         this.drawEnvelope();
         this.setSynth({
+          envelope: {
+            attack: this.Attack.value,
+            attackCurve: this.AttackCurve.value,
+            decay: this.Decay.value,
+            decayCurve: this.DecayCurve.value,
+            sustain: this.Sustain.value,
+            release: this.Release.value,
+            releaseCurve: this.ReleaseCurve.value
+          }
+        });
+        this.channel.postMessage({
+          instruction: "Set Plugin Data",
           envelope: {
             attack: this.Attack.value,
             attackCurve: this.AttackCurve.value,
@@ -378,6 +462,18 @@ export default {
           this.ReleaseCurve.value = event.data.envelope.releaseCurve;
           this.drawEnvelope();
           this.setSynth({
+            envelope: {
+              attack: this.Attack.value,
+              attackCurve: this.AttackCurve.value,
+              decay: this.Decay.value,
+              decayCurve: this.DecayCurve.value,
+              sustain: this.Sustain.value,
+              release: this.Release.value,
+              releaseCurve: this.ReleaseCurve.value
+            }
+          });
+          this.channel.postMessage({
+            instruction: "Set Plugin Data",
             envelope: {
               attack: this.Attack.value,
               attackCurve: this.AttackCurve.value,

@@ -122,11 +122,6 @@ export default {
         oscillator: synthObj.oscillator || synth.get().oscillator
       });
       //console.log(synth.get());
-      this.channel.postMessage({
-        instruction: "Set Plugin Data",
-        envelope: synthObj.envelope,
-        oscillator: synthObj.oscillator
-      });
     },
     channelOnmessage(event) {
       switch (event.data.instruction) {
