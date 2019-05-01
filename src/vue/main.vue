@@ -51,7 +51,7 @@
 </template>
 <script defer>
 import { MDCDialog } from "@material/dialog";
-import block from "../vue/block.vue";
+import block from "./main/block.vue";
 
 let vm;
 export default (vm = {

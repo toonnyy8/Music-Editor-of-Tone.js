@@ -6,8 +6,8 @@
 </template>
 
 <script>
-import envelope from "../vue/envelope.vue";
-import oscillator from "../vue/oscillator.vue";
+import envelope from "./sub/envelope.vue";
+import oscillator from "./sub/oscillator.vue";
 
 import Mousetrap from "mousetrap";
 import "mousetrap/plugins/bind-dictionary/mousetrap-bind-dictionary.min.js";

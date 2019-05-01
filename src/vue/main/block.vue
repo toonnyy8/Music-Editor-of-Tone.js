@@ -28,7 +28,7 @@
 </template>
 <script>
 import { MDCDialog } from "@material/dialog";
-import plugin from "../vue/plugin.vue";
+import plugin from "./plugin.vue";
 
 let vm;
 export default (vm = {
