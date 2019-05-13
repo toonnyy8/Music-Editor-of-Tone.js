@@ -2,12 +2,14 @@
   <div>
     <envelope :setSynth="setSynth"></envelope>
     <oscillator :setSynth="setSynth"></oscillator>
+    <musicalNotation></musicalNotation>
   </div>
 </template>
 
 <script>
 import envelope from "./sub/envelope.vue";
 import oscillator from "./sub/oscillator.vue";
+import musicalNotation from "./sub/musicalNotation.vue";
 
 import Mousetrap from "mousetrap";
 import "mousetrap/plugins/bind-dictionary/mousetrap-bind-dictionary.min.js";
@@ -34,7 +36,11 @@ let synth = new Tone.PolySynth(6, Tone.Synth, {
 console.log("12345", synth.get());
 
 export default {
-  components: { envelope: envelope, oscillator: oscillator },
+  components: {
+    envelope: envelope,
+    oscillator: oscillator,
+    musicalNotation: musicalNotation
+  },
   data() {
     return {
       channel: new BroadcastChannel(window.name)
