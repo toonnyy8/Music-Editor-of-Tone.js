@@ -91,9 +91,6 @@ export default {
   mounted() {
     this.switchControl = new MDCSwitch(document.querySelector(".mdc-switch"));
     this.slider = new MDCSlider(document.querySelector("#aaa"));
-    this.slider.listen("MDCSlider:change", () =>
-      console.log(`Value changed to ${slider.value}`)
-    );
 
     this.musicalNotation[0] = new Uint16Array(new ArrayBuffer(88 * 2));
     for (let i = 0; i < this.musicalNotation.length; i++) {
