@@ -73,7 +73,7 @@ export default {
 
         this.drawOscillator();
       };
-
+      this.drawOscillator();
       this.canvas.onmousedown = event => {
         this.partialsMouseMove = true;
 
