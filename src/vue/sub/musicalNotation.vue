@@ -29,10 +29,17 @@ export default {
     return {
       channel: new BroadcastChannel(window.name),
       canvas: document.createElement("canvas"),
-      scale: {}
+      notationLong: 80,
+      musicalNotation: new Array(80)
     };
   },
   mounted() {
+    this.musicalNotation[0] = new Uint16Array(new ArrayBuffer(88 * 2));
+    for (let i = 0; i < this.musicalNotation.length; i++) {
+      this.musicalNotation[i] = new Uint16Array(new ArrayBuffer(88 * 2));
+    }
+    console.log(this.musicalNotation);
+
     if (this.canvas.getContext) {
       this.canvas.width = 1920;
       this.canvas.height = 540;
