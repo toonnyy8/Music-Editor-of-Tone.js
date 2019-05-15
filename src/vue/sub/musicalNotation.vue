@@ -138,6 +138,19 @@ export default {
       ctx.fillText("C2", 10, 405);
       ctx.fillText("C2", 10, 465);
       ctx.fillText("C2", 10, 525);
+
+      let lingrad = ctx.createLinearGradient(0, 0, 0, 150);
+      lingrad.addColorStop(0, "#ff5555");
+      lingrad.addColorStop(1, "#884b4b");
+      ctx.fillStyle = lingrad;
+
+      ctx.save();
+      ctx.rotate(-Math.PI / 2);
+      ctx.translate(-100, 120);
+      ctx.fillRect(0, 0, 30, 150);
+      ctx.restore();
+
+      //ctx.rotate(-Math.PI / 2);
     }
   }
 };
