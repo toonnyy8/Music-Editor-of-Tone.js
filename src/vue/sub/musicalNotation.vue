@@ -114,6 +114,12 @@ export default {
       this.canvas.style = "width:100%";
       document.querySelector("#MusicalNotation").appendChild(this.canvas);
 
+      this.canvas.onmousemove = event => {
+        if (this.partialsMouseMove) {
+          setPartials(event);
+        }
+      };
+
       this.drawScale();
     }
   },
@@ -124,33 +130,49 @@ export default {
       ctx.fillRect(0, 0, 1920, 540);
 
       ctx.fillStyle = "rgb(200,200,200)";
-      ctx.fillRect(0, 0, 95, 540);
-      ctx.font = "30pt Source Code Pro";
+      ctx.fillRect(0, 0, 90, 540);
+
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.font = "40px Source Code Pro";
 
       ctx.fillStyle = "rgb(50,50,50)";
 
-      ctx.fillText("C#1", 10, 45);
-      ctx.fillText("C2", 10, 105);
-      ctx.fillText("C2", 10, 165);
-      ctx.fillText("C2", 10, 225);
-      ctx.fillText("C2", 10, 285);
-      ctx.fillText("C2", 10, 345);
-      ctx.fillText("C2", 10, 405);
-      ctx.fillText("C2", 10, 465);
-      ctx.fillText("C2", 10, 525);
+      for (let i = 0; i < 11; i++) {
+        ctx.fillText("C#2", 45, ((540 - 17.5) / 11) * i + 35);
+      }
 
-      let lingrad = ctx.createLinearGradient(0, 0, 0, 150);
-      lingrad.addColorStop(0, "#ff5555");
-      lingrad.addColorStop(1, "#884b4b");
-      ctx.fillStyle = lingrad;
+      ctx.fillStyle = "rgb(200,75,75)";
 
-      ctx.save();
-      ctx.rotate(-Math.PI / 2);
-      ctx.translate(-100, 120);
-      ctx.fillRect(0, 0, 30, 150);
-      ctx.restore();
+      for (let i = 0; i < 16; i++) {
+        for (let j = 0; j < 11; j++) {
+          if (true) {
+            ctx.fillRect(103.75 + i * 113.75, 17.5 + j * 47.5, 100, 30);
+          }
+        }
+      }
 
-      //ctx.rotate(-Math.PI / 2);
+      ctx.fillStyle = "rgb(255,255,255)";
+      ctx.font = "30px Source Code Pro";
+
+      for (let i = 0; i < 16; i++) {
+        for (let j = 0; j < 11; j++) {
+          if (true) {
+            ctx.fillText("9999", 153.75 + i * 113.75, 32.5 + j * 47.5);
+            //ctx.fillRect(103.75 + i * 113.75, 17.5 + j * 47.5, 100, 30);
+          }
+        }
+      }
+    },
+    ddd(event) {
+      let ctx = this.canvas.getContext("2d");
+      ctx.fillStyle = "rgb(75,75,75)";
+      ctx.fillRect(0, 0, 1920, 540);
+
+      ctx.fillStyle = "rgb(200,200,200)";
+      ctx.fillRect(0, 0, 90, 540);
+
+      ctx.fillRect(103.75 + i * 113.75, 17.5 + j * 47.5, 100, 30);
     }
   }
 };
