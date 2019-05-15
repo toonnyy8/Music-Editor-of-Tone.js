@@ -92,6 +92,16 @@ export default {
     this.switchControl = new MDCSwitch(document.querySelector(".mdc-switch"));
     this.slider = new MDCSlider(document.querySelector("#aaa"));
 
+    this.slider.disabled = true;
+
+    this.switchControl.listen("change", () => {
+      this.slider.disabled = !this.switchControl.checked;
+    });
+    this.slider.listen("MDCSlider:change", () => {
+      this.notationLong = this.slider.value * 16;
+      this.musicalNotation.length = this.notationLong;
+    });
+
     this.musicalNotation[0] = new Uint16Array(new ArrayBuffer(88 * 2));
     for (let i = 0; i < this.musicalNotation.length; i++) {
       this.musicalNotation[i] = new Uint16Array(new ArrayBuffer(88 * 2));
