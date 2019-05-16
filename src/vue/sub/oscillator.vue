@@ -38,7 +38,7 @@ export default {
       channel: new BroadcastChannel(window.name),
       canvas: document.createElement("canvas"),
       Partials: partials,
-      partialsMouseMove: false
+      mouseDown: false
     };
   },
   mounted() {
@@ -75,7 +75,7 @@ export default {
       };
       this.drawOscillator();
       this.canvas.onmousedown = event => {
-        this.partialsMouseMove = true;
+        this.mouseDown = true;
 
         setPartials(event);
 
@@ -94,7 +94,7 @@ export default {
         });
       };
       this.canvas.onmouseup = event => {
-        this.partialsMouseMove = false;
+        this.mouseDown = false;
         this.setSynth({
           oscillator: {
             type: "custom",
@@ -110,7 +110,7 @@ export default {
         });
       };
       this.canvas.onmousemove = event => {
-        if (this.partialsMouseMove) {
+        if (this.mouseDown) {
           setPartials(event);
         }
       };
@@ -118,7 +118,7 @@ export default {
       this.canvas.addEventListener(
         "touchstart",
         event => {
-          this.partialsMouseMove = true;
+          this.mouseDown = true;
           event.preventDefault();
 
           setPartials({
@@ -150,7 +150,7 @@ export default {
       this.canvas.addEventListener(
         "touchend",
         event => {
-          this.partialsMouseMove = false;
+          this.mouseDown = false;
           this.setSynth({
             oscillator: {
               type: "custom",
@@ -170,7 +170,7 @@ export default {
       this.canvas.addEventListener(
         "touchmove",
         event => {
-          if (this.partialsMouseMove) {
+          if (this.mouseDown) {
             setPartials({
               offsetX:
                 event.touches[0].pageX -

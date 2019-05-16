@@ -17,7 +17,8 @@
                 <div class="mdc-layout-grid">
                   <div class="mdc-layout-grid__inner">
                     <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2">
-                      <div class="mdc-switch">
+                      <label for="basic-switch">Lock :</label>
+                      <div id="PackLock" class="mdc-switch">
                         <div class="mdc-switch__track"></div>
                         <div class="mdc-switch__thumb-underlay">
                           <div class="mdc-switch__thumb">
@@ -30,7 +31,6 @@
                           </div>
                         </div>
                       </div>
-                      <label for="basic-switch">_Lock/Unlock</label>
                     </div>
                     <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8">
                       <div
@@ -63,19 +63,46 @@
                   </div>
                 </div>
                 <div align="center" id="MusicalNotation"></div>
+
                 <div class="mdc-layout-grid">
                   <div class="mdc-layout-grid__inner">
-                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2"></div>
-                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8">
-                      <h3>Duration : {{duration.value}}</h3>
+                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+                      <h3>Octave : {{octave.value}}</h3>
+                      <div
+                        id="Octave"
+                        class="mdc-slider"
+                        tabindex="0"
+                        role="slider"
+                        aria-valuemin="0"
+                        aria-valuemax="9"
+                        aria-valuenow="3"
+                        data-step="1"
+                        aria-label="Select Value"
+                      >
+                        <div class="mdc-slider__track-container">
+                          <div class="mdc-slider__track"></div>
+                        </div>
+                        <div class="mdc-slider__thumb-container">
+                          <div class="mdc-slider__pin">
+                            <span class="mdc-slider__pin-value-marker"></span>
+                          </div>
+                          <svg class="mdc-slider__thumb" width="21" height="21">
+                            <circle cx="10.5" cy="10.5" r="7.875"></circle>
+                          </svg>
+                          <div class="mdc-slider__focus-ring"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
+                      <h3>Now Page : {{nowPage.value}}</h3>
 
                       <div
-                        id="Duration"
+                        id="NowPage"
                         class="mdc-slider"
                         tabindex="0"
                         role="slider"
                         aria-valuemin="1"
-                        aria-valuemax="8192"
+                        aria-valuemax="5"
                         aria-valuenow="1"
                         data-step="1"
                         aria-label="Select Value"
@@ -94,7 +121,70 @@
                         </div>
                       </div>
                     </div>
-                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2"></div>
+                  </div>
+                </div>
+                <div class="mdc-layout-grid">
+                  <div class="mdc-layout-grid__inner">
+                    <div align="center" class="mdc-layout-grid__cell mdc-layout-grid__cell--span-3">
+                      <br>
+                      <br>
+                      <button
+                        class="mdc-button"
+                        v-on:click="clearPage();drawScale()"
+                      >Clear This Page</button>
+                    </div>
+                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8">
+                      <h3>Duration : {{duration.value+duration100.value}}</h3>
+                      <div
+                        id="Duration"
+                        class="mdc-slider"
+                        tabindex="0"
+                        role="slider"
+                        aria-valuemin="1"
+                        aria-valuemax="99"
+                        aria-valuenow="1"
+                        data-step="1"
+                        aria-label="Select Value"
+                      >
+                        <div class="mdc-slider__track-container">
+                          <div class="mdc-slider__track"></div>
+                        </div>
+                        <div class="mdc-slider__thumb-container">
+                          <div class="mdc-slider__pin">
+                            <span class="mdc-slider__pin-value-marker"></span>
+                          </div>
+                          <svg class="mdc-slider__thumb" width="21" height="21">
+                            <circle cx="10.5" cy="10.5" r="7.875"></circle>
+                          </svg>
+                          <div class="mdc-slider__focus-ring"></div>
+                        </div>
+                      </div>
+                      <div
+                        id="Duration100"
+                        class="mdc-slider"
+                        tabindex="0"
+                        role="slider"
+                        aria-valuemin="0"
+                        aria-valuemax="9900"
+                        aria-valuenow="0"
+                        data-step="100"
+                        aria-label="Select Value"
+                      >
+                        <div class="mdc-slider__track-container">
+                          <div class="mdc-slider__track"></div>
+                        </div>
+                        <div class="mdc-slider__thumb-container">
+                          <div class="mdc-slider__pin">
+                            <span class="mdc-slider__pin-value-marker"></span>
+                          </div>
+                          <svg class="mdc-slider__thumb" width="21" height="21">
+                            <circle cx="10.5" cy="10.5" r="7.875"></circle>
+                          </svg>
+                          <div class="mdc-slider__focus-ring"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-1"></div>
                   </div>
                 </div>
               </div>
@@ -117,40 +207,79 @@ export default {
       channel: new BroadcastChannel(window.name),
       canvas: document.createElement("canvas"),
       musicalNotation: new Array(80),
-      switchControl: null,
+      packLock: { checked: false },
       page: { value: 5 },
-      duration: { value: 1 }
+      duration: { value: 1 },
+      duration100: { value: 1 },
+      nowPage: { value: 1 },
+      lastDrawPitch: { i: null, j: null },
+      mouseDown: false,
+      octave: { value: 1 }
     };
   },
   mounted() {
-    this.switchControl = new MDCSwitch(document.querySelector(".mdc-switch"));
+    this.packLock = new MDCSwitch(document.querySelector("#PackLock"));
     this.page = new MDCSlider(document.querySelector("#Page"));
     this.duration = new MDCSlider(document.querySelector("#Duration"));
+    this.duration100 = new MDCSlider(document.querySelector("#Duration100"));
+    this.nowPage = new MDCSlider(document.querySelector("#NowPage"));
+    this.octave = new MDCSlider(document.querySelector("#Octave"));
 
     this.page.disabled = true;
 
-    this.switchControl.listen("change", () => {
-      this.page.disabled = !this.switchControl.checked;
+    this.packLock.listen("change", () => {
+      this.page.disabled = !this.packLock.checked;
     });
     this.page.listen("MDCSlider:change", () => {
+      let oldLength = this.musicalNotation.length;
       this.musicalNotation.length = this.page.value * 16;
+      for (let i = oldLength; i < this.musicalNotation.length; i++) {
+        this.musicalNotation[i] = new Uint16Array(new ArrayBuffer(120 * 2));
+      }
+
+      if (this.nowPage.value > this.page.value) {
+        this.nowPage.value = this.page.value;
+      }
+      this.nowPage.max = this.page.value;
     });
 
-    this.musicalNotation[0] = new Uint16Array(new ArrayBuffer(88 * 2));
+    this.nowPage.listen("MDCSlider:input", () => {
+      this.drawScale();
+    });
+    this.octave.listen("MDCSlider:input", () => {
+      this.drawScale();
+    });
+
     for (let i = 0; i < this.musicalNotation.length; i++) {
-      this.musicalNotation[i] = new Uint16Array(new ArrayBuffer(88 * 2));
+      this.musicalNotation[i] = new Uint16Array(new ArrayBuffer(120 * 2));
     }
-    console.log(this.musicalNotation);
 
     if (this.canvas.getContext) {
       this.canvas.width = 1920;
-      this.canvas.height = 540;
+      this.canvas.height = 590;
       this.canvas.style = "width:100%";
       document.querySelector("#MusicalNotation").appendChild(this.canvas);
 
-      this.canvas.onmousemove = event => {
+      this.canvas.onmousedown = event => {
+        this.mouseDown = true;
+        this.setPitch(event);
         this.drawScale();
-        this.draxSelectionBox(event);
+      };
+
+      this.canvas.onmousemove = event => {
+        if (this.mouseDown) {
+          this.setPitch(event);
+        }
+        this.drawScale();
+        this.drawSelectionBox(event);
+      };
+
+      this.canvas.onmouseup = event => {
+        this.mouseDown = false;
+        this.lastDrawPitch.i = null;
+        this.lastDrawPitch.j = null;
+
+        //console.log(this.musicalNotation[0]);
       };
 
       this.drawScale();
@@ -158,12 +287,26 @@ export default {
   },
   methods: {
     drawScale() {
+      let musicalAlphabet = [
+        "C",
+        "C#",
+        "D",
+        "D#",
+        "E",
+        "F",
+        "F#",
+        "G",
+        "G#",
+        "A",
+        "A#",
+        "B"
+      ];
       let ctx = this.canvas.getContext("2d");
       ctx.fillStyle = "rgb(75,75,75)";
-      ctx.fillRect(0, 0, 1920, 540);
+      ctx.fillRect(0, 0, 1920, 590);
 
       ctx.fillStyle = "rgb(200,200,200)";
-      ctx.fillRect(0, 0, 90, 540);
+      ctx.fillRect(0, 0, 90, 590);
 
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
@@ -171,16 +314,24 @@ export default {
 
       ctx.fillStyle = "rgb(50,50,50)";
 
-      for (let i = 0; i < 11; i++) {
-        ctx.fillText("C#2", 45, ((540 - 17.5) / 11) * i + 35);
+      for (let j = 0; j < 12; j++) {
+        ctx.fillText(
+          `${musicalAlphabet[j]}${this.octave.value}`,
+          45,
+          ((590 - 17.5) / 12) * (11 - j) + 35
+        );
       }
 
       ctx.fillStyle = "rgb(200,75,75)";
 
       for (let i = 0; i < 16; i++) {
-        for (let j = 0; j < 11; j++) {
-          if (true) {
-            ctx.fillRect(103.75 + i * 113.75, 17.5 + j * 47.5, 100, 30);
+        for (let j = 0; j < 12; j++) {
+          if (
+            this.musicalNotation[(this.nowPage.value - 1) * 16 + i][
+              this.octave.value * 12 + j
+            ]
+          ) {
+            ctx.fillRect(103.75 + i * 113.75, 17.5 + (11 - j) * 47.5, 100, 30);
           }
         }
       }
@@ -189,14 +340,26 @@ export default {
       ctx.font = "30px Source Code Pro";
 
       for (let i = 0; i < 16; i++) {
-        for (let j = 0; j < 11; j++) {
-          if (true) {
-            ctx.fillText("9999", 153.75 + i * 113.75, 32.5 + j * 47.5);
+        for (let j = 0; j < 12; j++) {
+          if (
+            this.musicalNotation[(this.nowPage.value - 1) * 16 + i][
+              this.octave.value * 12 + j
+            ]
+          ) {
+            ctx.fillText(
+              `${
+                this.musicalNotation[(this.nowPage.value - 1) * 16 + i][
+                  this.octave.value * 12 + j
+                ]
+              }`,
+              153.75 + i * 113.75,
+              34 + (11 - j) * 47.5
+            );
           }
         }
       }
     },
-    draxSelectionBox(event) {
+    drawSelectionBox(event) {
       let ctx = this.canvas.getContext("2d");
 
       let x = event.offsetX;
@@ -212,15 +375,57 @@ export default {
           ? Math.floor((16 * (x - temp)) / (offsetWidth - temp))
           : -1;
 
-      let j = Math.floor((11 * y) / offsetHeight);
+      let j = Math.floor((12 * y) / offsetHeight);
 
-      if (i >= 0) {
+      if (i >= 0 && i < 16 && j >= 0 && j < 12) {
         ctx.lineWidth = 5;
         ctx.strokeStyle = "rgb(150,150,255)";
         ctx.strokeRect(103.75 + i * 113.75, 17.5 + j * 47.5, 100, 30);
       }
+    },
+    setPitch(event) {
+      let ctx = this.canvas.getContext("2d");
 
-      //console.log(i, j);
+      let x = event.offsetX;
+      let y = event.offsetY;
+
+      let offsetWidth = this.canvas.offsetWidth;
+      let offsetHeight = this.canvas.offsetHeight;
+
+      let temp = 90 * (offsetWidth / 1920);
+
+      let i =
+        (x - temp) / (offsetWidth - temp) > 0
+          ? Math.floor((16 * (x - temp)) / (offsetWidth - temp))
+          : -1;
+
+      let j = 11 - Math.floor((12 * y) / offsetHeight);
+      if (this.lastDrawPitch.i != i || this.lastDrawPitch.j != j) {
+        if (i >= 0 && i < 16 && j >= 0 && j < 12) {
+          if (
+            !this.musicalNotation[(this.nowPage.value - 1) * 16 + i][
+              this.octave.value * 12 + j
+            ]
+          ) {
+            this.musicalNotation[(this.nowPage.value - 1) * 16 + i][
+              this.octave.value * 12 + j
+            ] = this.duration.value + this.duration100.value;
+          } else {
+            this.musicalNotation[(this.nowPage.value - 1) * 16 + i][
+              this.octave.value * 12 + j
+            ] = 0;
+          }
+        }
+      }
+      this.lastDrawPitch.i = i;
+      this.lastDrawPitch.j = j;
+    },
+    clearPage() {
+      for (let i = 0; i < 16; i++) {
+        for (let j = 0; j < 120; j++) {
+          this.musicalNotation[(this.nowPage.value - 1) * 16 + i][j] = 0;
+        }
+      }
     }
   }
 };
