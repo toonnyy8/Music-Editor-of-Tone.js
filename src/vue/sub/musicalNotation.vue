@@ -282,6 +282,66 @@ export default {
         //console.log(this.musicalNotation[0]);
       };
 
+      this.canvas.addEventListener(
+        "touchstart",
+        event => {
+          this.mouseDown = true;
+          event.preventDefault();
+
+          this.setPitch({
+            offsetX:
+              event.touches[0].pageX -
+              (this.canvas.getBoundingClientRect().left -
+                this.canvas.scrollLeft),
+            offsetY:
+              event.touches[0].pageY -
+              (this.canvas.parentElement.parentElement.parentElement.offsetTop +
+                this.canvas.offsetTop)
+          });
+          this.drawScale();
+        },
+        false
+      );
+      this.canvas.addEventListener(
+        "touchmove",
+        event => {
+          if (this.mouseDown) {
+            this.setPitch({
+              offsetX:
+                event.touches[0].pageX -
+                (this.canvas.getBoundingClientRect().left -
+                  this.canvas.scrollLeft),
+              offsetY:
+                event.touches[0].pageY -
+                (this.canvas.parentElement.parentElement.parentElement
+                  .offsetTop +
+                  this.canvas.offsetTop)
+            });
+          }
+          this.drawScale();
+          this.drawSelectionBox({
+            offsetX:
+              event.touches[0].pageX -
+              (this.canvas.getBoundingClientRect().left -
+                this.canvas.scrollLeft),
+            offsetY:
+              event.touches[0].pageY -
+              (this.canvas.parentElement.parentElement.parentElement.offsetTop +
+                this.canvas.offsetTop)
+          });
+        },
+        false
+      );
+      this.canvas.addEventListener(
+        "touchend",
+        event => {
+          this.mouseDown = false;
+          this.lastDrawPitch.i = null;
+          this.lastDrawPitch.j = null;
+        },
+        false
+      );
+
       this.drawScale();
     }
   },

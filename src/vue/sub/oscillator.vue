@@ -127,8 +127,9 @@ export default {
               (this.canvas.getBoundingClientRect().left -
                 this.canvas.scrollLeft),
             offsetY:
-              this.canvas.offsetHeight -
-              Math.abs(event.touches[0].pageY - document.body.scrollHeight)
+              event.touches[0].pageY -
+              (this.canvas.parentElement.parentElement.parentElement.offsetTop +
+                this.canvas.offsetTop)
           });
 
           this.setSynth({
@@ -177,8 +178,10 @@ export default {
                 (this.canvas.getBoundingClientRect().left -
                   this.canvas.scrollLeft),
               offsetY:
-                this.canvas.offsetHeight -
-                Math.abs(event.touches[0].pageY - document.body.scrollHeight)
+                event.touches[0].pageY -
+                (this.canvas.parentElement.parentElement.parentElement
+                  .offsetTop +
+                  this.canvas.offsetTop)
             });
           }
         },
