@@ -239,6 +239,7 @@ export default {
 
       if (this.nowPage.value > this.page.value) {
         this.nowPage.value = this.page.value;
+        this.drawScale();
       }
       this.nowPage.max = this.page.value;
     });
