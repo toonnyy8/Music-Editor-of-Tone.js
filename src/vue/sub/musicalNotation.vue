@@ -264,9 +264,6 @@ export default {
 
       this.canvas.onmousedown = event => {
         if (event.button == 0) {
-          this.checkDuration.i = null;
-          this.checkDuration.j = null;
-
           this.mouseDown = true;
           this.setPitch(event);
           this.drawScale();
