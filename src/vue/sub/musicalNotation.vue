@@ -214,7 +214,8 @@ export default {
       nowPage: { value: 1 },
       lastDrawPitch: { i: null, j: null },
       mouseDown: false,
-      octave: { value: 1 }
+      octave: { value: 1 },
+      checkDuration: { i: null, j: null }
     };
   },
   mounted() {
@@ -262,9 +263,19 @@ export default {
       document.querySelector("#MusicalNotation").appendChild(this.canvas);
 
       this.canvas.onmousedown = event => {
-        this.mouseDown = true;
-        this.setPitch(event);
-        this.drawScale();
+        if (event.button == 0) {
+          this.checkDuration.i = null;
+          this.checkDuration.j = null;
+
+          this.mouseDown = true;
+          this.setPitch(event);
+          this.drawScale();
+          this.drawSelectionBox(event);
+        } else if (event.button == 2) {
+          this.setCheckDuration(event);
+          this.drawScale();
+          this.drawSelectionBox(event);
+        }
       };
 
       this.canvas.onmousemove = event => {
@@ -283,30 +294,75 @@ export default {
         //console.log(this.musicalNotation[0]);
       };
 
+      this.canvas.oncontextmenu = event => {
+        return false;
+      };
+
       this.canvas.addEventListener(
         "touchstart",
         event => {
-          this.mouseDown = true;
-          event.preventDefault();
+          setTimeout(() => {
+            if (this.mouseDown == 1) {
+              this.mouseDown = 2;
 
-          this.setPitch({
-            offsetX:
-              event.touches[0].pageX -
-              (this.canvas.getBoundingClientRect().left -
-                this.canvas.scrollLeft),
-            offsetY:
-              event.touches[0].pageY -
-              (this.canvas.parentElement.parentElement.parentElement.offsetTop +
-                this.canvas.offsetTop)
-          });
-          this.drawScale();
+              this.setPitch({
+                offsetX:
+                  event.touches[0].pageX -
+                  (this.canvas.getBoundingClientRect().left -
+                    this.canvas.scrollLeft),
+                offsetY:
+                  event.touches[0].pageY -
+                  (this.canvas.parentElement.parentElement.parentElement
+                    .offsetTop +
+                    this.canvas.offsetTop)
+              });
+              this.drawScale();
+              this.drawSelectionBox({
+                offsetX:
+                  event.touches[0].pageX -
+                  (this.canvas.getBoundingClientRect().left -
+                    this.canvas.scrollLeft),
+                offsetY:
+                  event.touches[0].pageY -
+                  (this.canvas.parentElement.parentElement.parentElement
+                    .offsetTop +
+                    this.canvas.offsetTop)
+              });
+            } else {
+              this.setCheckDuration({
+                offsetX:
+                  event.touches[0].pageX -
+                  (this.canvas.getBoundingClientRect().left -
+                    this.canvas.scrollLeft),
+                offsetY:
+                  event.touches[0].pageY -
+                  (this.canvas.parentElement.parentElement.parentElement
+                    .offsetTop +
+                    this.canvas.offsetTop)
+              });
+              this.drawScale();
+              this.drawSelectionBox({
+                offsetX:
+                  event.touches[0].pageX -
+                  (this.canvas.getBoundingClientRect().left -
+                    this.canvas.scrollLeft),
+                offsetY:
+                  event.touches[0].pageY -
+                  (this.canvas.parentElement.parentElement.parentElement
+                    .offsetTop +
+                    this.canvas.offsetTop)
+              });
+            }
+          }, 200);
+          this.mouseDown = 1;
+          event.preventDefault();
         },
         false
       );
       this.canvas.addEventListener(
         "touchmove",
         event => {
-          if (this.mouseDown) {
+          if (this.mouseDown == 2) {
             this.setPitch({
               offsetX:
                 event.touches[0].pageX -
@@ -366,25 +422,7 @@ export default {
       ctx.fillStyle = "rgb(75,75,75)";
       ctx.fillRect(0, 0, 1920, 590);
 
-      ctx.fillStyle = "rgb(200,200,200)";
-      ctx.fillRect(0, 0, 90, 590);
-
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.font = "40px Source Code Pro";
-
-      ctx.fillStyle = "rgb(50,50,50)";
-
-      for (let j = 0; j < 12; j++) {
-        ctx.fillText(
-          `${musicalAlphabet[j]}${this.octave.value}`,
-          45,
-          ((590 - 17.5) / 12) * (11 - j) + 35
-        );
-      }
-
       ctx.fillStyle = "rgb(200,75,75)";
-
       for (let i = 0; i < 16; i++) {
         for (let j = 0; j < 12; j++) {
           if (
@@ -399,7 +437,6 @@ export default {
 
       ctx.fillStyle = "rgb(255,255,255)";
       ctx.font = "30px Source Code Pro";
-
       for (let i = 0; i < 16; i++) {
         for (let j = 0; j < 12; j++) {
           if (
@@ -418,6 +455,43 @@ export default {
             );
           }
         }
+      }
+
+      if (this.checkDuration.i != null && this.checkDuration.j != null) {
+        if (this.musicalNotation[this.checkDuration.i][this.checkDuration.j]) {
+          ctx.lineWidth = 20;
+          ctx.strokeStyle = "rgb(150,255,150,0.3)";
+          ctx.strokeRect(
+            108.75 +
+              (this.checkDuration.i - (this.nowPage.value - 1) * 16) * 113.75,
+            17.5 +
+              (11 - (this.checkDuration.j - this.octave.value * 12)) * 47.5,
+            90 +
+              (this.musicalNotation[this.checkDuration.i][
+                this.checkDuration.j
+              ] -
+                1) *
+                113.75,
+            30
+          );
+        }
+      }
+
+      ctx.fillStyle = "rgb(200,200,200)";
+      ctx.fillRect(0, 0, 95, 590);
+
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.font = "40px Source Code Pro";
+
+      ctx.fillStyle = "rgb(50,50,50)";
+
+      for (let j = 0; j < 12; j++) {
+        ctx.fillText(
+          `${musicalAlphabet[j]}${this.octave.value}`,
+          47.5,
+          ((590 - 17.5) / 12) * (11 - j) + 35
+        );
       }
     },
     drawSelectionBox(event) {
@@ -438,15 +512,17 @@ export default {
 
       let j = Math.floor((12 * y) / offsetHeight);
 
-      if (i >= 0 && i < 16 && j >= 0 && j < 12) {
-        ctx.lineWidth = 5;
-        ctx.strokeStyle = "rgb(150,150,255)";
-        ctx.strokeRect(103.75 + i * 113.75, 17.5 + j * 47.5, 100, 30);
+      if (j >= 0 && j < 12) {
+        ctx.fillStyle = "rgb(255,255,255,0.1)";
+        ctx.fillRect(0, 17.5 + j * 47.5, 1920, 30);
+        if (i >= 0 && i < 16) {
+          ctx.lineWidth = 5;
+          ctx.strokeStyle = "rgb(150,150,255)";
+          ctx.strokeRect(103.75 + i * 113.75, 17.5 + j * 47.5, 100, 30);
+        }
       }
     },
     setPitch(event) {
-      let ctx = this.canvas.getContext("2d");
-
       let x = event.offsetX;
       let y = event.offsetY;
 
@@ -480,6 +556,29 @@ export default {
       }
       this.lastDrawPitch.i = i;
       this.lastDrawPitch.j = j;
+    },
+    setCheckDuration(event) {
+      let x = event.offsetX;
+      let y = event.offsetY;
+
+      let offsetWidth = this.canvas.offsetWidth;
+      let offsetHeight = this.canvas.offsetHeight;
+
+      let temp = 90 * (offsetWidth / 1920);
+
+      let i =
+        (x - temp) / (offsetWidth - temp) > 0
+          ? Math.floor((16 * (x - temp)) / (offsetWidth - temp))
+          : -1;
+
+      let j = 11 - Math.floor((12 * y) / offsetHeight);
+      if (i >= 0 && i < 16 && j >= 0 && j < 12) {
+        this.checkDuration.i = (this.nowPage.value - 1) * 16 + i;
+        this.checkDuration.j = this.octave.value * 12 + j;
+      } else {
+        this.checkDuration.i = null;
+        this.checkDuration.j = null;
+      }
     },
     clearPage() {
       for (let i = 0; i < 16; i++) {
