@@ -327,14 +327,20 @@ export default {
     this.beatsPerMinute.listen("MDCSlider:change", () => {
       this.channel.postMessage({
         instruction: "Set Plugin Data",
-        beatsPerMinute: this.beatsPerMinute.value + this.beatsPerMinute100.value
+        beatsPerMinute:
+          this.beatsPerMinute.value + this.beatsPerMinute100.value > 0
+            ? this.beatsPerMinute.value + this.beatsPerMinute100.value
+            : 1
       });
     });
 
     this.beatsPerMinute100.listen("MDCSlider:change", () => {
       this.channel.postMessage({
         instruction: "Set Plugin Data",
-        beatsPerMinute: this.beatsPerMinute.value + this.beatsPerMinute100.value
+        beatsPerMinute:
+          this.beatsPerMinute.value + this.beatsPerMinute100.value > 0
+            ? this.beatsPerMinute.value + this.beatsPerMinute100.value
+            : 1
       });
     });
 
