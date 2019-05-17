@@ -202,6 +202,7 @@ import { MDCSwitch } from "@material/switch";
 import { MDCSlider } from "@material/slider";
 
 export default {
+  props: ["testSynth"],
   data() {
     return {
       channel: new BroadcastChannel(window.name),
@@ -265,6 +266,7 @@ export default {
       this.canvas.onmousedown = event => {
         if (event.button == 0) {
           this.mouseDown = true;
+          this.callTestSynth(event);
           this.setPitch(event);
           this.drawScale();
           this.drawSelectionBox(event);
@@ -277,6 +279,7 @@ export default {
 
       this.canvas.onmousemove = event => {
         if (this.mouseDown) {
+          this.callTestSynth(event);
           this.setPitch(event);
         }
         this.drawScale();
@@ -302,6 +305,17 @@ export default {
             if (this.mouseDown == 1) {
               this.mouseDown = 2;
 
+              this.callTestSynth({
+                offsetX:
+                  event.touches[0].pageX -
+                  (this.canvas.getBoundingClientRect().left -
+                    this.canvas.scrollLeft),
+                offsetY:
+                  event.touches[0].pageY -
+                  (this.canvas.parentElement.parentElement.parentElement
+                    .offsetTop +
+                    this.canvas.offsetTop)
+              });
               this.setPitch({
                 offsetX:
                   event.touches[0].pageX -
@@ -360,6 +374,17 @@ export default {
         "touchmove",
         event => {
           if (this.mouseDown == 2) {
+            this.callTestSynth({
+              offsetX:
+                event.touches[0].pageX -
+                (this.canvas.getBoundingClientRect().left -
+                  this.canvas.scrollLeft),
+              offsetY:
+                event.touches[0].pageY -
+                (this.canvas.parentElement.parentElement.parentElement
+                  .offsetTop +
+                  this.canvas.offsetTop)
+            });
             this.setPitch({
               offsetX:
                 event.touches[0].pageX -
@@ -575,6 +600,40 @@ export default {
       } else {
         this.checkDuration.i = null;
         this.checkDuration.j = null;
+      }
+    },
+    callTestSynth(event) {
+      let musicalAlphabet = [
+        "C",
+        "C#",
+        "D",
+        "D#",
+        "E",
+        "F",
+        "F#",
+        "G",
+        "G#",
+        "A",
+        "A#",
+        "B"
+      ];
+
+      let x = event.offsetX;
+      let y = event.offsetY;
+
+      let offsetWidth = this.canvas.offsetWidth;
+      let offsetHeight = this.canvas.offsetHeight;
+
+      let j = 11 - Math.floor((12 * y) / offsetHeight);
+      if (this.lastDrawPitch.j != j) {
+        if (x > 0 && x < 95 * (offsetWidth / 1920)) {
+          if (j >= 0 && j <= 11) {
+            this.testSynth(
+              `${musicalAlphabet[j]}${this.octave.value}`,
+              this.duration.value + this.duration100.value
+            );
+          }
+        }
       }
     },
     clearPage() {

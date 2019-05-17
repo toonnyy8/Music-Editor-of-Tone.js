@@ -2,7 +2,7 @@
   <div>
     <envelope :setSynth="setSynth"></envelope>
     <oscillator :setSynth="setSynth"></oscillator>
-    <musicalNotation></musicalNotation>
+    <musicalNotation :testSynth="testSynth"></musicalNotation>
   </div>
 </template>
 
@@ -156,6 +156,10 @@ export default {
         default:
           break;
       }
+    },
+    testSynth(pitch, duration) {
+      console.log(pitch, duration);
+      synth.triggerAttackRelease([pitch], duration * 0.02);
     }
   }
 };
