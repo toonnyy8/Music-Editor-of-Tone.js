@@ -52,6 +52,11 @@ export default (vm = {
         partials[i] = 0;
       }
 
+      let musicalNotation = new Array(80);
+      for (let i = 0; i < musicalNotation.length; i++) {
+        musicalNotation[i] = new Uint16Array(new ArrayBuffer(120 * 2));
+      }
+
       this.block.plugins.push({
         id: this.block.plugins.length,
         title: "C1",
@@ -69,7 +74,9 @@ export default (vm = {
             sustain: 0.2,
             release: 1.5,
             releaseCurve: "linear"
-          }
+          },
+          beatsPerMinute: 60,
+          musicalNotation: musicalNotation
         }
       });
     },

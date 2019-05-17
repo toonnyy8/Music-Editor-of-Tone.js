@@ -157,9 +157,9 @@ export default {
           break;
       }
     },
-    testSynth(pitch, duration) {
+    testSynth(pitch, duration, BPM) {
       console.log(pitch, duration);
-      synth.triggerAttackRelease([pitch], duration * 0.02);
+      synth.triggerAttackRelease([pitch], duration * (60 / BPM));
     }
   }
 };

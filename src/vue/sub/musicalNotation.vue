@@ -62,6 +62,63 @@
                     >Page : {{page.value}}</div>
                   </div>
                 </div>
+                <div class="mdc-layout-grid">
+                  <div class="mdc-layout-grid__inner">
+                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2"></div>
+                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8">
+                      <h3>BPM : {{(beatsPerMinute.value+beatsPerMinute100.value)>0?(beatsPerMinute.value+beatsPerMinute100.value):1}}</h3>
+                      <div
+                        id="BPM"
+                        class="mdc-slider"
+                        tabindex="0"
+                        role="slider"
+                        aria-valuemin="0"
+                        aria-valuemax="99"
+                        aria-valuenow="60"
+                        data-step="1"
+                        aria-label="Select Value"
+                      >
+                        <div class="mdc-slider__track-container">
+                          <div class="mdc-slider__track"></div>
+                        </div>
+                        <div class="mdc-slider__thumb-container">
+                          <div class="mdc-slider__pin">
+                            <span class="mdc-slider__pin-value-marker"></span>
+                          </div>
+                          <svg class="mdc-slider__thumb" width="21" height="21">
+                            <circle cx="10.5" cy="10.5" r="7.875"></circle>
+                          </svg>
+                          <div class="mdc-slider__focus-ring"></div>
+                        </div>
+                      </div>
+                      <div
+                        id="BPM100"
+                        class="mdc-slider"
+                        tabindex="0"
+                        role="slider"
+                        aria-valuemin="0"
+                        aria-valuemax="9900"
+                        aria-valuenow="0"
+                        data-step="100"
+                        aria-label="Select Value"
+                      >
+                        <div class="mdc-slider__track-container">
+                          <div class="mdc-slider__track"></div>
+                        </div>
+                        <div class="mdc-slider__thumb-container">
+                          <div class="mdc-slider__pin">
+                            <span class="mdc-slider__pin-value-marker"></span>
+                          </div>
+                          <svg class="mdc-slider__thumb" width="21" height="21">
+                            <circle cx="10.5" cy="10.5" r="7.875"></circle>
+                          </svg>
+                          <div class="mdc-slider__focus-ring"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2"></div>
+                  </div>
+                </div>
                 <div align="center" id="MusicalNotation"></div>
 
                 <div class="mdc-layout-grid">
@@ -134,13 +191,13 @@
                       >Clear This Page</button>
                     </div>
                     <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8">
-                      <h3>Duration : {{duration.value+duration100.value}}</h3>
+                      <h3>Duration : {{duration.value+duration100.value>0?duration.value+duration100.value:1}}</h3>
                       <div
                         id="Duration"
                         class="mdc-slider"
                         tabindex="0"
                         role="slider"
-                        aria-valuemin="1"
+                        aria-valuemin="0"
                         aria-valuemax="99"
                         aria-valuenow="1"
                         data-step="1"
@@ -204,10 +261,14 @@ import { MDCSlider } from "@material/slider";
 export default {
   props: ["testSynth"],
   data() {
+    let musicalNotation = new Array(80);
+    for (let i = 0; i < musicalNotation.length; i++) {
+      musicalNotation[i] = new Uint16Array(new ArrayBuffer(120 * 2));
+    }
     return {
       channel: new BroadcastChannel(window.name),
       canvas: document.createElement("canvas"),
-      musicalNotation: new Array(80),
+      musicalNotation: musicalNotation,
       packLock: { checked: false },
       page: { value: 5 },
       duration: { value: 1 },
@@ -216,16 +277,22 @@ export default {
       lastDrawPitch: { i: null, j: null },
       mouseDown: false,
       octave: { value: 1 },
-      checkDuration: { i: null, j: null }
+      checkDuration: { i: null, j: null },
+      beatsPerMinute: { value: 1 },
+      beatsPerMinute100: { value: 0 }
     };
   },
   mounted() {
+    this.channel.onmessage = this.channelOnmessage;
+
     this.packLock = new MDCSwitch(document.querySelector("#PackLock"));
     this.page = new MDCSlider(document.querySelector("#Page"));
     this.duration = new MDCSlider(document.querySelector("#Duration"));
     this.duration100 = new MDCSlider(document.querySelector("#Duration100"));
     this.nowPage = new MDCSlider(document.querySelector("#NowPage"));
     this.octave = new MDCSlider(document.querySelector("#Octave"));
+    this.beatsPerMinute = new MDCSlider(document.querySelector("#BPM"));
+    this.beatsPerMinute100 = new MDCSlider(document.querySelector("#BPM100"));
 
     this.page.disabled = true;
 
@@ -244,6 +311,10 @@ export default {
         this.drawScale();
       }
       this.nowPage.max = this.page.value;
+      this.channel.postMessage({
+        instruction: "Set Plugin Data",
+        musicalNotation: this.musicalNotation
+      });
     });
 
     this.nowPage.listen("MDCSlider:input", () => {
@@ -253,9 +324,19 @@ export default {
       this.drawScale();
     });
 
-    for (let i = 0; i < this.musicalNotation.length; i++) {
-      this.musicalNotation[i] = new Uint16Array(new ArrayBuffer(120 * 2));
-    }
+    this.beatsPerMinute.listen("MDCSlider:change", () => {
+      this.channel.postMessage({
+        instruction: "Set Plugin Data",
+        beatsPerMinute: this.beatsPerMinute.value + this.beatsPerMinute100.value
+      });
+    });
+
+    this.beatsPerMinute100.listen("MDCSlider:change", () => {
+      this.channel.postMessage({
+        instruction: "Set Plugin Data",
+        beatsPerMinute: this.beatsPerMinute.value + this.beatsPerMinute100.value
+      });
+    });
 
     if (this.canvas.getContext) {
       this.canvas.width = 1920;
@@ -270,6 +351,10 @@ export default {
           this.setPitch(event);
           this.drawScale();
           this.drawSelectionBox(event);
+          this.channel.postMessage({
+            instruction: "Set Plugin Data",
+            musicalNotation: this.musicalNotation
+          });
         } else if (event.button == 2) {
           this.setCheckDuration(event);
           this.drawScale();
@@ -290,7 +375,10 @@ export default {
         this.mouseDown = false;
         this.lastDrawPitch.i = null;
         this.lastDrawPitch.j = null;
-
+        this.channel.postMessage({
+          instruction: "Set Plugin Data",
+          musicalNotation: this.musicalNotation
+        });
         //console.log(this.musicalNotation[0]);
       };
 
@@ -301,68 +389,32 @@ export default {
       this.canvas.addEventListener(
         "touchstart",
         event => {
+          let tempEvent = {
+            offsetX:
+              event.touches[0].pageX -
+              (this.canvas.getBoundingClientRect().left -
+                this.canvas.scrollLeft),
+            offsetY:
+              event.touches[0].pageY -
+              (this.canvas.parentElement.parentElement.parentElement.offsetTop +
+                this.canvas.offsetTop)
+          };
           setTimeout(() => {
             if (this.mouseDown == 1) {
               this.mouseDown = 2;
 
-              this.callTestSynth({
-                offsetX:
-                  event.touches[0].pageX -
-                  (this.canvas.getBoundingClientRect().left -
-                    this.canvas.scrollLeft),
-                offsetY:
-                  event.touches[0].pageY -
-                  (this.canvas.parentElement.parentElement.parentElement
-                    .offsetTop +
-                    this.canvas.offsetTop)
-              });
-              this.setPitch({
-                offsetX:
-                  event.touches[0].pageX -
-                  (this.canvas.getBoundingClientRect().left -
-                    this.canvas.scrollLeft),
-                offsetY:
-                  event.touches[0].pageY -
-                  (this.canvas.parentElement.parentElement.parentElement
-                    .offsetTop +
-                    this.canvas.offsetTop)
-              });
+              this.callTestSynth(tempEvent);
+              this.setPitch(tempEvent);
               this.drawScale();
-              this.drawSelectionBox({
-                offsetX:
-                  event.touches[0].pageX -
-                  (this.canvas.getBoundingClientRect().left -
-                    this.canvas.scrollLeft),
-                offsetY:
-                  event.touches[0].pageY -
-                  (this.canvas.parentElement.parentElement.parentElement
-                    .offsetTop +
-                    this.canvas.offsetTop)
+              this.drawSelectionBox(tempEvent);
+              this.channel.postMessage({
+                instruction: "Set Plugin Data",
+                musicalNotation: this.musicalNotation
               });
             } else {
-              this.setCheckDuration({
-                offsetX:
-                  event.touches[0].pageX -
-                  (this.canvas.getBoundingClientRect().left -
-                    this.canvas.scrollLeft),
-                offsetY:
-                  event.touches[0].pageY -
-                  (this.canvas.parentElement.parentElement.parentElement
-                    .offsetTop +
-                    this.canvas.offsetTop)
-              });
+              this.setCheckDuration(tempEvent);
               this.drawScale();
-              this.drawSelectionBox({
-                offsetX:
-                  event.touches[0].pageX -
-                  (this.canvas.getBoundingClientRect().left -
-                    this.canvas.scrollLeft),
-                offsetY:
-                  event.touches[0].pageY -
-                  (this.canvas.parentElement.parentElement.parentElement
-                    .offsetTop +
-                    this.canvas.offsetTop)
-              });
+              this.drawSelectionBox(tempEvent);
             }
           }, 200);
           this.mouseDown = 1;
@@ -373,32 +425,7 @@ export default {
       this.canvas.addEventListener(
         "touchmove",
         event => {
-          if (this.mouseDown == 2) {
-            this.callTestSynth({
-              offsetX:
-                event.touches[0].pageX -
-                (this.canvas.getBoundingClientRect().left -
-                  this.canvas.scrollLeft),
-              offsetY:
-                event.touches[0].pageY -
-                (this.canvas.parentElement.parentElement.parentElement
-                  .offsetTop +
-                  this.canvas.offsetTop)
-            });
-            this.setPitch({
-              offsetX:
-                event.touches[0].pageX -
-                (this.canvas.getBoundingClientRect().left -
-                  this.canvas.scrollLeft),
-              offsetY:
-                event.touches[0].pageY -
-                (this.canvas.parentElement.parentElement.parentElement
-                  .offsetTop +
-                  this.canvas.offsetTop)
-            });
-          }
-          this.drawScale();
-          this.drawSelectionBox({
+          let tempEvent = {
             offsetX:
               event.touches[0].pageX -
               (this.canvas.getBoundingClientRect().left -
@@ -407,7 +434,13 @@ export default {
               event.touches[0].pageY -
               (this.canvas.parentElement.parentElement.parentElement.offsetTop +
                 this.canvas.offsetTop)
-          });
+          };
+          if (this.mouseDown == 2) {
+            this.callTestSynth(tempEvent);
+            this.setPitch(tempEvent);
+          }
+          this.drawScale();
+          this.drawSelectionBox(tempEvent);
         },
         false
       );
@@ -417,6 +450,10 @@ export default {
           this.mouseDown = false;
           this.lastDrawPitch.i = null;
           this.lastDrawPitch.j = null;
+          this.channel.postMessage({
+            instruction: "Set Plugin Data",
+            musicalNotation: this.musicalNotation
+          });
         },
         false
       );
@@ -425,6 +462,26 @@ export default {
     }
   },
   methods: {
+    channelOnmessage(event) {
+      switch (event.data.instruction) {
+        case "Init Data": {
+          console.log(event.data);
+          this.musicalNotation = event.data.musicalNotation;
+          this.beatsPerMinute.value = event.data.beatsPerMinute % 100;
+          this.beatsPerMinute100.value =
+            event.data.beatsPerMinute - (event.data.beatsPerMinute % 100);
+
+          this.page.value = Math.floor(this.musicalNotation.length / 16);
+          this.nowPage.max = this.page.value;
+
+          this.drawScale();
+
+          break;
+        }
+        default:
+          break;
+      }
+    },
     drawScale() {
       let musicalAlphabet = [
         "C",
@@ -568,7 +625,10 @@ export default {
           ) {
             this.musicalNotation[(this.nowPage.value - 1) * 16 + i][
               this.octave.value * 12 + j
-            ] = this.duration.value + this.duration100.value;
+            ] =
+              this.duration.value + this.duration100.value > 0
+                ? this.duration.value + this.duration100.value
+                : 1;
           } else {
             this.musicalNotation[(this.nowPage.value - 1) * 16 + i][
               this.octave.value * 12 + j
@@ -630,7 +690,12 @@ export default {
           if (j >= 0 && j <= 11) {
             this.testSynth(
               `${musicalAlphabet[j]}${this.octave.value}`,
-              this.duration.value + this.duration100.value
+              this.duration.value + this.duration100.value > 0
+                ? this.duration.value + this.duration100.value
+                : 1,
+              this.beatsPerMinute.value + this.beatsPerMinute100.value > 0
+                ? this.beatsPerMinute.value + this.beatsPerMinute100.value
+                : 1
             );
           }
         }

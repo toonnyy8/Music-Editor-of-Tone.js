@@ -78,7 +78,9 @@ export default (vm = {
               releaseCurve
             }
           }
-        }
+        },
+     * beatsPerMinute:60,
+     * musicalNotation[new Uint16Array(new ArrayBuffer(120 * 2))]
       }
      * ]
      *
@@ -104,7 +106,11 @@ export default (vm = {
           this.blocks[index[0]].plugins[index[1]].pluginChannel.postMessage({
             instruction: "Init Data",
             oscillator: this.blocks[index[0]].plugins[index[1]].data.oscillator,
-            envelope: this.blocks[index[0]].plugins[index[1]].data.envelope
+            envelope: this.blocks[index[0]].plugins[index[1]].data.envelope,
+            beatsPerMinute: this.blocks[index[0]].plugins[index[1]].data
+              .beatsPerMinute,
+            musicalNotation: this.blocks[index[0]].plugins[index[1]].data
+              .musicalNotation
           });
           break;
         }
@@ -189,6 +195,11 @@ export default (vm = {
             plugin.data.oscillator =
               event.data.oscillator || plugin.data.oscillator;
             plugin.data.envelope = event.data.envelope || plugin.data.envelope;
+            plugin.data.beatsPerMinute =
+              event.data.beatsPerMinute || plugin.data.beatsPerMinute;
+            plugin.data.musicalNotation =
+              event.data.musicalNotation || plugin.data.musicalNotation;
+            console.log(plugin.data.beatsPerMinute);
             break;
           }
           default:

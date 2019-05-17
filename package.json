@@ -25,6 +25,7 @@
     "@material/select": "^1.1.1",
     "@material/slider": "^1.1.0",
     "@material/switch": "^2.1.1",
+    "@material/textfield": "^2.1.1",
     "@types/material-components-web": "^0.43.1",
     "mousetrap": "^1.6.3",
     "parcel": "^1.12.3",
