@@ -705,6 +705,9 @@ export default {
         Math.round(Math.round(val * Math.pow(10, (precision || 0) + 1)) / 10) /
         Math.pow(10, precision || 0)
       );
+    },
+    envelopeLong() {
+      return this.Attack.value + this.Decay.value + this.Release.value;
     }
   }
 };

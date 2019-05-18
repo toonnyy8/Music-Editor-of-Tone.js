@@ -148,26 +148,47 @@ export default {
       }
     });
     Mousetrap.bind({
-      a: function() {
-        synth.triggerAttackRelease(["C" + frequency], 0.02);
+      a: () => {
+        synth.triggerAttackRelease(
+          ["C" + frequency],
+          this.$children[0].envelopeLong()
+        );
       },
-      s: function() {
-        synth.triggerAttackRelease(["D" + frequency], 0.02);
+      s: () => {
+        synth.triggerAttackRelease(
+          ["D" + frequency],
+          this.$children[0].envelopeLong()
+        );
       },
-      d: function() {
-        synth.triggerAttackRelease(["E" + frequency], 0.02);
+      d: () => {
+        synth.triggerAttackRelease(
+          ["E" + frequency],
+          this.$children[0].envelopeLong()
+        );
       },
-      f: function() {
-        synth.triggerAttackRelease(["F" + frequency], 0.02);
+      f: () => {
+        synth.triggerAttackRelease(
+          ["F" + frequency],
+          this.$children[0].envelopeLong()
+        );
       },
-      g: function() {
-        synth.triggerAttackRelease(["G" + frequency], 0.02);
+      g: () => {
+        synth.triggerAttackRelease(
+          ["G" + frequency],
+          this.$children[0].envelopeLong()
+        );
       },
-      h: function() {
-        synth.triggerAttackRelease(["A" + frequency], 0.02);
+      h: () => {
+        synth.triggerAttackRelease(
+          ["A" + frequency],
+          this.$children[0].envelopeLong()
+        );
       },
-      j: function() {
-        synth.triggerAttackRelease(["B" + frequency], 0.02);
+      j: () => {
+        synth.triggerAttackRelease(
+          ["B" + frequency],
+          this.$children[0].envelopeLong()
+        );
       }
     });
   },
@@ -211,7 +232,10 @@ export default {
     },
     testSynth(pitch, duration, BPM) {
       console.log(pitch, duration);
-      synth.triggerAttackRelease([pitch], duration * (60 / BPM));
+      synth.triggerAttackRelease(
+        [pitch],
+        duration * this.$children[0].envelopeLong()
+      );
     },
     playMusic(musicalNotation, BPM) {
       let musicalAlphabet = [
@@ -232,6 +256,8 @@ export default {
 
       let timeoutID;
 
+      let envelopeLong = this.$children[0].envelopeLong();
+
       let tick = () => {
         if (i >= musicalNotation.length - 1) {
           this.$children[2].callStopMusic();
@@ -241,7 +267,7 @@ export default {
           if (musicalNotation[i][j]) {
             synth.triggerAttackRelease(
               [`${musicalAlphabet[j % 12]}${Math.floor(j / 12)}`],
-              musicalNotation[i][j] * (60 / BPM)
+              musicalNotation[i][j] * envelopeLong
             );
           }
         }
