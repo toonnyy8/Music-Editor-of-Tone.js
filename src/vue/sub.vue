@@ -16,7 +16,7 @@
         <div v-if="more">
           <button
             class="mdc-fab"
-            v-on:click="moreMethods=0"
+            v-on:click="moreMethods=0;$children[0].initView()"
             v-bind:disabled="moreMethods==0"
             v-bind:style="moreMethods==0?'background-color:#5543a9;':'background-color:#7765f7;'"
             style="width:70px;height:70px;"
@@ -34,7 +34,7 @@
           <br>
           <button
             class="mdc-fab"
-            v-on:click="moreMethods=2"
+            v-on:click="moreMethods=2;$children[2].initView()"
             v-bind:disabled="moreMethods==2"
             v-bind:style="moreMethods==2?'background-color:#5543a9;':'background-color:#7765f7;'"
             style="width:70px;height:70px;"
@@ -91,6 +91,8 @@ export default {
     };
   },
   mounted() {
+    this.$children[0].initView();
+
     let globalChannel = new BroadcastChannel("globalChannel");
     window.document.title = window.name;
 
@@ -164,6 +166,7 @@ export default {
       }
     });
   },
+  updated() {},
   methods: {
     setSynth(synthObj) {
       synth.set({

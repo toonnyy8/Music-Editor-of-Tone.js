@@ -475,6 +475,22 @@ export default {
           break;
       }
     },
+    initView() {
+      setTimeout(() => {
+        this.packLock = new MDCSwitch(document.querySelector("#PackLock"));
+        this.page = new MDCSlider(document.querySelector("#Page"));
+        this.duration = new MDCSlider(document.querySelector("#Duration"));
+        this.duration100 = new MDCSlider(
+          document.querySelector("#Duration100")
+        );
+        this.nowPage = new MDCSlider(document.querySelector("#NowPage"));
+        this.octave = new MDCSlider(document.querySelector("#Octave"));
+        this.beatsPerMinute = new MDCSlider(document.querySelector("#BPM"));
+        this.beatsPerMinute100 = new MDCSlider(
+          document.querySelector("#BPM100")
+        );
+      }, 100);
+    },
     drawScale() {
       let musicalAlphabet = [
         "C",

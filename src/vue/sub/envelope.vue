@@ -230,13 +230,10 @@ export default {
   },
   mounted() {
     this.channel.onmessage = this.channelOnmessage;
-
     this.Attack = new MDCSlider(document.querySelector("#Attack"));
     this.Decay = new MDCSlider(document.querySelector("#Decay"));
     this.Sustain = new MDCSlider(document.querySelector("#Sustain"));
     this.Release = new MDCSlider(document.querySelector("#Release"));
-
-    const select = new MDCSelect(document.querySelector(".mdc-select"));
 
     if (this.canvas.getContext) {
       this.canvas.width = 1044;
@@ -439,7 +436,7 @@ export default {
     }
   },
   updated() {
-    console.log("hi");
+    //console.log("hi");
   },
   methods: {
     channelOnmessage(event) {
@@ -481,6 +478,14 @@ export default {
         default:
           break;
       }
+    },
+    initView() {
+      setTimeout(() => {
+        this.Attack = new MDCSlider(document.querySelector("#Attack"));
+        this.Decay = new MDCSlider(document.querySelector("#Decay"));
+        this.Sustain = new MDCSlider(document.querySelector("#Sustain"));
+        this.Release = new MDCSlider(document.querySelector("#Release"));
+      }, 100);
     },
     drawEnvelope() {
       let attack =
