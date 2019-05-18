@@ -275,6 +275,7 @@ export default {
             );
           }
         }
+        this.$children[2].setNowPlayTime(i);
         i += 1;
       };
 

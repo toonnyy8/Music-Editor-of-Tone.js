@@ -278,7 +278,8 @@ export default {
       checkDuration: { i: null, j: null },
       beatsPerMinute: { value: 1 },
       beatsPerMinute100: { value: 0 },
-      playID: null
+      playID: null,
+      nowPlayTime: null
     };
   },
   mounted() {
@@ -577,6 +578,14 @@ export default {
         }
       }
 
+      if (this.nowPlayTime != null) {
+        let i = this.nowPlayTime - (this.nowPage.value - 1) * 16;
+        if (i >= 0 && i < 16) {
+          ctx.fillStyle = "rgb(150,255,255,0.2)";
+          ctx.fillRect(103.75 + i * 113.75, 0, 100, 590);
+        }
+      }
+
       ctx.fillStyle = "rgb(200,200,200)";
       ctx.fillRect(0, 0, 95, 590);
 
@@ -749,6 +758,12 @@ export default {
     callStopMusic() {
       this.stopMusic(this.playID);
       this.playID = null;
+      this.nowPlayTime = null;
+      this.drawScale();
+    },
+    setNowPlayTime(i) {
+      this.nowPlayTime = i;
+      this.drawScale();
     }
   }
 };

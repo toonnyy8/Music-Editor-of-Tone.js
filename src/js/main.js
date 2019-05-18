@@ -5,6 +5,8 @@ import Vue from "vue"
 
 import main from "../vue/main.vue"
 import pluginBase from "../vue/pluginBase.vue"
+import pluginPluginLag from "../vue/pluginPluginLag.vue"
+import pluginBlockLag from "../vue/pluginBlockLag.vue"
 
 
 if (window.name.split(":")[0] == "SetPlugin") {
@@ -15,7 +17,14 @@ if (window.name.split(":")[0] == "SetPlugin") {
             new Vue(pluginBase).$mount('#main')
             break;
         }
-
+        case "P lag": {
+            new Vue(pluginPluginLag).$mount('#main')
+            break;
+        }
+        case "B lag": {
+            new Vue(pluginBlockLag).$mount('#main')
+            break;
+        }
         default:
             break;
     }

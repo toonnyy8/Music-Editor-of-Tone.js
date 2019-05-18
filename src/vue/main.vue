@@ -196,14 +196,39 @@ export default {
             break;
           }
           case "Set Plugin Data": {
-            plugin.data.oscillator =
-              event.data.oscillator || plugin.data.oscillator;
-            plugin.data.envelope = event.data.envelope || plugin.data.envelope;
-            plugin.data.beatsPerMinute =
-              event.data.beatsPerMinute || plugin.data.beatsPerMinute;
-            plugin.data.musicalNotation =
-              event.data.musicalNotation || plugin.data.musicalNotation;
-            console.log(plugin.data.beatsPerMinute);
+            switch (plugin.pluginType) {
+              case "base": {
+                plugin.data.oscillator =
+                  event.data.oscillator || plugin.data.oscillator;
+                plugin.data.envelope =
+                  event.data.envelope || plugin.data.envelope;
+                plugin.data.beatsPerMinute =
+                  event.data.beatsPerMinute || plugin.data.beatsPerMinute;
+                plugin.data.musicalNotation =
+                  event.data.musicalNotation || plugin.data.musicalNotation;
+                break;
+              }
+              case "filter": {
+                break;
+              }
+              case "P lag": {
+                plugin.data.beatsPerMinute =
+                  event.data.beatsPerMinute || plugin.data.beatsPerMinute;
+                plugin.data.delayedBeats =
+                  event.data.delayedBeats || plugin.data.delayedBeats;
+                break;
+              }
+              case "B lag": {
+                plugin.data.beatsPerMinute =
+                  event.data.beatsPerMinute || plugin.data.beatsPerMinute;
+                plugin.data.delayedBeats =
+                  event.data.delayedBeats || plugin.data.delayedBeats;
+                break;
+              }
+              default:
+                break;
+            }
+
             break;
           }
           default:

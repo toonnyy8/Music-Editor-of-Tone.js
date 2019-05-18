@@ -24,22 +24,25 @@
               class="mdc-fab"
               v-on:click="addPlugin('base')"
               style="width:70px;height:70px;"
+              v-show="block.plugins[block.plugins.length-1]?block.plugins[block.plugins.length-1].pluginType!='B lag':true"
             >base</button>
             <button
               class="mdc-fab"
               v-on:click="addPlugin('filter')"
               style="width:70px;height:70px;"
+              v-show="block.plugins[block.plugins.length-1]?block.plugins[block.plugins.length-1].pluginType!='B lag':true"
             >filter</button>
             <button
               class="mdc-fab"
-              v-on:click="addPlugin('next plugin lag')"
+              v-on:click="addPlugin('P lag')"
               style="width:70px;height:70px;"
-            >next plugin lag</button>
+              v-show="block.plugins[block.plugins.length-1]?block.plugins[block.plugins.length-1].pluginType!='B lag':true"
+            >plugin lag</button>
             <button
               class="mdc-fab"
-              v-on:click="addPlugin('next block lag')"
+              v-on:click="addPlugin('B lag')"
               style="width:70px;height:70px;"
-            >next block lag</button>
+            >block lag</button>
           </div>
           <footer class="mdc-dialog__actions">
             <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="no">
@@ -150,21 +153,21 @@ export default {
           });
           break;
         }
-        case "next plugin lag": {
+        case "P lag": {
           this.block.plugins.push({
             id: this.block.plugins.length,
             pluginType: "P lag",
             pluginChannel: null,
-            data: {}
+            data: { beatsPerMinute: 60, delayedBeats: 16 }
           });
           break;
         }
-        case "next block lag": {
+        case "B lag": {
           this.block.plugins.push({
             id: this.block.plugins.length,
             pluginType: "B lag",
             pluginChannel: null,
-            data: {}
+            data: { beatsPerMinute: 60, delayedBeats: 16 }
           });
           break;
         }
@@ -190,7 +193,7 @@ export default {
           plugins[i].id = i;
           if (plugins[i].pluginChannel != null) {
             let windowTitle = `SetPlugin:${blockIndex}-${i}:${
-              plugins[j].pluginType
+              plugins[i].pluginType
             }`;
             plugins[i].pluginChannel.postMessage({
               instruction: "Rename Window",
