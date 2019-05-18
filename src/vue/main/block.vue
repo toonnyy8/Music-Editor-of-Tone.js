@@ -139,6 +139,7 @@ export default {
                 releaseCurve: "linear"
               },
               beatsPerMinute: 60,
+              lengthPerDuration: 0.02,
               musicalNotation: musicalNotation
             }
           });

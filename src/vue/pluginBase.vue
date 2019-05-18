@@ -155,43 +155,43 @@ export default {
       a: () => {
         synth.triggerAttackRelease(
           ["C" + frequency],
-          this.$children[0].envelopeLong()
+          this.$children[2].lengthPerDuration.value
         );
       },
       s: () => {
         synth.triggerAttackRelease(
           ["D" + frequency],
-          this.$children[0].envelopeLong()
+          this.$children[2].lengthPerDuration.value
         );
       },
       d: () => {
         synth.triggerAttackRelease(
           ["E" + frequency],
-          this.$children[0].envelopeLong()
+          this.$children[2].lengthPerDuration.value
         );
       },
       f: () => {
         synth.triggerAttackRelease(
           ["F" + frequency],
-          this.$children[0].envelopeLong()
+          this.$children[2].lengthPerDuration.value
         );
       },
       g: () => {
         synth.triggerAttackRelease(
           ["G" + frequency],
-          this.$children[0].envelopeLong()
+          this.$children[2].lengthPerDuration.value
         );
       },
       h: () => {
         synth.triggerAttackRelease(
           ["A" + frequency],
-          this.$children[0].envelopeLong()
+          this.$children[2].lengthPerDuration.value
         );
       },
       j: () => {
         synth.triggerAttackRelease(
           ["B" + frequency],
-          this.$children[0].envelopeLong()
+          this.$children[2].lengthPerDuration.value
         );
       }
     });
@@ -234,14 +234,11 @@ export default {
           break;
       }
     },
-    testSynth(pitch, duration, BPM) {
+    testSynth(pitch, duration, LPD) {
       console.log(pitch, duration);
-      synth.triggerAttackRelease(
-        [pitch],
-        duration * this.$children[0].envelopeLong()
-      );
+      synth.triggerAttackRelease([pitch], duration * LPD);
     },
-    playMusic(musicalNotation, BPM) {
+    playMusic(musicalNotation, BPM, LPD) {
       let musicalAlphabet = [
         "C",
         "C#",
@@ -260,8 +257,6 @@ export default {
 
       let timeoutID;
 
-      let envelopeLong = this.$children[0].envelopeLong();
-
       let tick = () => {
         if (i >= musicalNotation.length - 1) {
           this.$children[2].callStopMusic();
@@ -271,7 +266,7 @@ export default {
           if (musicalNotation[i][j]) {
             synth.triggerAttackRelease(
               [`${musicalAlphabet[j % 12]}${Math.floor(j / 12)}`],
-              musicalNotation[i][j] * envelopeLong
+              musicalNotation[i][j] * LPD
             );
           }
         }

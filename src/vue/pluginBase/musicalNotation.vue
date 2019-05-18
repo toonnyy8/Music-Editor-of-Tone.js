@@ -118,6 +118,39 @@
               <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-1"></div>
             </div>
           </div>
+          <div class="mdc-layout-grid">
+            <div class="mdc-layout-grid__inner">
+              <div align="center" class="mdc-layout-grid__cell mdc-layout-grid__cell--span-1"></div>
+              <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-10">
+                <h3>Length Per Duration : {{Math.floor(lengthPerDuration.value*10000)/10000}}</h3>
+                <div
+                  id="LPD"
+                  class="mdc-slider"
+                  tabindex="0"
+                  role="slider"
+                  aria-valuemin="0"
+                  aria-valuemax="8"
+                  aria-valuenow="0.02"
+                  data-step="0.001"
+                  aria-label="Select Value"
+                >
+                  <div class="mdc-slider__track-container">
+                    <div class="mdc-slider__track"></div>
+                  </div>
+                  <div class="mdc-slider__thumb-container">
+                    <div class="mdc-slider__pin">
+                      <span class="mdc-slider__pin-value-marker"></span>
+                    </div>
+                    <svg class="mdc-slider__thumb" width="21" height="21">
+                      <circle cx="10.5" cy="10.5" r="7.875"></circle>
+                    </svg>
+                    <div class="mdc-slider__focus-ring"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-1"></div>
+            </div>
+          </div>
           <div align="center" id="MusicalNotation"></div>
 
           <div class="mdc-layout-grid">
@@ -279,7 +312,8 @@ export default {
       beatsPerMinute: { value: 1 },
       beatsPerMinute100: { value: 0 },
       playID: null,
-      nowPlayTime: null
+      nowPlayTime: null,
+      lengthPerDuration: { value: 1 }
     };
   },
   mounted() {
@@ -293,6 +327,7 @@ export default {
     this.octave = new MDCSlider(document.querySelector("#Octave"));
     this.beatsPerMinute = new MDCSlider(document.querySelector("#BPM"));
     this.beatsPerMinute100 = new MDCSlider(document.querySelector("#BPM100"));
+    this.lengthPerDuration = new MDCSlider(document.querySelector("#LPD"));
 
     this.page.disabled = true;
 
@@ -341,6 +376,13 @@ export default {
           this.beatsPerMinute.value + this.beatsPerMinute100.value > 0
             ? this.beatsPerMinute.value + this.beatsPerMinute100.value
             : 1
+      });
+    });
+
+    this.lengthPerDuration.listen("MDCSlider:change", () => {
+      this.channel.postMessage({
+        instruction: "Set Plugin Data",
+        lengthPerDuration: this.lengthPerDuration.value
       });
     });
 
@@ -480,6 +522,8 @@ export default {
           this.page.value = Math.floor(this.musicalNotation.length / 16);
           this.nowPage.max = this.page.value;
 
+          this.lengthPerDuration.value = event.data.lengthPerDuration;
+
           this.drawScale();
 
           break;
@@ -502,6 +546,7 @@ export default {
         this.beatsPerMinute100 = new MDCSlider(
           document.querySelector("#BPM100")
         );
+        this.lengthPerDuration = new MDCSlider(document.querySelector("#LPD"));
       }, 100);
     },
     drawScale() {
@@ -723,9 +768,7 @@ export default {
               this.duration.value + this.duration100.value > 0
                 ? this.duration.value + this.duration100.value
                 : 1,
-              this.beatsPerMinute.value + this.beatsPerMinute100.value > 0
-                ? this.beatsPerMinute.value + this.beatsPerMinute100.value
-                : 1
+              this.lengthPerDuration.value
             );
           }
         }
@@ -752,7 +795,8 @@ export default {
         this.musicalNotation,
         this.beatsPerMinute.value + this.beatsPerMinute100.value > 0
           ? this.beatsPerMinute.value + this.beatsPerMinute100.value
-          : 1
+          : 1,
+        this.lengthPerDuration.value
       );
     },
     callStopMusic() {

@@ -105,15 +105,56 @@ export default {
             ].pluginChannel = new BroadcastChannel(event.data.title);
             this.BindPluginChannel(this.blocks[index[0]].plugins[index[1]]);
           }
-          this.blocks[index[0]].plugins[index[1]].pluginChannel.postMessage({
-            instruction: "Init Data",
-            oscillator: this.blocks[index[0]].plugins[index[1]].data.oscillator,
-            envelope: this.blocks[index[0]].plugins[index[1]].data.envelope,
-            beatsPerMinute: this.blocks[index[0]].plugins[index[1]].data
-              .beatsPerMinute,
-            musicalNotation: this.blocks[index[0]].plugins[index[1]].data
-              .musicalNotation
-          });
+          switch (this.blocks[index[0]].plugins[index[1]].pluginType) {
+            case "base": {
+              this.blocks[index[0]].plugins[index[1]].pluginChannel.postMessage(
+                {
+                  instruction: "Init Data",
+                  oscillator: this.blocks[index[0]].plugins[index[1]].data
+                    .oscillator,
+                  envelope: this.blocks[index[0]].plugins[index[1]].data
+                    .envelope,
+                  beatsPerMinute: this.blocks[index[0]].plugins[index[1]].data
+                    .beatsPerMinute,
+                  musicalNotation: this.blocks[index[0]].plugins[index[1]].data
+                    .musicalNotation,
+                  lengthPerDuration: this.blocks[index[0]].plugins[index[1]]
+                    .data.lengthPerDuration
+                }
+              );
+              break;
+            }
+            case "filter": {
+              break;
+            }
+            case "P lag": {
+              this.blocks[index[0]].plugins[index[1]].pluginChannel.postMessage(
+                {
+                  instruction: "Init Data",
+                  beatsPerMinute: this.blocks[index[0]].plugins[index[1]].data
+                    .beatsPerMinute,
+                  delayedBeats: this.blocks[index[0]].plugins[index[1]].data
+                    .delayedBeats
+                }
+              );
+              break;
+            }
+            case "B lag": {
+              this.blocks[index[0]].plugins[index[1]].pluginChannel.postMessage(
+                {
+                  instruction: "Init Data",
+                  beatsPerMinute: this.blocks[index[0]].plugins[index[1]].data
+                    .beatsPerMinute,
+                  delayedBeats: this.blocks[index[0]].plugins[index[1]].data
+                    .delayedBeats
+                }
+              );
+              break;
+            }
+            default:
+              break;
+          }
+
           break;
         }
         default:
@@ -206,6 +247,8 @@ export default {
                   event.data.beatsPerMinute || plugin.data.beatsPerMinute;
                 plugin.data.musicalNotation =
                   event.data.musicalNotation || plugin.data.musicalNotation;
+                plugin.data.lengthPerDuration =
+                  event.data.lengthPerDuration || plugin.data.lengthPerDuration;
                 break;
               }
               case "filter": {
