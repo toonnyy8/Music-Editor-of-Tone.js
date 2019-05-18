@@ -1,23 +1,15 @@
 <template>
   <div>
-    <div class="mdc-layout-grid">
-      <div class="mdc-layout-grid__inner">
-        <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2"></div>
-        <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8">
-          <div class="mdc-card demo-card">
-            <div
-              class="mdc-card__primary-action demo-card__primary-action mdc-ripple-upgraded"
-              tabindex="0"
-              style="--mdc-ripple-fg-size:210px; --mdc-ripple-fg-scale:2.33984; --mdc-ripple-fg-translate-start:38.8px, 171.637px; --mdc-ripple-fg-translate-end:70px, 60.2375px;"
-            >
-              <div class="demo-card__primary">
-                <h1 align="center">Oscillator</h1>
-                <div align="center" id="Oscillator"></div>
-              </div>
-            </div>
-          </div>
+    <div class="mdc-card demo-card">
+      <div
+        class="mdc-card__primary-action demo-card__primary-action mdc-ripple-upgraded"
+        tabindex="0"
+        style="--mdc-ripple-fg-size:210px; --mdc-ripple-fg-scale:2.33984; --mdc-ripple-fg-translate-start:38.8px, 171.637px; --mdc-ripple-fg-translate-end:70px, 60.2375px;"
+      >
+        <div class="demo-card__primary">
+          <h1 align="center">Oscillator</h1>
+          <div align="center" id="Oscillator"></div>
         </div>
-        <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2"></div>
       </div>
     </div>
   </div>

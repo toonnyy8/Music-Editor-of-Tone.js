@@ -1,217 +1,209 @@
 <template>
   <div>
-    <div class="mdc-layout-grid">
-      <div class="mdc-layout-grid__inner">
-        <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2"></div>
-        <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8">
-          <div class="mdc-card demo-card">
-            <div
-              class="mdc-card__primary-action demo-card__primary-action mdc-ripple-upgraded"
-              tabindex="0"
-              style="--mdc-ripple-fg-size:210px; --mdc-ripple-fg-scale:2.33984; --mdc-ripple-fg-translate-start:38.8px, 171.637px; --mdc-ripple-fg-translate-end:70px, 60.2375px;"
-            >
-              <div class="demo-card__primary">
-                <h1 align="center">Envelope</h1>
-                <div align="center" id="Envelope"></div>
-              </div>
-              <div class="demo-card__secondary mdc-typography mdc-typography--body2">
-                <div class="mdc-layout-grid">
-                  <div class="mdc-layout-grid__inner">
-                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2">
-                      <br>
-                      <div class="mdc-select mdc-select--outlined" id="AttackCurve">
-                        <i class="mdc-select__dropdown-icon"></i>
-                        <select class="mdc-select__native-control">
-                          <option value="linear">linear</option>
-                          <option value="exponential">exponential</option>
-                          <option value="bounce">bounce</option>
-                          <option value="ripple">ripple</option>
-                          <option value="step">step</option>
-                          <option value="cosine">cosine</option>
-                          <option value="sine">sine</option>
-                        </select>
-                        <div
-                          class="mdc-notched-outline mdc-notched-outline--upgraded mdc-notched-outline--notched"
-                        >
-                          <div class="mdc-notched-outline__leading"></div>
-                          <div class="mdc-notched-outline__notch" style="width: 32.75px;">
-                            <label
-                              for="outlined"
-                              class="mdc-floating-label mdc-floating-label--float-above"
-                              style
-                            >Curve</label>
-                          </div>
-                          <div class="mdc-notched-outline__trailing"></div>
-                        </div>
-                      </div>
+    <div class="mdc-card demo-card">
+      <div
+        class="mdc-card__primary-action demo-card__primary-action mdc-ripple-upgraded"
+        tabindex="0"
+        style="--mdc-ripple-fg-size:210px; --mdc-ripple-fg-scale:2.33984; --mdc-ripple-fg-translate-start:38.8px, 171.637px; --mdc-ripple-fg-translate-end:70px, 60.2375px;"
+      >
+        <div class="demo-card__primary">
+          <h1 align="center">Envelope</h1>
+          <div align="center" id="Envelope"></div>
+        </div>
+        <div class="demo-card__secondary mdc-typography mdc-typography--body2">
+          <div class="mdc-layout-grid">
+            <div class="mdc-layout-grid__inner">
+              <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2">
+                <br>
+                <div class="mdc-select mdc-select--outlined" id="AttackCurve">
+                  <i class="mdc-select__dropdown-icon"></i>
+                  <select class="mdc-select__native-control">
+                    <option value="linear">linear</option>
+                    <option value="exponential">exponential</option>
+                    <option value="bounce">bounce</option>
+                    <option value="ripple">ripple</option>
+                    <option value="step">step</option>
+                    <option value="cosine">cosine</option>
+                    <option value="sine">sine</option>
+                  </select>
+                  <div
+                    class="mdc-notched-outline mdc-notched-outline--upgraded mdc-notched-outline--notched"
+                  >
+                    <div class="mdc-notched-outline__leading"></div>
+                    <div class="mdc-notched-outline__notch" style="width: 32.75px;">
+                      <label
+                        for="outlined"
+                        class="mdc-floating-label mdc-floating-label--float-above"
+                        style
+                      >Curve</label>
                     </div>
-                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8">
-                      <h3>Attack:{{roundDecimal(Attack.value,3)}}</h3>
-                      <div
-                        id="Attack"
-                        class="mdc-slider"
-                        tabindex="0"
-                        role="slider"
-                        aria-valuemin="0.01"
-                        aria-valuemax="2"
-                        aria-valuenow="0.05"
-                        aria-label="Select Value"
-                      >
-                        <div class="mdc-slider__track-container">
-                          <div class="mdc-slider__track"></div>
-                        </div>
-                        <div class="mdc-slider__thumb-container">
-                          <svg class="mdc-slider__thumb" width="21" height="21">
-                            <circle cx="10.5" cy="10.5" r="7.875"></circle>
-                          </svg>
-                          <div class="mdc-slider__focus-ring"></div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2"></div>
-                  </div>
-                </div>
-                <div class="mdc-layout-grid">
-                  <div class="mdc-layout-grid__inner">
-                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2">
-                      <br>
-                      <div class="mdc-select mdc-select--outlined" id="DecayCurve">
-                        <i class="mdc-select__dropdown-icon"></i>
-                        <select class="mdc-select__native-control">
-                          <option>linear</option>
-                          <option>exponential</option>
-                        </select>
-                        <div
-                          class="mdc-notched-outline mdc-notched-outline--upgraded mdc-notched-outline--notched"
-                        >
-                          <div class="mdc-notched-outline__leading"></div>
-                          <div class="mdc-notched-outline__notch" style="width: 32.75px;">
-                            <label
-                              for="outlined"
-                              class="mdc-floating-label mdc-floating-label--float-above"
-                              style
-                            >Curve</label>
-                          </div>
-                          <div class="mdc-notched-outline__trailing"></div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8">
-                      <h3>Decay:{{roundDecimal(Decay.value,3)}}</h3>
-                      <div
-                        id="Decay"
-                        class="mdc-slider"
-                        tabindex="0"
-                        role="slider"
-                        aria-valuemin="0.01"
-                        aria-valuemax="2"
-                        aria-valuenow="0.2"
-                        aria-label="Select Value"
-                      >
-                        <div class="mdc-slider__track-container">
-                          <div class="mdc-slider__track"></div>
-                        </div>
-                        <div class="mdc-slider__thumb-container">
-                          <svg class="mdc-slider__thumb" width="21" height="21">
-                            <circle cx="10.5" cy="10.5" r="7.875"></circle>
-                          </svg>
-                          <div class="mdc-slider__focus-ring"></div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2"></div>
-                  </div>
-                </div>
-                <div class="mdc-layout-grid">
-                  <div class="mdc-layout-grid__inner">
-                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2"></div>
-                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8">
-                      <h3>Sustain:{{roundDecimal(Sustain.value,3)}}</h3>
-                      <div
-                        id="Sustain"
-                        class="mdc-slider"
-                        tabindex="0"
-                        role="slider"
-                        aria-valuemin="0.01"
-                        aria-valuemax="1"
-                        aria-valuenow="0.2"
-                        aria-label="Select Value"
-                      >
-                        <div class="mdc-slider__track-container">
-                          <div class="mdc-slider__track"></div>
-                        </div>
-                        <div class="mdc-slider__thumb-container">
-                          <svg class="mdc-slider__thumb" width="21" height="21">
-                            <circle cx="10.5" cy="10.5" r="7.875"></circle>
-                          </svg>
-                          <div class="mdc-slider__focus-ring"></div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2"></div>
-                  </div>
-                </div>
-                <div class="mdc-layout-grid">
-                  <div class="mdc-layout-grid__inner" id="ReleaseCurve">
-                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2">
-                      <br>
-                      <div class="mdc-select mdc-select--outlined">
-                        <i class="mdc-select__dropdown-icon"></i>
-                        <select class="mdc-select__native-control">
-                          <option>linear</option>
-                          <option>exponential</option>
-                          <option>bounce</option>
-                          <option>ripple</option>
-                          <option>step</option>
-                          <option>cosine</option>
-                          <option>sine</option>
-                        </select>
-                        <div
-                          class="mdc-notched-outline mdc-notched-outline--upgraded mdc-notched-outline--notched"
-                        >
-                          <div class="mdc-notched-outline__leading"></div>
-                          <div class="mdc-notched-outline__notch" style="width: 32.75px;">
-                            <label
-                              for="outlined"
-                              class="mdc-floating-label mdc-floating-label--float-above"
-                              style
-                            >Curve</label>
-                          </div>
-                          <div class="mdc-notched-outline__trailing"></div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8">
-                      <h3>Release:{{roundDecimal(Release.value,3)}}</h3>
-                      <div
-                        id="Release"
-                        class="mdc-slider"
-                        tabindex="0"
-                        role="slider"
-                        aria-valuemin="0.01"
-                        aria-valuemax="4"
-                        aria-valuenow="1.5"
-                        aria-label="Select Value"
-                      >
-                        <div class="mdc-slider__track-container">
-                          <div class="mdc-slider__track"></div>
-                        </div>
-                        <div class="mdc-slider__thumb-container">
-                          <svg class="mdc-slider__thumb" width="21" height="21">
-                            <circle cx="10.5" cy="10.5" r="7.875"></circle>
-                          </svg>
-                          <div class="mdc-slider__focus-ring"></div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2"></div>
+                    <div class="mdc-notched-outline__trailing"></div>
                   </div>
                 </div>
               </div>
+              <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8">
+                <h3>Attack:{{roundDecimal(Attack.value,3)}}</h3>
+                <div
+                  id="Attack"
+                  class="mdc-slider"
+                  tabindex="0"
+                  role="slider"
+                  aria-valuemin="0.01"
+                  aria-valuemax="2"
+                  aria-valuenow="0.05"
+                  aria-label="Select Value"
+                >
+                  <div class="mdc-slider__track-container">
+                    <div class="mdc-slider__track"></div>
+                  </div>
+                  <div class="mdc-slider__thumb-container">
+                    <svg class="mdc-slider__thumb" width="21" height="21">
+                      <circle cx="10.5" cy="10.5" r="7.875"></circle>
+                    </svg>
+                    <div class="mdc-slider__focus-ring"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2"></div>
+            </div>
+          </div>
+          <div class="mdc-layout-grid">
+            <div class="mdc-layout-grid__inner">
+              <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2">
+                <br>
+                <div class="mdc-select mdc-select--outlined" id="DecayCurve">
+                  <i class="mdc-select__dropdown-icon"></i>
+                  <select class="mdc-select__native-control">
+                    <option>linear</option>
+                    <option>exponential</option>
+                  </select>
+                  <div
+                    class="mdc-notched-outline mdc-notched-outline--upgraded mdc-notched-outline--notched"
+                  >
+                    <div class="mdc-notched-outline__leading"></div>
+                    <div class="mdc-notched-outline__notch" style="width: 32.75px;">
+                      <label
+                        for="outlined"
+                        class="mdc-floating-label mdc-floating-label--float-above"
+                        style
+                      >Curve</label>
+                    </div>
+                    <div class="mdc-notched-outline__trailing"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8">
+                <h3>Decay:{{roundDecimal(Decay.value,3)}}</h3>
+                <div
+                  id="Decay"
+                  class="mdc-slider"
+                  tabindex="0"
+                  role="slider"
+                  aria-valuemin="0.01"
+                  aria-valuemax="2"
+                  aria-valuenow="0.2"
+                  aria-label="Select Value"
+                >
+                  <div class="mdc-slider__track-container">
+                    <div class="mdc-slider__track"></div>
+                  </div>
+                  <div class="mdc-slider__thumb-container">
+                    <svg class="mdc-slider__thumb" width="21" height="21">
+                      <circle cx="10.5" cy="10.5" r="7.875"></circle>
+                    </svg>
+                    <div class="mdc-slider__focus-ring"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2"></div>
+            </div>
+          </div>
+          <div class="mdc-layout-grid">
+            <div class="mdc-layout-grid__inner">
+              <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2"></div>
+              <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8">
+                <h3>Sustain:{{roundDecimal(Sustain.value,3)}}</h3>
+                <div
+                  id="Sustain"
+                  class="mdc-slider"
+                  tabindex="0"
+                  role="slider"
+                  aria-valuemin="0.01"
+                  aria-valuemax="1"
+                  aria-valuenow="0.2"
+                  aria-label="Select Value"
+                >
+                  <div class="mdc-slider__track-container">
+                    <div class="mdc-slider__track"></div>
+                  </div>
+                  <div class="mdc-slider__thumb-container">
+                    <svg class="mdc-slider__thumb" width="21" height="21">
+                      <circle cx="10.5" cy="10.5" r="7.875"></circle>
+                    </svg>
+                    <div class="mdc-slider__focus-ring"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2"></div>
+            </div>
+          </div>
+          <div class="mdc-layout-grid">
+            <div class="mdc-layout-grid__inner" id="ReleaseCurve">
+              <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2">
+                <br>
+                <div class="mdc-select mdc-select--outlined">
+                  <i class="mdc-select__dropdown-icon"></i>
+                  <select class="mdc-select__native-control">
+                    <option>linear</option>
+                    <option>exponential</option>
+                    <option>bounce</option>
+                    <option>ripple</option>
+                    <option>step</option>
+                    <option>cosine</option>
+                    <option>sine</option>
+                  </select>
+                  <div
+                    class="mdc-notched-outline mdc-notched-outline--upgraded mdc-notched-outline--notched"
+                  >
+                    <div class="mdc-notched-outline__leading"></div>
+                    <div class="mdc-notched-outline__notch" style="width: 32.75px;">
+                      <label
+                        for="outlined"
+                        class="mdc-floating-label mdc-floating-label--float-above"
+                        style
+                      >Curve</label>
+                    </div>
+                    <div class="mdc-notched-outline__trailing"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8">
+                <h3>Release:{{roundDecimal(Release.value,3)}}</h3>
+                <div
+                  id="Release"
+                  class="mdc-slider"
+                  tabindex="0"
+                  role="slider"
+                  aria-valuemin="0.01"
+                  aria-valuemax="4"
+                  aria-valuenow="1.5"
+                  aria-label="Select Value"
+                >
+                  <div class="mdc-slider__track-container">
+                    <div class="mdc-slider__track"></div>
+                  </div>
+                  <div class="mdc-slider__thumb-container">
+                    <svg class="mdc-slider__thumb" width="21" height="21">
+                      <circle cx="10.5" cy="10.5" r="7.875"></circle>
+                    </svg>
+                    <div class="mdc-slider__focus-ring"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2"></div>
             </div>
           </div>
         </div>
-        <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2"></div>
       </div>
     </div>
   </div>

@@ -1,8 +1,50 @@
 <template>
   <div>
-    <envelope :setSynth="setSynth"></envelope>
-    <oscillator :setSynth="setSynth"></oscillator>
-    <musicalNotation :testSynth="testSynth"></musicalNotation>
+    <div class="mdc-layout-grid">
+      <div class="mdc-layout-grid__inner">
+        <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2"></div>
+        <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8">
+          <envelope :setSynth="setSynth" v-show="moreMethods==0"></envelope>
+          <oscillator :setSynth="setSynth" v-show="moreMethods==1"></oscillator>
+          <musicalNotation :testSynth="testSynth" v-show="moreMethods==2"></musicalNotation>
+        </div>
+        <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2"></div>
+      </div>
+    </div>
+    <div class="fixed" align="center">
+      <transition name="slide-fade">
+        <div v-if="more">
+          <button
+            class="mdc-fab"
+            v-on:click="moreMethods=0"
+            v-bind:disabled="moreMethods==0"
+            v-bind:style="moreMethods==0?'background-color:#5543a9;':'background-color:#7765f7;'"
+            style="width:70px;height:70px;"
+          >Envelope</button>
+          <br>
+          <br>
+          <button
+            class="mdc-fab"
+            v-on:click="moreMethods=1"
+            v-bind:disabled="moreMethods==1"
+            v-bind:style="moreMethods==1?'background-color:#5543a9;':'background-color:#7765f7;'"
+            style="width:70px;height:70px;"
+          >Oscillator</button>
+          <br>
+          <br>
+          <button
+            class="mdc-fab"
+            v-on:click="moreMethods=2"
+            v-bind:disabled="moreMethods==2"
+            v-bind:style="moreMethods==2?'background-color:#5543a9;':'background-color:#7765f7;'"
+            style="width:70px;height:70px;"
+          >Musical Notation</button>
+          <br>
+          <br>
+        </div>
+      </transition>
+      <button class="mdc-fab" v-on:click="more=!more" style="width:100px;height:100px;">More</button>
+    </div>
   </div>
 </template>
 
@@ -43,7 +85,9 @@ export default {
   },
   data() {
     return {
-      channel: new BroadcastChannel(window.name)
+      channel: new BroadcastChannel(window.name),
+      more: false,
+      moreMethods: 0
     };
   },
   mounted() {
@@ -168,5 +212,27 @@ export default {
 <style lang="css">
 div {
   color: #56b983;
+}
+.fixed {
+  position: fixed;
+  bottom: 70px;
+  right: 70px;
+  font-size: large;
+}
+.slide-fade-enter-active {
+  transition: all 0.3s ease;
+}
+.slide-fade-leave-active {
+  transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
+}
+.slide-fade-enter
+/* .slide-fade-leave-active for below version 2.1.8 */ {
+  transform: translateY(100px);
+  opacity: 0;
+}
+.slide-fade-leave-to
+/* .slide-fade-leave-active for below version 2.1.8 */ {
+  transform: translateY(150px);
+  opacity: 0;
 }
 </style>
