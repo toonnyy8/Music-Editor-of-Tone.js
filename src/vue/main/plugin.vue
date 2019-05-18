@@ -7,8 +7,8 @@
       <button
         class="mdc-button mdc-button-dark"
         style="width: 150%"
-        v-on:click="LookPlugin(plugin.title)"
-      >{{plugin.title}}</button>
+        v-on:click="LookPlugin(plugin.pluginType)"
+      >{{plugin.pluginType}}</button>
     </div>
 
     <div class="mdc-card__action-icons">
@@ -21,8 +21,8 @@
 </template>
 <script>
 import { MDCDialog } from "@material/dialog";
-let vm;
-export default (vm = {
+
+export default {
   props: [
     "plugin",
     "DeletePlugin",
@@ -35,5 +35,5 @@ export default (vm = {
   },
   mounted() {},
   methods: {}
-});
+};
 </script>

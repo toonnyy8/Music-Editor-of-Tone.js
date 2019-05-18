@@ -1,6 +1,8 @@
 <template>
   <div id="main">
+    <!--look plugin-->
     <div
+      id="PluginDialog"
       class="mdc-dialog"
       role="alertdialog"
       aria-modal="true"
@@ -34,6 +36,7 @@
       </div>
       <div class="mdc-dialog__scrim"></div>
     </div>
+
     <button class="mdc-fab" v-on:click="AddBlock()">Add Block</button>
     <table>
       <tr>
@@ -53,8 +56,7 @@
 import { MDCDialog } from "@material/dialog";
 import block from "./main/block.vue";
 
-let vm;
-export default (vm = {
+export default {
   components: {
     block: block
   },
@@ -62,7 +64,7 @@ export default (vm = {
     blocks: [],
     /*
      *[
-     * {id:0,plugins:{id:0,pluginChannel:channel,title,
+     * {id:0,plugins:{id:0,pluginChannel:channel,pluginType,
      * data:{
      * oscillator:{
      * type: "custom",
@@ -134,7 +136,7 @@ export default (vm = {
     };
 
     this.pluginDialog.dialog = new MDCDialog(
-      document.querySelector(".mdc-dialog")
+      document.querySelector("#PluginDialog")
     );
   },
   updated() {},
@@ -164,7 +166,9 @@ export default (vm = {
         for (let j = 0; j < this.blocks[i].plugins.length; j++) {
           this.blocks[i].plugins[j].id = j;
           if (this.blocks[i].plugins[j].pluginChannel != null) {
-            let windowTitle = "SetPlugin:" + i + "-" + j;
+            let windowTitle = `SetPlugin:${i}-${j}:${
+              this.blocks[i].plugins[j].pluginType
+            }`;
             this.blocks[i].plugins[j].pluginChannel.postMessage({
               instruction: "Rename Window",
               title: windowTitle
@@ -178,8 +182,8 @@ export default (vm = {
         }
       }
     },
-    LookPlugin: function(title) {
-      this.pluginDialog.title = title;
+    LookPlugin: function(pluginType) {
+      this.pluginDialog.title = pluginType;
       this.pluginDialog.dialog.open();
     },
     BindPluginChannel: function(plugin) {
@@ -208,7 +212,7 @@ export default (vm = {
       };
     }
   }
-});
+};
 </script>
 <style>
 :root {

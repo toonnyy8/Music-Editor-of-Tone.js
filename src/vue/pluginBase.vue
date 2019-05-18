@@ -48,15 +48,19 @@
           <br>
         </div>
       </transition>
-      <button class="mdc-fab" v-on:click="more=!more" style="width:100px;height:100px;">More</button>
+      <button
+        class="mdc-fab"
+        v-on:click="more=!more"
+        style="width:100px;height:100px;font-size:large;"
+      >More</button>
     </div>
   </div>
 </template>
 
 <script>
-import envelope from "./sub/envelope.vue";
-import oscillator from "./sub/oscillator.vue";
-import musicalNotation from "./sub/musicalNotation.vue";
+import envelope from "./pluginBase/envelope.vue";
+import oscillator from "./pluginBase/oscillator.vue";
+import musicalNotation from "./pluginBase/musicalNotation.vue";
 
 import Mousetrap from "mousetrap";
 import "mousetrap/plugins/bind-dictionary/mousetrap-bind-dictionary.min.js";
@@ -293,7 +297,6 @@ div {
   position: fixed;
   bottom: 70px;
   right: 70px;
-  font-size: large;
 }
 .slide-fade-enter-active {
   transition: all 0.3s ease;
