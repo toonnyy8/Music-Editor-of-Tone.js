@@ -179,6 +179,12 @@
               <div align="center" class="mdc-layout-grid__cell mdc-layout-grid__cell--span-3">
                 <br>
                 <br>
+                <button
+                  class="mdc-button"
+                  v-on:click="clearOctave();drawScale()"
+                >Clear Octave On This Page</button>
+                <br>
+                <br>
                 <button class="mdc-button" v-on:click="clearPage();drawScale()">Clear This Page</button>
               </div>
               <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8">
@@ -707,6 +713,15 @@ export default {
                 : 1
             );
           }
+        }
+      }
+    },
+    clearOctave() {
+      for (let i = 0; i < 16; i++) {
+        for (let j = 0; j < 12; j++) {
+          this.musicalNotation[(this.nowPage.value - 1) * 16 + i][
+            this.octave.value * 12 + j
+          ] = 0;
         }
       }
     },
