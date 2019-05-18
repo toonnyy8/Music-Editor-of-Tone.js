@@ -6,7 +6,12 @@
         <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8">
           <envelope :setSynth="setSynth" v-show="moreMethods==0"></envelope>
           <oscillator :setSynth="setSynth" v-show="moreMethods==1"></oscillator>
-          <musicalNotation :testSynth="testSynth" v-show="moreMethods==2"></musicalNotation>
+          <musicalNotation
+            :testSynth="testSynth"
+            :playMusic="playMusic"
+            :stopMusic="stopMusic"
+            v-show="moreMethods==2"
+          ></musicalNotation>
         </div>
         <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2"></div>
       </div>
@@ -207,6 +212,48 @@ export default {
     testSynth(pitch, duration, BPM) {
       console.log(pitch, duration);
       synth.triggerAttackRelease([pitch], duration * (60 / BPM));
+    },
+    playMusic(musicalNotation, BPM) {
+      let musicalAlphabet = [
+        "C",
+        "C#",
+        "D",
+        "D#",
+        "E",
+        "F",
+        "F#",
+        "G",
+        "G#",
+        "A",
+        "A#",
+        "B"
+      ];
+      let i = 0;
+
+      let timeoutID;
+
+      let tick = () => {
+        if (i >= musicalNotation.length - 1) {
+          this.$children[2].callStopMusic();
+          console.log("end");
+        }
+        for (let j = 0; j < 120; j++) {
+          if (musicalNotation[i][j]) {
+            synth.triggerAttackRelease(
+              [`${musicalAlphabet[j % 12]}${Math.floor(j / 12)}`],
+              musicalNotation[i][j] * (60 / BPM)
+            );
+          }
+        }
+        i += 1;
+      };
+
+      timeoutID = setInterval(tick, 1000 * (60 / BPM));
+      tick();
+      return timeoutID;
+    },
+    stopMusic(tID) {
+      window.clearInterval(tID);
     }
   }
 };

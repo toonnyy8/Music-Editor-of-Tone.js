@@ -58,7 +58,12 @@
           </div>
           <div class="mdc-layout-grid">
             <div class="mdc-layout-grid__inner">
-              <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2"></div>
+              <div align="center" class="mdc-layout-grid__cell mdc-layout-grid__cell--span-3">
+                <br>
+                <br>
+                <button class="mdc-fab" v-on:click="callPlayMusic();" v-show="!playID">Play</button>
+                <button class="mdc-fab" v-on:click="callStopMusic();" v-show="!!playID">Stop</button>
+              </div>
               <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8">
                 <h3>BPM : {{(beatsPerMinute.value+beatsPerMinute100.value)>0?(beatsPerMinute.value+beatsPerMinute100.value):1}}</h3>
                 <div
@@ -110,7 +115,7 @@
                   </div>
                 </div>
               </div>
-              <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2"></div>
+              <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-1"></div>
             </div>
           </div>
           <div align="center" id="MusicalNotation"></div>
@@ -252,7 +257,7 @@ import { MDCSwitch } from "@material/switch";
 import { MDCSlider } from "@material/slider";
 
 export default {
-  props: ["testSynth"],
+  props: ["testSynth", "playMusic", "stopMusic"],
   data() {
     let musicalNotation = new Array(80);
     for (let i = 0; i < musicalNotation.length; i++) {
@@ -272,7 +277,8 @@ export default {
       octave: { value: 1 },
       checkDuration: { i: null, j: null },
       beatsPerMinute: { value: 1 },
-      beatsPerMinute100: { value: 0 }
+      beatsPerMinute100: { value: 0 },
+      playID: null
     };
   },
   mounted() {
@@ -731,6 +737,18 @@ export default {
           this.musicalNotation[(this.nowPage.value - 1) * 16 + i][j] = 0;
         }
       }
+    },
+    callPlayMusic() {
+      this.playID = this.playMusic(
+        this.musicalNotation,
+        this.beatsPerMinute.value + this.beatsPerMinute100.value > 0
+          ? this.beatsPerMinute.value + this.beatsPerMinute100.value
+          : 1
+      );
+    },
+    callStopMusic() {
+      this.stopMusic(this.playID);
+      this.playID = null;
     }
   }
 };
