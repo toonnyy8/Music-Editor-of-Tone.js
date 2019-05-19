@@ -1,5 +1,6 @@
 <template>
   <div>
+    <div id="Waveform"></div>
     <div v-if="isCompiled">
       <button class="mdc-fab" v-on:click="playMusic()" v-show="!isPlaying">Play</button>
       <button class="mdc-fab" v-on:click="stopMusic()" v-show="isPlaying">Stop</button>
@@ -9,18 +10,22 @@
 
 <script>
 import * as Tone from "tone";
+import Recorder from "../lib/recorder";
 
 export default {
   data() {
     return {
       compileMusicChannel: new BroadcastChannel("compileMusicChannel"),
+      canvas: document.createElement("canvas"),
       pluginLagTime: 0,
       blockLagTime: 0,
       isCompiled: false,
       musicPlayFuncs: [],
       musicPlayTimeID: [],
       isPlaying: false,
+      musicEnd: true,
       synths: [],
+      analysers: [],
       musicalAlphabet: [
         "C",
         "C#",
@@ -39,6 +44,14 @@ export default {
     };
   },
   mounted() {
+    this.canvas.width = 1920;
+    this.canvas.height = 1080;
+    this.canvas.style =
+      "width:100%; height:100%; z-index:-1;position : absolute;";
+    document.querySelector("#Waveform").appendChild(this.canvas);
+    document.body.style =
+      "overflow-y: hidden; overflow-x: hidden;background-color: rgb(179, 179, 179);";
+
     this.compileMusicChannel.postMessage({
       instruction: "next",
       blockNum: 0,
@@ -62,6 +75,12 @@ export default {
                   envelope: event.data.data.data.envelope,
                   oscillator: event.data.data.data.oscillator
                 }).toMaster()
+              );
+              this.analysers.push(
+                this.synths[this.synths.length - 1].context.createAnalyser()
+              );
+              this.synths[this.synths.length - 1].connect(
+                this.analysers[this.analysers.length - 1]
               );
               for (
                 let i = 0;
@@ -154,6 +173,75 @@ export default {
   methods: {
     playMusic() {
       this.isPlaying = true;
+
+      let recorder = new Recorder(this.analysers[0]);
+      recorder.record();
+
+      let renderFrame = () => {
+        let frequencyDatas = [
+          new Uint8Array(this.analysers[0].frequencyBinCount)
+        ];
+        for (let i = 0; i < this.analysers.length; i++) {
+          frequencyDatas.push(
+            new Uint8Array(this.analysers[i].frequencyBinCount)
+          );
+        }
+
+        if (this.isPlaying == true || this.musicEnd == false) {
+          requestAnimationFrame(renderFrame);
+          this.musicEnd = false;
+
+          let ctx = this.canvas.getContext("2d");
+
+          ctx.fillStyle = "rgb(179, 179, 179,0.5)";
+          ctx.fillRect(0, 0, 1920, 1080);
+
+          for (let i = 0; i < this.analysers.length; i++) {
+            this.analysers[i].getByteFrequencyData(frequencyDatas[i + 1]);
+            for (let j = 0; j < frequencyDatas[0].length; j++) {
+              frequencyDatas[0][j] += frequencyDatas[i + 1][j];
+            }
+          }
+
+          for (let j = 0; j < frequencyDatas[0].length; j++) {
+            this.musicEnd += frequencyDatas[0][j];
+
+            ctx.fillStyle = `rgb(${255 * (j / 1024)}, 255, ${255 *
+              (1 - j / 1024)})`;
+            ctx.fillRect(
+              (1920 / 1024) * j,
+              1080,
+              1920 / 1024,
+              -1080 * (frequencyDatas[0][j] / 256)
+            );
+          }
+
+          this.musicEnd = !this.musicEnd;
+        } else {
+          recorder.stop();
+          /*let createDownloadLink = () => {
+            recorder.exportWAV(function(blob) {
+              var url = URL.createObjectURL(blob);
+              var li = document.createElement("li");
+              var au = document.createElement("audio");
+              var hf = document.createElement("a");
+
+              au.controls = true;
+              au.src = url;
+              hf.href = url;
+              hf.download = new Date().toISOString() + ".wav";
+              hf.innerHTML = hf.download;
+              li.appendChild(au);
+              li.appendChild(hf);
+              document.body.appendChild(li);
+            });
+          };
+          createDownloadLink();*/
+          recorder.clear();
+        }
+      };
+      requestAnimationFrame(renderFrame);
+
       for (let i = 0; i < this.musicPlayFuncs.length; i++) {
         this.musicPlayTimeID[i] = this.musicPlayFuncs[i]();
       }
