@@ -122,7 +122,18 @@
             <div class="mdc-layout-grid__inner">
               <div align="center" class="mdc-layout-grid__cell mdc-layout-grid__cell--span-1"></div>
               <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-10">
-                <h3>Length Per Duration : {{Math.floor(lengthPerDuration.value*10000)/10000}}</h3>
+                <h3>
+                  Length Per Duration :
+                  <input
+                    id="LPDinput"
+                    type="number"
+                    v-bind:value="Math.floor(lengthPerDuration.value*10000)/10000"
+                    style="border: 0 none; outline:none; font-family: Roboto,sans-serif; font-size: 1.17em;color: #56b983; font-weight: bold;width:100px"
+                    min="0"
+                    max="8"
+                    step="0.001"
+                  >
+                </h3>
                 <div
                   id="LPD"
                   class="mdc-slider"
@@ -379,11 +390,33 @@ export default {
       });
     });
 
+    this.beatsPerMinute.listen("MDCSlider:input", () => {
+      this.drawScale();
+    });
+
+    this.beatsPerMinute100.listen("MDCSlider:input", () => {
+      this.drawScale();
+    });
+
     this.lengthPerDuration.listen("MDCSlider:change", () => {
       this.channel.postMessage({
         instruction: "Set Plugin Data",
         lengthPerDuration: this.lengthPerDuration.value
       });
+    });
+
+    this.lengthPerDuration.listen("MDCSlider:input", () => {
+      this.drawScale();
+    });
+
+    document.querySelector("#LPDinput").addEventListener("input", () => {
+      this.lengthPerDuration.value =
+        Math.floor(document.querySelector("#LPDinput").value * 10000) / 10000;
+      this.drawScale();
+    });
+    document.querySelector("#LPDinput").addEventListener("change", () => {
+      document.querySelector("#LPDinput").value =
+        Math.floor(document.querySelector("#LPDinput").value * 10000) / 10000;
     });
 
     if (this.canvas.getContext) {
@@ -603,6 +636,7 @@ export default {
         }
       }
 
+      //draw checkDurationBox
       if (this.checkDuration.i != null && this.checkDuration.j != null) {
         if (this.musicalNotation[this.checkDuration.i][this.checkDuration.j]) {
           ctx.lineWidth = 20;
@@ -612,14 +646,16 @@ export default {
               (this.checkDuration.i - (this.nowPage.value - 1) * 16) * 113.75,
             17.5 +
               (11 - (this.checkDuration.j - this.octave.value * 12)) * 47.5,
-            90 +
-              (this.musicalNotation[this.checkDuration.i][
-                this.checkDuration.j
-              ] -
-                1) *
-                113.75,
+            90 *
+              (this.lengthPerDuration.value /
+                (60 /
+                  (this.beatsPerMinute.value + this.beatsPerMinute100.value))) *
+              this.musicalNotation[this.checkDuration.i][this.checkDuration.j],
             30
           );
+        } else {
+          this.checkDuration.i = null;
+          this.checkDuration.j = null;
         }
       }
 

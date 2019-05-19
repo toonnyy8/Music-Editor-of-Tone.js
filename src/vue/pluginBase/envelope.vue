@@ -42,7 +42,18 @@
                 </div>
               </div>
               <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8">
-                <h3>Attack:{{roundDecimal(Attack.value,3)}}</h3>
+                <h3>
+                  Attack:
+                  <input
+                    id="AttackInput"
+                    type="number"
+                    v-bind:value="roundDecimal(Attack.value,3)"
+                    style="border: 0 none; outline:none; font-family: Roboto,sans-serif; font-size: 1.17em;color: #56b983; font-weight: bold;width:100px"
+                    min="0.01"
+                    max="2"
+                    step="0.001"
+                  >
+                </h3>
                 <div
                   id="Attack"
                   class="mdc-slider"
@@ -93,7 +104,18 @@
                 </div>
               </div>
               <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8">
-                <h3>Decay:{{roundDecimal(Decay.value,3)}}</h3>
+                <h3>
+                  Decay:
+                  <input
+                    id="DecayInput"
+                    type="number"
+                    v-bind:value="roundDecimal(Decay.value,3)"
+                    style="border: 0 none; outline:none; font-family: Roboto,sans-serif; font-size: 1.17em;color: #56b983; font-weight: bold;width:100px"
+                    min="0.01"
+                    max="2"
+                    step="0.001"
+                  >
+                </h3>
                 <div
                   id="Decay"
                   class="mdc-slider"
@@ -122,7 +144,18 @@
             <div class="mdc-layout-grid__inner">
               <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2"></div>
               <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8">
-                <h3>Sustain:{{roundDecimal(Sustain.value,3)}}</h3>
+                <h3>
+                  Sustain:
+                  <input
+                    id="SustainInput"
+                    type="number"
+                    v-bind:value="roundDecimal(Sustain.value,3)"
+                    style="border: 0 none; outline:none; font-family: Roboto,sans-serif; font-size: 1.17em;color: #56b983; font-weight: bold;width:100px"
+                    min="0.01"
+                    max="1"
+                    step="0.001"
+                  >
+                </h3>
                 <div
                   id="Sustain"
                   class="mdc-slider"
@@ -178,7 +211,18 @@
                 </div>
               </div>
               <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-8">
-                <h3>Release:{{roundDecimal(Release.value,3)}}</h3>
+                <h3>
+                  Release:
+                  <input
+                    id="ReleaseInput"
+                    type="number"
+                    v-bind:value="roundDecimal(Release.value,3)"
+                    style="border: 0 none; outline:none; font-family: Roboto,sans-serif; font-size: 1.17em;color: #56b983; font-weight: bold;width:100px"
+                    min="0.01"
+                    max="1"
+                    step="0.001"
+                  >
+                </h3>
                 <div
                   id="Release"
                   class="mdc-slider"
@@ -430,6 +474,62 @@ export default {
             releaseCurve: this.ReleaseCurve.value
           }
         });
+      });
+
+      document.querySelector("#AttackInput").addEventListener("input", () => {
+        this.Attack.value = this.roundDecimal(
+          document.querySelector("#AttackInput").value,
+          3
+        );
+        this.drawEnvelope();
+      });
+      document.querySelector("#AttackInput").addEventListener("change", () => {
+        document.querySelector("#AttackInput").value = this.roundDecimal(
+          document.querySelector("#AttackInput").value,
+          3
+        );
+      });
+
+      document.querySelector("#DecayInput").addEventListener("input", () => {
+        this.Decay.value = this.roundDecimal(
+          document.querySelector("#DecayInput").value,
+          3
+        );
+        this.drawEnvelope();
+      });
+      document.querySelector("#DecayInput").addEventListener("change", () => {
+        document.querySelector("#DecayInput").value = this.roundDecimal(
+          document.querySelector("#DecayInput").value,
+          3
+        );
+      });
+
+      document.querySelector("#SustainInput").addEventListener("input", () => {
+        this.Sustain.value = this.roundDecimal(
+          document.querySelector("#SustainInput").value,
+          3
+        );
+        this.drawEnvelope();
+      });
+      document.querySelector("#SustainInput").addEventListener("change", () => {
+        document.querySelector("#SustainInput").value = this.roundDecimal(
+          document.querySelector("#SustainInput").value,
+          3
+        );
+      });
+
+      document.querySelector("#ReleaseInput").addEventListener("input", () => {
+        this.Release.value = this.roundDecimal(
+          document.querySelector("#ReleaseInput").value,
+          3
+        );
+        this.drawEnvelope();
+      });
+      document.querySelector("#ReleaseInput").addEventListener("change", () => {
+        document.querySelector("#ReleaseInput").value = this.roundDecimal(
+          document.querySelector("#ReleaseInput").value,
+          3
+        );
       });
     } else {
       // canvas-unsupported code here
@@ -705,9 +805,6 @@ export default {
         Math.round(Math.round(val * Math.pow(10, (precision || 0) + 1)) / 10) /
         Math.pow(10, precision || 0)
       );
-    },
-    envelopeLong() {
-      return this.Attack.value + this.Decay.value + this.Release.value;
     }
   }
 };
