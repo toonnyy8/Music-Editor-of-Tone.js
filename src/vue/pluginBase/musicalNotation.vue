@@ -175,7 +175,7 @@
                   role="slider"
                   aria-valuemin="0"
                   aria-valuemax="9"
-                  aria-valuenow="3"
+                  aria-valuenow="4"
                   data-step="1"
                   aria-label="Select Value"
                 >
@@ -318,7 +318,7 @@ export default {
       nowPage: { value: 1 },
       lastDrawPitch: { i: null, j: null },
       mouseDown: false,
-      octave: { value: 1 },
+      octave: { value: 4 },
       checkDuration: { i: null, j: null },
       beatsPerMinute: { value: 1 },
       beatsPerMinute100: { value: 0 },

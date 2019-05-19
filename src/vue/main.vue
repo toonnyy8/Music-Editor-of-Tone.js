@@ -38,6 +38,9 @@
     </div>
 
     <button class="mdc-fab" v-on:click="AddBlock()">Add Block</button>
+    <button class="mdc-fab">Complie Music</button>
+    <br>
+    <br>
     <table>
       <tr>
         <th v-for="block in blocks" :key="block.id" valign="top">

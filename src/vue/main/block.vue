@@ -22,16 +22,16 @@
           <div class="mdc-dialog__content" id="my-dialog-content">
             <button
               class="mdc-fab"
+              v-on:click="addPlugin('filter')"
+              style="width:70px;height:70px;"
+              v-show="block.plugins[block.plugins.length-1]?block.plugins[block.plugins.length-1].pluginType=='filter':true"
+            >filter</button>
+            <button
+              class="mdc-fab"
               v-on:click="addPlugin('base')"
               style="width:70px;height:70px;"
               v-show="block.plugins[block.plugins.length-1]?block.plugins[block.plugins.length-1].pluginType!='B lag':true"
             >base</button>
-            <button
-              class="mdc-fab"
-              v-on:click="addPlugin('filter')"
-              style="width:70px;height:70px;"
-              v-show="block.plugins[block.plugins.length-1]?block.plugins[block.plugins.length-1].pluginType!='B lag':true"
-            >filter</button>
             <button
               class="mdc-fab"
               v-on:click="addPlugin('P lag')"
