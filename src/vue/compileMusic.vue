@@ -138,9 +138,10 @@ export default {
           this.musicPlayFuncs.push(() => {
             return setTimeout(() => {
               this.isPlaying = false;
+              console.log("play end");
             }, this.endTime + 100);
           });
-          console.log("end");
+          console.log("compile end");
           break;
         }
 
