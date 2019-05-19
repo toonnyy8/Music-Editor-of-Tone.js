@@ -19,7 +19,23 @@ export default {
       isCompiled: false,
       musicPlayFuncs: [],
       musicPlayTimeID: [],
-      isPlaying: false
+      isPlaying: false,
+      synths: [],
+      musicalAlphabet: [
+        "C",
+        "C#",
+        "D",
+        "D#",
+        "E",
+        "F",
+        "F#",
+        "G",
+        "G#",
+        "A",
+        "A#",
+        "B"
+      ],
+      endTime: 0
     };
   },
   mounted() {
@@ -40,6 +56,53 @@ export default {
           switch (event.data.data.pluginType) {
             case "base": {
               console.log(event.data.data.data);
+              this.synths.push(
+                new Tone.PolySynth(event.data.data.data.polyphony, Tone.Synth, {
+                  volume: event.data.data.data.volume,
+                  envelope: event.data.data.data.envelope,
+                  oscillator: event.data.data.data.oscillator
+                }).toMaster()
+              );
+              for (
+                let i = 0;
+                i < event.data.data.data.musicalNotation.length;
+                i++
+              ) {
+                for (
+                  let j = 0;
+                  j < event.data.data.data.musicalNotation[i].length;
+                  j++
+                ) {
+                  if (event.data.data.data.musicalNotation[i][j]) {
+                    this.musicPlayFuncs.push(
+                      ((synthNum, pitch, duration, LPD, BPM, time, lag) => {
+                        this.endTime =
+                          this.endTime < 1000 * ((60 / BPM) * time + lag)
+                            ? 1000 * ((60 / BPM) * time + lag)
+                            : this.endTime;
+
+                        return () => {
+                          console.log(synthNum);
+                          return setTimeout(() => {
+                            this.synths[synthNum].triggerAttackRelease(
+                              [pitch],
+                              duration * LPD
+                            );
+                          }, 1000 * ((60 / BPM) * time + lag));
+                        };
+                      })(
+                        this.synths.length - 1,
+                        `${this.musicalAlphabet[j % 12]}${Math.floor(j / 12)}`,
+                        event.data.data.data.musicalNotation[i][j],
+                        event.data.data.data.lengthPerDuration,
+                        event.data.data.data.beatsPerMinute,
+                        i,
+                        this.pluginLagTime + this.blockLagTime
+                      )
+                    );
+                  }
+                }
+              }
               break;
             }
             case "filter": {
@@ -71,6 +134,12 @@ export default {
         }
         case "end": {
           this.isCompiled = true;
+
+          this.musicPlayFuncs.push(() => {
+            return setTimeout(() => {
+              this.isPlaying = false;
+            }, this.endTime + 100);
+          });
           console.log("end");
           break;
         }
