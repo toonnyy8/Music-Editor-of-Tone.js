@@ -70,7 +70,8 @@ export default {
               ) {
                 for (
                   let j = 0;
-                  j < event.data.data.data.musicalNotation[i].length;
+                  j <
+                  Object.keys(event.data.data.data.musicalNotation[i]).length;
                   j++
                 ) {
                   if (event.data.data.data.musicalNotation[i][j]) {
