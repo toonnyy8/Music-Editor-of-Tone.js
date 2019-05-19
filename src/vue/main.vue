@@ -37,8 +37,18 @@
       <div class="mdc-dialog__scrim"></div>
     </div>
 
-    <button class="mdc-fab" v-on:click="AddBlock()">Add Block</button>
-    <button class="mdc-fab" v-on:click="CompileMusic()">Compile Music</button>
+    <button class="mdc-fab" v-on:click="AddBlock()" style="width:100px;height:100px">Add Block</button>
+    <button
+      class="mdc-fab"
+      v-on:click="CompileMusic()"
+      style="width:100px;height:100px"
+    >Compile Music</button>
+    <button
+      class="mdc-fab"
+      v-on:click="DownloadFile()"
+      style="width:100px;height:100px"
+    >Download File</button>
+    <button class="mdc-fab" v-on:click="LoadFile()" style="width:100px;height:100px">Load File</button>
     <br>
     <br>
     <table>
@@ -324,6 +334,37 @@ export default {
             break;
         }
       };
+    },
+    DownloadFile() {
+      let blob = new Blob([JSON.stringify(this.blocks)], {
+        type: "application/json"
+      });
+      let a = document.createElement("a");
+      let url = window.URL.createObjectURL(blob);
+      let filename = "MET.json";
+      a.href = url;
+      a.download = filename;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    },
+    LoadFile() {
+      let load = document.createElement("input");
+      load.type = "file";
+      load.accept = ".json,.met";
+
+      load.onchange = event => {
+        const files = load.files;
+        console.log(files[0]);
+        var reader = new FileReader();
+        reader.addEventListener("loadend", () => {
+          console.log(JSON.parse(reader.result));
+          this.blocks = JSON.parse(reader.result);
+          // reader.result contains the contents of blob as a typed array
+        });
+        reader.readAsBinaryString(files[0]);
+      };
+
+      load.click();
     }
   }
 };
