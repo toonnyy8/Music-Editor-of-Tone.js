@@ -193,7 +193,7 @@ export default {
 
           let ctx = this.canvas.getContext("2d");
 
-          ctx.fillStyle = "rgb(179, 179, 179,0.5)";
+          ctx.fillStyle = "rgb(179, 179, 179,0.4)";
           ctx.fillRect(0, 0, 1920, 1080);
 
           for (let i = 0; i < this.analysers.length; i++) {
@@ -218,6 +218,11 @@ export default {
 
           this.musicEnd = !this.musicEnd;
         } else {
+          let ctx = this.canvas.getContext("2d");
+
+          ctx.fillStyle = "rgb(179, 179, 179)";
+          ctx.fillRect(0, 0, 1920, 1080);
+
           recorder.stop();
           /*let createDownloadLink = () => {
             recorder.exportWAV(function(blob) {
