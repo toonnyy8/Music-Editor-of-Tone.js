@@ -12,6 +12,11 @@
             :stopMusic="stopMusic"
             v-show="moreMethods==2"
           ></musicalNotation>
+          <other
+            :setSynth="setSynth"
+            :setSynthPolyphony="setSynthPolyphony"
+            v-show="moreMethods==3"
+          ></other>
         </div>
         <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2"></div>
       </div>
@@ -46,6 +51,15 @@
           >Musical Notation</button>
           <br>
           <br>
+          <button
+            class="mdc-fab"
+            v-on:click="moreMethods=3;$children[3].initView()"
+            v-bind:disabled="moreMethods==3"
+            v-bind:style="moreMethods==3?'background-color:#5543a9;':'background-color:#7765f7;'"
+            style="width:70px;height:70px;"
+          >Other</button>
+          <br>
+          <br>
         </div>
       </transition>
       <button
@@ -61,15 +75,15 @@
 import envelope from "./pluginBase/envelope.vue";
 import oscillator from "./pluginBase/oscillator.vue";
 import musicalNotation from "./pluginBase/musicalNotation.vue";
+import other from "./pluginBase/other.vue";
 
 import Mousetrap from "mousetrap";
 import "mousetrap/plugins/bind-dictionary/mousetrap-bind-dictionary.min.js";
 import * as Tone from "tone";
 
 let frequency = 4;
-let pow = new Tone.Pow(10);
 let synth = new Tone.PolySynth(6, Tone.Synth, {
-  volume: 6,
+  volume: 10,
   envelope: {
     attack: 0.05,
     decay: 0.01,
@@ -81,16 +95,15 @@ let synth = new Tone.PolySynth(6, Tone.Synth, {
     type: "custom",
     partials: [0, 2, 4, 6, 8]
   }
-})
-  .connect(pow)
-  .toMaster();
+}).toMaster();
 console.log("12345", synth.get());
 
 export default {
   components: {
     envelope: envelope,
     oscillator: oscillator,
-    musicalNotation: musicalNotation
+    musicalNotation: musicalNotation,
+    other: other
   },
   data() {
     return {
@@ -200,7 +213,7 @@ export default {
   methods: {
     setSynth(synthObj) {
       synth.set({
-        volume: 6,
+        volume: synthObj.volume || synth.get().volume,
         envelope: synthObj.envelope || synth.get().envelope,
         oscillator: synthObj.oscillator || synth.get().oscillator
       });
@@ -280,6 +293,13 @@ export default {
     },
     stopMusic(tID) {
       window.clearInterval(tID);
+    },
+    setSynthPolyphony(polyphony) {
+      synth = new Tone.PolySynth(polyphony, Tone.Synth, {
+        volume: synth.get().volume,
+        envelope: synth.get().envelope,
+        oscillator: synth.get().oscillator
+      }).toMaster();
     }
   }
 };

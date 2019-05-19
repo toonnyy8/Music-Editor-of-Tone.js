@@ -7,6 +7,7 @@ import main from "../vue/main.vue"
 import pluginBase from "../vue/pluginBase.vue"
 import pluginPluginLag from "../vue/pluginPluginLag.vue"
 import pluginBlockLag from "../vue/pluginBlockLag.vue"
+import compileMusic from "../vue/compileMusic.vue"
 
 
 if (window.name.split(":")[0] == "SetPlugin") {
@@ -28,6 +29,8 @@ if (window.name.split(":")[0] == "SetPlugin") {
         default:
             break;
     }
+} else if (window.name == "CompileMusic") {
+    new Vue(compileMusic).$mount('#main')
 } else {
     new Vue(main).$mount('#main')
 }

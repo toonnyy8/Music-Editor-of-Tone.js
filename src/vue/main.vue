@@ -38,7 +38,7 @@
     </div>
 
     <button class="mdc-fab" v-on:click="AddBlock()">Add Block</button>
-    <button class="mdc-fab">Complie Music</button>
+    <button class="mdc-fab" v-on:click="CompileMusic()">Compile Music</button>
     <br>
     <br>
     <table>
@@ -90,7 +90,8 @@ export default {
      * ]
      *
      */
-    pluginDialog: { dialog: null, title: null }
+    pluginDialog: { dialog: null, title: null },
+    compileMusicChannel: new BroadcastChannel("compileMusicChannel")
   },
   mounted() {
     let globalChannel = new BroadcastChannel("globalChannel");
@@ -122,7 +123,10 @@ export default {
                   musicalNotation: this.blocks[index[0]].plugins[index[1]].data
                     .musicalNotation,
                   lengthPerDuration: this.blocks[index[0]].plugins[index[1]]
-                    .data.lengthPerDuration
+                    .data.lengthPerDuration,
+                  volume: this.blocks[index[0]].plugins[index[1]].data.volume,
+                  polyphony: this.blocks[index[0]].plugins[index[1]].data
+                    .polyphony
                 }
               );
               break;
@@ -252,6 +256,9 @@ export default {
                   event.data.musicalNotation || plugin.data.musicalNotation;
                 plugin.data.lengthPerDuration =
                   event.data.lengthPerDuration || plugin.data.lengthPerDuration;
+                plugin.data.volume = event.data.volume || plugin.data.volume;
+                plugin.data.polyphony =
+                  event.data.polyphony || plugin.data.polyphony;
                 break;
               }
               case "filter": {
@@ -277,6 +284,42 @@ export default {
 
             break;
           }
+          default:
+            break;
+        }
+      };
+    },
+    CompileMusic() {
+      window.open("./index.html", "CompileMusic");
+      this.compileMusicChannel.onmessage = event => {
+        switch (event.data.instruction) {
+          case "next": {
+            for (let i = event.data.blockNum; i < this.blocks.length; i++) {
+              for (
+                let j = i == event.data.blockNum ? event.data.pluginNum : 0;
+                j < this.blocks[i].plugins.length;
+                j++
+              ) {
+                console.log("postData");
+
+                this.compileMusicChannel.postMessage({
+                  instruction: "postData",
+                  blockNum: i,
+                  pluginNum: j,
+                  data: this.blocks[i].plugins[j]
+                });
+                return;
+              }
+            }
+
+            console.log("end");
+
+            this.compileMusicChannel.postMessage({
+              instruction: "end"
+            });
+            break;
+          }
+
           default:
             break;
         }

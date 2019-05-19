@@ -140,7 +140,9 @@ export default {
               },
               beatsPerMinute: 60,
               lengthPerDuration: 0.02,
-              musicalNotation: musicalNotation
+              musicalNotation: musicalNotation,
+              volume: 10,
+              polyphony: 4
             }
           });
           break;
