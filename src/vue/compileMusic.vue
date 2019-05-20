@@ -25,7 +25,7 @@ export default {
       isPlaying: false,
       musicEnd: true,
       synths: [],
-      analysers: [],
+      analyser: new Tone.Analyser().context.createAnalyser(),
       musicalAlphabet: [
         "C",
         "C#",
@@ -76,12 +76,7 @@ export default {
                   oscillator: event.data.data.data.oscillator
                 }).toMaster()
               );
-              this.analysers.push(
-                this.synths[this.synths.length - 1].context.createAnalyser()
-              );
-              this.synths[this.synths.length - 1].connect(
-                this.analysers[this.analysers.length - 1]
-              );
+              this.synths[this.synths.length - 1].connect(this.analyser);
               for (
                 let i = 0;
                 i < event.data.data.data.musicalNotation.length;
@@ -174,18 +169,11 @@ export default {
     playMusic() {
       this.isPlaying = true;
 
-      let recorder = new Recorder(this.analysers[0]);
+      let recorder = new Recorder(this.analyser);
       recorder.record();
 
       let renderFrame = () => {
-        let frequencyDatas = [
-          new Uint8Array(this.analysers[0].frequencyBinCount)
-        ];
-        for (let i = 0; i < this.analysers.length; i++) {
-          frequencyDatas.push(
-            new Uint8Array(this.analysers[i].frequencyBinCount)
-          );
-        }
+        let frequencyData = new Uint8Array(this.analyser.frequencyBinCount);
 
         if (this.isPlaying == true || this.musicEnd == false) {
           requestAnimationFrame(renderFrame);
@@ -196,15 +184,10 @@ export default {
           ctx.fillStyle = "rgb(179, 179, 179,0.4)";
           ctx.fillRect(0, 0, 1920, 1080);
 
-          for (let i = 0; i < this.analysers.length; i++) {
-            this.analysers[i].getByteFrequencyData(frequencyDatas[i + 1]);
-            for (let j = 0; j < frequencyDatas[0].length; j++) {
-              frequencyDatas[0][j] += frequencyDatas[i + 1][j];
-            }
-          }
+          this.analyser.getByteFrequencyData(frequencyData);
 
-          for (let j = 0; j < frequencyDatas[0].length; j++) {
-            this.musicEnd += frequencyDatas[0][j];
+          for (let j = 0; j < frequencyData.length; j++) {
+            this.musicEnd += frequencyData[j];
 
             ctx.fillStyle = `rgb(${255 * (j / 1024)}, 255, ${255 *
               (1 - j / 1024)})`;
@@ -212,7 +195,7 @@ export default {
               (1920 / 1024) * j,
               1080,
               1920 / 1024,
-              -1080 * (frequencyDatas[0][j] / 256)
+              -1080 * (frequencyData[j] / 256)
             );
           }
 
@@ -224,7 +207,7 @@ export default {
           ctx.fillRect(0, 0, 1920, 1080);
 
           recorder.stop();
-          /*let createDownloadLink = () => {
+          let createDownloadLink = () => {
             recorder.exportWAV(function(blob) {
               var url = URL.createObjectURL(blob);
               var li = document.createElement("li");
@@ -241,7 +224,7 @@ export default {
               document.body.appendChild(li);
             });
           };
-          createDownloadLink();*/
+          createDownloadLink();
           recorder.clear();
         }
       };
