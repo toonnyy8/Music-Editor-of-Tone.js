@@ -27,6 +27,7 @@
     "@material/switch": "^2.1.1",
     "@material/textfield": "^2.1.1",
     "@types/material-components-web": "^0.43.1",
+    "inline-worker": "^1.1.0",
     "mousetrap": "^1.6.3",
     "parcel": "^1.12.3",
     "ramda": "^0.26.1",
