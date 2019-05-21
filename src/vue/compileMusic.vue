@@ -21,8 +21,9 @@
         style="width:75px;height:75px"
       >Download</button>
       <div align="center" class="fixed">
-        <h3 
-        style="border: 0 none; outline:none; font-family: Roboto,sans-serif; font-size: 1.17em;color: #772255; font-weight: bold;">{{Math.round(progressBar.value*100)/100}}s<h3>
+        <h3
+          style="border: 0 none; outline:none; font-family: Roboto,sans-serif; font-size: 1.17em;color: #772255; font-weight: bold;"
+        >{{Math.round(progressBar.value*100)/100}}s</h3>
         <div
           id="ProgressBar"
           class="mdc-slider"
@@ -69,6 +70,7 @@ export default {
       musicEnd: true,
       canDownload: false,
       synths: [],
+      filters: [],
       analyser: analyser,
       musicalAlphabet: [
         "C",
@@ -86,7 +88,7 @@ export default {
       ],
       endTime: 0,
       downloadLink: document.createElement("a"),
-      progressBar: {value:0},
+      progressBar: { value: 0 },
       rafID: null,
       recorder: null
     };
@@ -117,14 +119,24 @@ export default {
           switch (event.data.data.pluginType) {
             case "base": {
               console.log(event.data.data.data);
+
+              /*const lpf = new Tone.Filter({
+                type: "lowpass",
+                frequency: 3000
+              });
+              const hpf = new Tone.Filter({
+                type: "highpass",
+                frequency: 2500
+              });*/
+
               this.synths.push(
                 new Tone.PolySynth(event.data.data.data.polyphony, Tone.Synth, {
                   volume: event.data.data.data.volume,
                   envelope: event.data.data.data.envelope,
                   oscillator: event.data.data.data.oscillator
-                }).toMaster()
+                }).chain(...this.filters, this.analyser, Tone.Master) //.chain(...[hpf, lpf], this.analyser, Tone.Master)
               );
-              this.synths[this.synths.length - 1].connect(this.analyser);
+
               for (
                 let i = 0;
                 i < event.data.data.data.musicalNotation.length;
