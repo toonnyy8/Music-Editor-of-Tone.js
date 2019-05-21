@@ -20,6 +20,30 @@
         v-show="canDownload"
         style="width:75px;height:75px"
       >Download</button>
+      <div align="center" class="fixed">
+        <h3 
+        style="border: 0 none; outline:none; font-family: Roboto,sans-serif; font-size: 1.17em;color: #772255; font-weight: bold;">{{Math.round(progressBar.value*100)/100}}s<h3>
+        <div
+          id="ProgressBar"
+          class="mdc-slider"
+          tabindex="0"
+          role="slider"
+          aria-valuemin="0"
+          aria-valuemax="1"
+          aria-valuenow="0"
+          aria-label="Select Value"
+        >
+          <div class="mdc-slider__track-container">
+            <div class="mdc-slider__track"></div>
+          </div>
+          <div class="mdc-slider__thumb-container">
+            <svg class="mdc-slider__thumb" width="21" height="21">
+              <circle cx="10.5" cy="10.5" r="7.875"></circle>
+            </svg>
+            <div class="mdc-slider__focus-ring"></div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -27,6 +51,7 @@
 <script>
 import * as Tone from "tone";
 import Recorder from "../lib/recorder";
+import { MDCSlider } from "@material/slider";
 
 export default {
   data() {
@@ -60,7 +85,10 @@ export default {
         "B"
       ],
       endTime: 0,
-      downloadLink: document.createElement("a")
+      downloadLink: document.createElement("a"),
+      progressBar: {value:0},
+      rafID: null,
+      recorder: null
     };
   },
   mounted() {
@@ -116,14 +144,19 @@ export default {
                             ? 1000 * ((60 / BPM) * time + lag)
                             : this.endTime;
 
-                        return () => {
+                        return startTime => {
+                          startTime = startTime || 0;
                           console.log(synthNum);
-                          return setTimeout(() => {
-                            this.synths[synthNum].triggerAttackRelease(
-                              [pitch],
-                              duration * LPD
-                            );
-                          }, 1000 * ((60 / BPM) * time + lag));
+                          if ((60 / BPM) * time + lag - startTime >= 0) {
+                            return setTimeout(() => {
+                              this.synths[synthNum].triggerAttackRelease(
+                                [pitch],
+                                duration * LPD
+                              );
+                            }, 1000 * ((60 / BPM) * time + lag - startTime));
+                          } else {
+                            return setTimeout(() => {});
+                          }
                         };
                       })(
                         this.synths.length - 1,
@@ -170,12 +203,31 @@ export default {
         case "end": {
           this.isCompiled = true;
 
-          this.musicPlayFuncs.push(() => {
-            return setTimeout(() => {
-              this.isPlaying = false;
-              console.log("play end");
-            }, this.endTime + 100);
+          this.musicPlayFuncs.push(startTime => {
+            startTime = startTime || 0;
+            if (this.endTime + 100 - startTime * 1000 >= 0) {
+              return setTimeout(() => {
+                this.isPlaying = false;
+                console.log("play end");
+              }, this.endTime + 100 - startTime * 1000);
+            } else {
+              return setTimeout(() => {});
+            }
           });
+
+          setTimeout(() => {
+            this.progressBar = new MDCSlider(
+              document.querySelector("#ProgressBar")
+            );
+            this.progressBar.max = (this.endTime + 100) / 1000;
+            this.progressBar.listen("MDCSlider:change", () => {
+              //console.log(this.progressBar.value);
+              if (this.isPlaying) {
+                this.stopMusic();
+                this.playMusic();
+              }
+            });
+          }, 100);
           console.log("compile end");
           break;
         }
@@ -190,14 +242,16 @@ export default {
       this.isPlaying = true;
       this.canDownload = false;
 
-      let recorder = new Recorder(this.analyser);
-      recorder.record();
+      cancelAnimationFrame(this.rafID);
+
+      this.recorder = this.recorder || new Recorder(this.analyser);
+      this.recorder.record();
 
       let renderFrame = () => {
         let frequencyData = new Uint8Array(this.analyser.frequencyBinCount);
 
         if (this.isPlaying == true || this.musicEnd == false) {
-          requestAnimationFrame(renderFrame);
+          this.rafID = requestAnimationFrame(renderFrame);
           this.musicEnd = false;
 
           let ctx = this.canvas.getContext("2d");
@@ -220,6 +274,7 @@ export default {
             );
           }
 
+          this.progressBar.value += 1 / 60;
           this.musicEnd = !this.musicEnd;
         } else {
           let ctx = this.canvas.getContext("2d");
@@ -229,19 +284,23 @@ export default {
 
           this.canDownload = true;
 
-          recorder.stop();
-          recorder.exportWAV(blob => {
+          this.recorder.stop();
+          this.recorder.exportWAV(blob => {
             var url = URL.createObjectURL(blob);
             this.downloadLink.href = url;
             this.downloadLink.download = new Date().toISOString() + ".wav";
           });
-          recorder.clear();
+          this.recorder.clear();
+
+          this.recorder = null;
         }
       };
-      requestAnimationFrame(renderFrame);
+      this.rafID = requestAnimationFrame(renderFrame);
 
       for (let i = 0; i < this.musicPlayFuncs.length; i++) {
-        this.musicPlayTimeID[i] = this.musicPlayFuncs[i]();
+        this.musicPlayTimeID[i] = this.musicPlayFuncs[i](
+          this.progressBar.value
+        );
       }
     },
     stopMusic() {
@@ -256,3 +315,12 @@ export default {
   }
 };
 </script>
+
+<style>
+.fixed {
+  position: fixed;
+  bottom: 10px;
+  right: 5%;
+  width: 90%;
+}
+</style>
