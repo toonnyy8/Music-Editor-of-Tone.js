@@ -2,8 +2,24 @@
   <div>
     <div id="Waveform"></div>
     <div v-if="isCompiled">
-      <button class="mdc-fab" v-on:click="playMusic()" v-show="!isPlaying">Play</button>
-      <button class="mdc-fab" v-on:click="stopMusic()" v-show="isPlaying">Stop</button>
+      <button
+        class="mdc-fab"
+        v-on:click="playMusic()"
+        v-show="!isPlaying"
+        style="width:75px;height:75px"
+      >Play</button>
+      <button
+        class="mdc-fab"
+        v-on:click="stopMusic()"
+        v-show="isPlaying"
+        style="width:75px;height:75px"
+      >Stop</button>
+      <button
+        class="mdc-fab"
+        v-on:click="DownloadWAV()"
+        v-show="canDownload"
+        style="width:75px;height:75px"
+      >Download</button>
     </div>
   </div>
 </template>
@@ -14,6 +30,8 @@ import Recorder from "../lib/recorder";
 
 export default {
   data() {
+    let analyser = new Tone.Analyser().context.createAnalyser();
+
     return {
       compileMusicChannel: new BroadcastChannel("compileMusicChannel"),
       canvas: document.createElement("canvas"),
@@ -24,8 +42,9 @@ export default {
       musicPlayTimeID: [],
       isPlaying: false,
       musicEnd: true,
+      canDownload: false,
       synths: [],
-      analyser: new Tone.Analyser().context.createAnalyser(),
+      analyser: analyser,
       musicalAlphabet: [
         "C",
         "C#",
@@ -40,7 +59,8 @@ export default {
         "A#",
         "B"
       ],
-      endTime: 0
+      endTime: 0,
+      downloadLink: document.createElement("a")
     };
   },
   mounted() {
@@ -168,6 +188,7 @@ export default {
   methods: {
     playMusic() {
       this.isPlaying = true;
+      this.canDownload = false;
 
       let recorder = new Recorder(this.analyser);
       recorder.record();
@@ -206,25 +227,14 @@ export default {
           ctx.fillStyle = "rgb(179, 179, 179)";
           ctx.fillRect(0, 0, 1920, 1080);
 
-          recorder.stop();
-          let createDownloadLink = () => {
-            recorder.exportWAV(function(blob) {
-              var url = URL.createObjectURL(blob);
-              var li = document.createElement("li");
-              var au = document.createElement("audio");
-              var hf = document.createElement("a");
+          this.canDownload = true;
 
-              au.controls = true;
-              au.src = url;
-              hf.href = url;
-              hf.download = new Date().toISOString() + ".wav";
-              hf.innerHTML = hf.download;
-              li.appendChild(au);
-              li.appendChild(hf);
-              document.body.appendChild(li);
-            });
-          };
-          createDownloadLink();
+          recorder.stop();
+          recorder.exportWAV(blob => {
+            var url = URL.createObjectURL(blob);
+            this.downloadLink.href = url;
+            this.downloadLink.download = new Date().toISOString() + ".wav";
+          });
           recorder.clear();
         }
       };
@@ -239,6 +249,9 @@ export default {
       for (let i = 0; i < this.musicPlayFuncs.length; i++) {
         window.clearInterval(this.musicPlayTimeID[i]);
       }
+    },
+    DownloadWAV() {
+      this.downloadLink.click();
     }
   }
 };
