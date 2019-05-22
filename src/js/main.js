@@ -4,6 +4,7 @@ import "../lib/@material/material-components-web.min.css"
 import Vue from "vue"
 
 import main from "../vue/main.vue"
+import pluginFilter from "../vue/pluginFilter.vue"
 import pluginBase from "../vue/pluginBase.vue"
 import pluginPluginLag from "../vue/pluginPluginLag.vue"
 import pluginBlockLag from "../vue/pluginBlockLag.vue"
@@ -14,6 +15,10 @@ if (window.name.split(":")[0] == "SetPlugin") {
     console.log(window.name.split(":")[2])
 
     switch (window.name.split(":")[2]) {
+        case "filter": {
+            new Vue(pluginFilter).$mount('#main')
+            break;
+        }
         case "base": {
             new Vue(pluginBase).$mount('#main')
             break;

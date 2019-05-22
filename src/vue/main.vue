@@ -142,6 +142,17 @@ export default {
               break;
             }
             case "filter": {
+              this.blocks[index[0]].plugins[index[1]].pluginChannel.postMessage(
+                {
+                  instruction: "Init Data",
+                  type: this.blocks[index[0]].plugins[index[1]].data.type,
+                  frequency: this.blocks[index[0]].plugins[index[1]].data
+                    .frequency,
+                  Q: this.blocks[index[0]].plugins[index[1]].data.Q,
+                  gain: this.blocks[index[0]].plugins[index[1]].data.gain,
+                  rolloff: this.blocks[index[0]].plugins[index[1]].data.rolloff
+                }
+              );
               break;
             }
             case "P lag": {
@@ -272,6 +283,12 @@ export default {
                 break;
               }
               case "filter": {
+                plugin.data.type = event.data.type || plugin.data.type;
+                plugin.data.frequency =
+                  event.data.frequency || plugin.data.frequency;
+                plugin.data.rolloff = event.data.rolloff || plugin.data.rolloff;
+                plugin.data.Q = event.data.Q || plugin.data.Q;
+                plugin.data.gain = event.data.gain || plugin.data.gain;
                 break;
               }
               case "P lag": {

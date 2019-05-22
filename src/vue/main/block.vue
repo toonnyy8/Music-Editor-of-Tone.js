@@ -152,7 +152,13 @@ export default {
             id: this.block.plugins.length,
             pluginType: "filter",
             pluginChannel: null,
-            data: {}
+            data: {
+              type: "lowpass",
+              frequency: 440,
+              rolloff: -24,
+              Q: 6,
+              gain: 0
+            }
           });
           break;
         }

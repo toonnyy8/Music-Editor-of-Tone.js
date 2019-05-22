@@ -120,14 +120,16 @@ export default {
             case "base": {
               console.log(event.data.data.data);
 
-              /*const lpf = new Tone.Filter({
+              /**/ const lpf = new Tone.Filter({
                 type: "lowpass",
                 frequency: 3000
               });
               const hpf = new Tone.Filter({
                 type: "highpass",
                 frequency: 2500
-              });*/
+              });
+
+              //console.log(lpf.getFrequencyResponse(1024));
 
               this.synths.push(
                 new Tone.PolySynth(event.data.data.data.polyphony, Tone.Synth, {
