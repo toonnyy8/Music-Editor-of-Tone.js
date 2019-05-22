@@ -262,6 +262,10 @@ export default {
       let renderFrame = () => {
         let frequencyData = new Uint8Array(this.analyser.frequencyBinCount);
 
+        if (this.isPlaying == true) {
+          this.progressBar.value += 1 / 60;
+        }
+
         if (this.isPlaying == true || this.musicEnd == false) {
           this.rafID = requestAnimationFrame(renderFrame);
           this.musicEnd = false;
@@ -286,7 +290,6 @@ export default {
             );
           }
 
-          this.progressBar.value += 1 / 60;
           this.musicEnd = !this.musicEnd;
         } else {
           let ctx = this.canvas.getContext("2d");
