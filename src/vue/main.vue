@@ -58,15 +58,12 @@
             </div>
           </div>
           <footer class="mdc-dialog__actions">
-            <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="no">
-              <span class="mdc-button__label">No</span>
-            </button>
             <button
               type="button"
               class="mdc-button mdc-dialog__button"
               data-mdc-dialog-action="yes"
             >
-              <span class="mdc-button__label">Yes</span>
+              <span class="mdc-button__label">OK</span>
             </button>
           </footer>
         </div>
