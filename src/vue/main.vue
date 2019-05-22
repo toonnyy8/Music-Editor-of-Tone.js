@@ -19,7 +19,44 @@
             <!--
             -->
           </h2>
-          <div class="mdc-dialog__content" id="my-dialog-content">Dialog body text goes here.</div>
+          <div class="mdc-dialog__content" id="my-dialog-content">
+            <div style="color: #222222" v-if="pluginDialog.title=='filter'">
+              Type : {{pluginDialog.data.type}}
+              <br>
+              Frequency : {{pluginDialog.data.frequency}}
+              <br>
+              Rolloff : {{pluginDialog.data.rolloff }}
+              <br>
+              Q : {{pluginDialog.data.Q}}
+              <br>
+              Gain : {{pluginDialog.data.gain}}
+            </div>
+            <div style="color: #222222" v-else-if="pluginDialog.title=='base'">
+              Attack : {{pluginDialog.data.envelope.attack}}
+              <br>
+              Decay : {{pluginDialog.data.envelope.decay}}
+              <br>
+              Sustain : {{pluginDialog.data.envelope.sustain}}
+              <br>
+              Release : {{pluginDialog.data.envelope.release}}
+              <br>
+              Volume : {{pluginDialog.data.volume}}
+              <br>
+              Polyphony : {{pluginDialog.data.polyphony}}
+              <br>
+              BPM : {{pluginDialog.data.beatsPerMinute}}
+            </div>
+            <div style="color: #222222" v-else-if="pluginDialog.title=='P lag'">
+              BPM : {{pluginDialog.data.beatsPerMinute}}
+              <br>
+              Delayed Beats : {{pluginDialog.data.delayedBeats}}
+            </div>
+            <div style="color: #222222" v-else-if="pluginDialog.title=='B lag'">
+              BPM : {{pluginDialog.data.beatsPerMinute}}
+              <br>
+              Delayed Beats : {{pluginDialog.data.delayedBeats}}
+            </div>
+          </div>
           <footer class="mdc-dialog__actions">
             <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="no">
               <span class="mdc-button__label">No</span>
@@ -106,7 +143,7 @@ export default {
      * ]
      *
      */
-    pluginDialog: { dialog: null, title: null },
+    pluginDialog: { dialog: null, title: null, data: null },
     compileMusicChannel: new BroadcastChannel("compileMusicChannel")
   },
   mounted() {
@@ -257,8 +294,9 @@ export default {
         }
       }
     },
-    LookPlugin: function(pluginType) {
-      this.pluginDialog.title = pluginType;
+    LookPlugin: function(plugin) {
+      this.pluginDialog.title = plugin.pluginType;
+      this.pluginDialog.data = plugin.data;
       this.pluginDialog.dialog.open();
     },
     BindPluginChannel: function(plugin) {

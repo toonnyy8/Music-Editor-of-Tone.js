@@ -7,7 +7,7 @@
       <button
         class="mdc-button mdc-button-dark"
         style="width: 150%"
-        v-on:click="LookPlugin(plugin.pluginType)"
+        v-on:click="LookPlugin(plugin)"
       >{{plugin.pluginType}}</button>
     </div>
 
