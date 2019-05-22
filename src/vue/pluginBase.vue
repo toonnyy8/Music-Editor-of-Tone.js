@@ -305,9 +305,6 @@ export default {
 };
 </script>
 <style scoped>
-div {
-  color: #56b983;
-}
 .fixed {
   position: fixed;
   bottom: 70px;

@@ -36,19 +36,25 @@
       </div>
       <div class="mdc-dialog__scrim"></div>
     </div>
-
-    <button class="mdc-fab" v-on:click="AddBlock()" style="width:100px;height:100px">Add Block</button>
-    <button
-      class="mdc-fab"
-      v-on:click="CompileMusic()"
-      style="width:100px;height:100px"
-    >Compile Music</button>
-    <button
-      class="mdc-fab"
-      v-on:click="DownloadFile()"
-      style="width:100px;height:100px"
-    >Download File</button>
-    <button class="mdc-fab" v-on:click="LoadFile()" style="width:100px;height:100px">Load File</button>
+    <div class="fixed">
+      <button class="mdc-fab" v-on:click="AddBlock()" style="width:100px;height:100px">Add Block</button>
+      <button
+        class="mdc-fab"
+        v-on:click="CompileMusic()"
+        style="width:100px;height:100px"
+      >Compile Music</button>
+      <button
+        class="mdc-fab"
+        v-on:click="DownloadFile()"
+        style="width:100px;height:100px"
+      >Download File</button>
+      <button class="mdc-fab" v-on:click="LoadFile()" style="width:100px;height:100px">Load File</button>
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
     <br>
     <br>
     <table>
@@ -405,5 +411,14 @@ div {
 }
 .mdc-button:not(:disabled).mdc-button-dark {
   color: var(--mdc-theme-mytheme);
+}
+</style>
+
+<style scoped>
+.fixed {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 10;
 }
 </style>
