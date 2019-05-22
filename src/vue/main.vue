@@ -276,8 +276,13 @@ export default {
                 plugin.data.musicalNotation =
                   event.data.musicalNotation || plugin.data.musicalNotation;
                 plugin.data.lengthPerDuration =
-                  event.data.lengthPerDuration || plugin.data.lengthPerDuration;
-                plugin.data.volume = event.data.volume || plugin.data.volume;
+                  event.data.lengthPerDuration != null
+                    ? event.data.lengthPerDuration
+                    : plugin.data.lengthPerDuration;
+                plugin.data.volume =
+                  event.data.volume != null
+                    ? event.data.volume
+                    : plugin.data.volume;
                 plugin.data.polyphony =
                   event.data.polyphony || plugin.data.polyphony;
                 break;
@@ -287,8 +292,10 @@ export default {
                 plugin.data.frequency =
                   event.data.frequency || plugin.data.frequency;
                 plugin.data.rolloff = event.data.rolloff || plugin.data.rolloff;
-                plugin.data.Q = event.data.Q || plugin.data.Q;
-                plugin.data.gain = event.data.gain || plugin.data.gain;
+                plugin.data.Q =
+                  event.data.Q != null ? event.data.Q : plugin.data.Q;
+                plugin.data.gain =
+                  event.data.gain != null ? event.data.gain : plugin.data.gain;
                 break;
               }
               case "P lag": {
@@ -387,6 +394,9 @@ export default {
 };
 </script>
 <style>
+div {
+  color: #56b983;
+}
 :root {
   --mdc-theme-mytheme: #5a2765;
 }

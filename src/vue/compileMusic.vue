@@ -70,7 +70,7 @@ export default {
       musicEnd: true,
       canDownload: false,
       synths: [],
-      filters: [],
+      filters: [[]],
       analyser: analyser,
       musicalAlphabet: [
         "C",
@@ -110,33 +110,23 @@ export default {
     this.compileMusicChannel.onmessage = () => {
       switch (event.data.instruction) {
         case "postData": {
-          //console.log(event.data);
-
           if (event.data.pluginNum == 0) {
             this.pluginLagTime = 0;
+            this.filters.push([]);
           }
 
           switch (event.data.data.pluginType) {
             case "base": {
-              console.log(event.data.data.data);
-
-              /**/ const lpf = new Tone.Filter({
-                type: "lowpass",
-                frequency: 3000
-              });
-              const hpf = new Tone.Filter({
-                type: "highpass",
-                frequency: 2500
-              });
-
-              //console.log(lpf.getFrequencyResponse(1024));
-
               this.synths.push(
                 new Tone.PolySynth(event.data.data.data.polyphony, Tone.Synth, {
                   volume: event.data.data.data.volume,
                   envelope: event.data.data.data.envelope,
                   oscillator: event.data.data.data.oscillator
-                }).chain(...this.filters, this.analyser, Tone.Master) //.chain(...[hpf, lpf], this.analyser, Tone.Master)
+                }).chain(
+                  ...this.filters[event.data.blockNum],
+                  this.analyser,
+                  Tone.Master
+                )
               );
 
               for (
@@ -188,6 +178,15 @@ export default {
               break;
             }
             case "filter": {
+              this.filters[event.data.blockNum].push(
+                new Tone.Filter({
+                  type: event.data.data.data.type,
+                  frequency: event.data.data.data.frequency,
+                  rolloff: event.data.data.data.rolloff,
+                  Q: event.data.data.data.Q,
+                  gain: event.data.data.data.gain
+                })
+              );
               break;
             }
             case "P lag": {
@@ -235,7 +234,6 @@ export default {
             );
             this.progressBar.max = (this.endTime + 100) / 1000;
             this.progressBar.listen("MDCSlider:change", () => {
-              //console.log(this.progressBar.value);
               if (this.isPlaying) {
                 this.stopMusic();
                 this.playMusic();
@@ -330,7 +328,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .fixed {
   position: fixed;
   bottom: 10px;

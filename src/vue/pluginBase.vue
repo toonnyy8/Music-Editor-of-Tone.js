@@ -304,8 +304,7 @@ export default {
   }
 };
 </script>
-
-<style lang="css">
+<style scoped>
 div {
   color: #56b983;
 }

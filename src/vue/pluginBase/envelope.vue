@@ -482,12 +482,36 @@ export default {
           3
         );
         this.drawEnvelope();
+        this.channel.postMessage({
+          instruction: "Set Plugin Data",
+          envelope: {
+            attack: this.Attack.value,
+            attackCurve: this.AttackCurve.value,
+            decay: this.Decay.value,
+            decayCurve: this.DecayCurve.value,
+            sustain: this.Sustain.value,
+            release: this.Release.value,
+            releaseCurve: this.ReleaseCurve.value
+          }
+        });
       });
       document.querySelector("#AttackInput").addEventListener("change", () => {
         document.querySelector("#AttackInput").value = this.roundDecimal(
           document.querySelector("#AttackInput").value,
           3
         );
+        this.channel.postMessage({
+          instruction: "Set Plugin Data",
+          envelope: {
+            attack: this.Attack.value,
+            attackCurve: this.AttackCurve.value,
+            decay: this.Decay.value,
+            decayCurve: this.DecayCurve.value,
+            sustain: this.Sustain.value,
+            release: this.Release.value,
+            releaseCurve: this.ReleaseCurve.value
+          }
+        });
       });
 
       document.querySelector("#DecayInput").addEventListener("input", () => {
@@ -496,12 +520,36 @@ export default {
           3
         );
         this.drawEnvelope();
+        this.channel.postMessage({
+          instruction: "Set Plugin Data",
+          envelope: {
+            attack: this.Attack.value,
+            attackCurve: this.AttackCurve.value,
+            decay: this.Decay.value,
+            decayCurve: this.DecayCurve.value,
+            sustain: this.Sustain.value,
+            release: this.Release.value,
+            releaseCurve: this.ReleaseCurve.value
+          }
+        });
       });
       document.querySelector("#DecayInput").addEventListener("change", () => {
         document.querySelector("#DecayInput").value = this.roundDecimal(
           document.querySelector("#DecayInput").value,
           3
         );
+        this.channel.postMessage({
+          instruction: "Set Plugin Data",
+          envelope: {
+            attack: this.Attack.value,
+            attackCurve: this.AttackCurve.value,
+            decay: this.Decay.value,
+            decayCurve: this.DecayCurve.value,
+            sustain: this.Sustain.value,
+            release: this.Release.value,
+            releaseCurve: this.ReleaseCurve.value
+          }
+        });
       });
 
       document.querySelector("#SustainInput").addEventListener("input", () => {
@@ -510,12 +558,36 @@ export default {
           3
         );
         this.drawEnvelope();
+        this.channel.postMessage({
+          instruction: "Set Plugin Data",
+          envelope: {
+            attack: this.Attack.value,
+            attackCurve: this.AttackCurve.value,
+            decay: this.Decay.value,
+            decayCurve: this.DecayCurve.value,
+            sustain: this.Sustain.value,
+            release: this.Release.value,
+            releaseCurve: this.ReleaseCurve.value
+          }
+        });
       });
       document.querySelector("#SustainInput").addEventListener("change", () => {
         document.querySelector("#SustainInput").value = this.roundDecimal(
           document.querySelector("#SustainInput").value,
           3
         );
+        this.channel.postMessage({
+          instruction: "Set Plugin Data",
+          envelope: {
+            attack: this.Attack.value,
+            attackCurve: this.AttackCurve.value,
+            decay: this.Decay.value,
+            decayCurve: this.DecayCurve.value,
+            sustain: this.Sustain.value,
+            release: this.Release.value,
+            releaseCurve: this.ReleaseCurve.value
+          }
+        });
       });
 
       document.querySelector("#ReleaseInput").addEventListener("input", () => {
@@ -524,12 +596,36 @@ export default {
           3
         );
         this.drawEnvelope();
+        this.channel.postMessage({
+          instruction: "Set Plugin Data",
+          envelope: {
+            attack: this.Attack.value,
+            attackCurve: this.AttackCurve.value,
+            decay: this.Decay.value,
+            decayCurve: this.DecayCurve.value,
+            sustain: this.Sustain.value,
+            release: this.Release.value,
+            releaseCurve: this.ReleaseCurve.value
+          }
+        });
       });
       document.querySelector("#ReleaseInput").addEventListener("change", () => {
         document.querySelector("#ReleaseInput").value = this.roundDecimal(
           document.querySelector("#ReleaseInput").value,
           3
         );
+        this.channel.postMessage({
+          instruction: "Set Plugin Data",
+          envelope: {
+            attack: this.Attack.value,
+            attackCurve: this.AttackCurve.value,
+            decay: this.Decay.value,
+            decayCurve: this.DecayCurve.value,
+            sustain: this.Sustain.value,
+            release: this.Release.value,
+            releaseCurve: this.ReleaseCurve.value
+          }
+        });
       });
     } else {
       // canvas-unsupported code here

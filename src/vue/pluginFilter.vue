@@ -243,29 +243,67 @@ export default {
 
     document.querySelector("#FrequencyInput").addEventListener("input", () => {
       this.frequency.value = document.querySelector("#FrequencyInput").value;
+
+      this.channel.postMessage({
+        instruction: "Set Plugin Data",
+        frequency: this.frequency.value
+      });
+      this.setFilter();
+      this.drawFilter();
     });
-    document
-      .querySelector("#FrequencyInput")
-      .addEventListener("input", () => {});
+    document.querySelector("#FrequencyInput").addEventListener("change", () => {
+      this.channel.postMessage({
+        instruction: "Set Plugin Data",
+        frequency: this.frequency.value
+      });
+      this.setFilter();
+      this.drawFilter();
+    });
 
     document.querySelector("#QInput").addEventListener("input", () => {
       this.Q.value =
         Math.round(document.querySelector("#QInput").value * 10) / 10;
-      this.filter.Q = this.Q.value;
+
+      this.channel.postMessage({
+        instruction: "Set Plugin Data",
+        Q: this.Q.value
+      });
+      this.setFilter();
+      this.drawFilter();
     });
     document.querySelector("#QInput").addEventListener("change", () => {
       document.querySelector("#QInput").value =
         Math.round(document.querySelector("#QInput").value * 10) / 10;
+
+      this.channel.postMessage({
+        instruction: "Set Plugin Data",
+        Q: this.Q.value
+      });
+      this.setFilter();
+      this.drawFilter();
     });
 
     document.querySelector("#GainInput").addEventListener("input", () => {
       this.gain.value =
         Math.round(document.querySelector("#GainInput").value * 10) / 10;
-      this.filter.gain = this.gain.value;
+
+      this.channel.postMessage({
+        instruction: "Set Plugin Data",
+        gain: this.gain.value
+      });
+      this.setFilter();
+      this.drawFilter();
     });
     document.querySelector("#GainInput").addEventListener("change", () => {
       document.querySelector("#GainInput").value =
         Math.round(document.querySelector("#GainInput").value * 10) / 10;
+
+      this.channel.postMessage({
+        instruction: "Set Plugin Data",
+        gain: this.gain.value
+      });
+      this.setFilter();
+      this.drawFilter();
     });
 
     this.type.listen("MDCSelect:change", () => {
@@ -373,13 +411,9 @@ export default {
           this.gain.value = event.data.gain;
           this.rolloff.value = Math.log2(event.data.rolloff / -12);
 
-          this.filter = new Tone.Filter({
-            type: this.type.value,
-            frequency: this.frequency.value,
-            rolloff: 2 ** this.rolloff.value * -12,
-            Q: this.Q.value,
-            gain: this.gain.value
-          });
+          this.setFilter();
+          this.drawFilter();
+
           break;
         }
         default:

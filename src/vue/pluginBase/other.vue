@@ -119,10 +119,18 @@ export default {
     document.querySelector("#VolumeInput").addEventListener("input", () => {
       this.volume.value =
         Math.round(document.querySelector("#VolumeInput").value * 10) / 10;
+      this.channel.postMessage({
+        instruction: "Set Plugin Data",
+        volume: this.volume.value
+      });
     });
     document.querySelector("#VolumeInput").addEventListener("change", () => {
       document.querySelector("#VolumeInput").value =
         Math.round(document.querySelector("#VolumeInput").value * 10) / 10;
+      this.channel.postMessage({
+        instruction: "Set Plugin Data",
+        volume: this.volume.value
+      });
     });
   },
   methods: {

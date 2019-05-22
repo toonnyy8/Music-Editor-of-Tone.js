@@ -413,10 +413,18 @@ export default {
       this.lengthPerDuration.value =
         Math.floor(document.querySelector("#LPDinput").value * 10000) / 10000;
       this.drawScale();
+      this.channel.postMessage({
+        instruction: "Set Plugin Data",
+        lengthPerDuration: this.lengthPerDuration.value
+      });
     });
     document.querySelector("#LPDinput").addEventListener("change", () => {
       document.querySelector("#LPDinput").value =
         Math.floor(document.querySelector("#LPDinput").value * 10000) / 10000;
+      this.channel.postMessage({
+        instruction: "Set Plugin Data",
+        lengthPerDuration: this.lengthPerDuration.value
+      });
     });
 
     if (this.canvas.getContext) {
