@@ -83,6 +83,7 @@
             :BindPluginChannel="BindPluginChannel"
           ></plugin>
         </div>
+        <hr>
       </div>
       <div class="mdc-card__actions">
         <div class="mdc-card__action-buttons">
