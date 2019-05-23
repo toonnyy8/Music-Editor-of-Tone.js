@@ -24,24 +24,25 @@
               class="mdc-fab"
               v-on:click="addPlugin('filter')"
               style="width:70px;height:70px;"
-              v-show="block.plugins[block.plugins.length-1]?block.plugins[block.plugins.length-1].pluginType=='filter':true"
+              v-show="block.plugins[selectPluginTypeDialog.id-1]?block.plugins[selectPluginTypeDialog.id-1].pluginType=='filter':true"
             >filter</button>
             <button
               class="mdc-fab"
               v-on:click="addPlugin('base')"
               style="width:70px;height:70px;"
-              v-show="block.plugins[block.plugins.length-1]?block.plugins[block.plugins.length-1].pluginType!='B lag':true"
+              v-show="(!block.plugins[selectPluginTypeDialog.id]||block.plugins[selectPluginTypeDialog.id].pluginType!='filter')&&(!block.plugins[selectPluginTypeDialog.id-1]||block.plugins[selectPluginTypeDialog.id-1].pluginType!='B lag')"
             >base</button>
             <button
               class="mdc-fab"
               v-on:click="addPlugin('P lag')"
               style="width:70px;height:70px;"
-              v-show="block.plugins[block.plugins.length-1]?block.plugins[block.plugins.length-1].pluginType!='B lag':true"
+              v-show="(!block.plugins[selectPluginTypeDialog.id]||block.plugins[selectPluginTypeDialog.id].pluginType!='filter')&&(!block.plugins[selectPluginTypeDialog.id-1]||block.plugins[selectPluginTypeDialog.id-1].pluginType!='B lag')"
             >plugin lag</button>
             <button
               class="mdc-fab"
               v-on:click="addPlugin('B lag')"
               style="width:70px;height:70px;"
+              v-show="block.plugins[selectPluginTypeDialog.id]?block.plugins[selectPluginTypeDialog.id].pluginType=='B lag':true"
             >block lag</button>
           </div>
           <footer class="mdc-dialog__actions">
@@ -58,17 +59,22 @@
         <div class="mdc-card__action-buttons">
           <button
             class="mdc-button mdc-card__action mdc-card__action--button"
-            v-on:click="selectPluginType()"
-          >Add Plugin</button>
-          <button
-            class="mdc-button mdc-card__action mdc-card__action--button"
             v-on:click="DeleteBlock(block.id)"
+            style="width:185px"
           >Delete Block</button>
         </div>
       </div>
       <div>
         <div v-for="plugin in block.plugins" :key="plugin.id">
-          <hr>
+          <div class="add-plugin">
+            <button
+              class="mdc-fab mdc-fab--mini mdc-ripple-upgraded"
+              v-on:click="selectPluginType(plugin.id)"
+            >
+              <i class="material-icons">add</i>
+            </button>
+            <hr>
+          </div>
           <plugin
             :plugin="plugin"
             :DeletePlugin="BuildDeletePlugin(block.id,block.plugins)"
@@ -76,6 +82,15 @@
             :SetPlugin="BuildSetPlugin(block.id)"
             :BindPluginChannel="BindPluginChannel"
           ></plugin>
+        </div>
+      </div>
+      <div class="mdc-card__actions">
+        <div class="mdc-card__action-buttons">
+          <button
+            class="mdc-button mdc-card__action mdc-card__action--button"
+            v-on:click="selectPluginType()"
+            style="width:185px"
+          >Add Plugin</button>
         </div>
       </div>
     </div>
@@ -91,7 +106,7 @@ export default {
     plugin: plugin
   },
   data() {
-    return { selectPluginTypeDialog: { dialog: null, title: null } };
+    return { selectPluginTypeDialog: { dialog: null, title: null, id: 0 } };
   },
   mounted() {
     this.selectPluginTypeDialog.dialog = new MDCDialog(
@@ -99,7 +114,9 @@ export default {
     );
   },
   methods: {
-    selectPluginType: function() {
+    selectPluginType: function(pluginID) {
+      this.selectPluginTypeDialog.id =
+        pluginID != null ? pluginID : this.block.plugins.length;
       this.selectPluginTypeDialog.dialog.open();
     },
     addPlugin(pluginType) {
@@ -120,7 +137,7 @@ export default {
             musicalNotation[i] = new Uint16Array(new ArrayBuffer(120 * 2));
           }
 
-          this.block.plugins.push({
+          this.block.plugins.splice(this.selectPluginTypeDialog.id, 0, {
             id: this.block.plugins.length,
             pluginType: "base",
             pluginChannel: null,
@@ -148,7 +165,7 @@ export default {
           break;
         }
         case "filter": {
-          this.block.plugins.push({
+          this.block.plugins.splice(this.selectPluginTypeDialog.id, 0, {
             id: this.block.plugins.length,
             pluginType: "filter",
             pluginChannel: null,
@@ -163,7 +180,7 @@ export default {
           break;
         }
         case "P lag": {
-          this.block.plugins.push({
+          this.block.plugins.splice(this.selectPluginTypeDialog.id, 0, {
             id: this.block.plugins.length,
             pluginType: "P lag",
             pluginChannel: null,
@@ -172,7 +189,7 @@ export default {
           break;
         }
         case "B lag": {
-          this.block.plugins.push({
+          this.block.plugins.splice(this.selectPluginTypeDialog.id, 0, {
             id: this.block.plugins.length,
             pluginType: "B lag",
             pluginChannel: null,
@@ -182,6 +199,24 @@ export default {
         }
         default:
           break;
+      }
+
+      for (let i = 0; i < this.block.plugins.length; i++) {
+        this.block.plugins[i].id = i;
+        if (this.block.plugins[i].pluginChannel != null) {
+          let windowTitle = `SetPlugin:${this.block.id}-${i}:${
+            this.block.plugins[i].pluginType
+          }`;
+          this.block.plugins[i].pluginChannel.postMessage({
+            instruction: "Rename Window",
+            title: windowTitle
+          });
+          this.block.plugins[i].pluginChannel.close();
+          this.block.plugins[i].pluginChannel = new BroadcastChannel(
+            windowTitle
+          );
+          this.BindPluginChannel(this.block.plugins[i]);
+        }
       }
 
       this.selectPluginTypeDialog.dialog.close();
@@ -234,3 +269,17 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.add-plugin {
+  position: relative;
+}
+.add-plugin > button {
+  position: absolute;
+  background-color: #885599;
+  width: 30px;
+  height: 30px;
+  top: -14px;
+  right: 42.5%;
+}
+</style>
