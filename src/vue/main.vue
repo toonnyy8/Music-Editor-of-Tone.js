@@ -381,7 +381,7 @@ export default {
                   instruction: "postData",
                   blockNum: i,
                   pluginNum: j,
-                  data: this.blocks[i].plugins[j]
+                  data: JSON.parse(JSON.stringify(this.blocks[i].plugins[j]))
                 });
                 return;
               }
