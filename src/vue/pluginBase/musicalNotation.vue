@@ -53,7 +53,18 @@
                   </div>
                 </div>
               </div>
-              <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2">Page : {{page.value}}</div>
+              <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-2">
+                Page :
+                <input
+                  id="PageInput"
+                  type="number"
+                  v-bind:value="page.value"
+                  style="border: 0 none; outline:none; font-family: Roboto,sans-serif; font-size: 1em;color: #56b983;width:50px"
+                  min="1"
+                  max="999"
+                  step="1"
+                >
+              </div>
             </div>
           </div>
           <div class="mdc-layout-grid">
@@ -194,7 +205,18 @@
                 </div>
               </div>
               <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-6">
-                <h3>Now Page : {{nowPage.value}}</h3>
+                <h3>
+                  Now Page :
+                  <input
+                    id="NowPageInput"
+                    type="number"
+                    v-bind:value="nowPage.value"
+                    style="border: 0 none; outline:none; font-family: Roboto,sans-serif; font-size: 1.17em;color: #56b983; font-weight: bold;width:100px"
+                    min="1"
+                    v-bind:max="nowPage.max"
+                    step="1"
+                  >
+                </h3>
 
                 <div
                   id="NowPage"
@@ -341,11 +363,31 @@ export default {
     this.lengthPerDuration = new MDCSlider(document.querySelector("#LPD"));
 
     this.page.disabled = true;
+    document.querySelector("#PageInput").disabled = true;
 
     this.packLock.listen("change", () => {
       this.page.disabled = !this.packLock.checked;
+      document.querySelector("#PageInput").disabled = !this.packLock.checked;
     });
     this.page.listen("MDCSlider:change", () => {
+      let oldLength = this.musicalNotation.length;
+      this.musicalNotation.length = this.page.value * 16;
+      for (let i = oldLength; i < this.musicalNotation.length; i++) {
+        this.musicalNotation[i] = new Uint16Array(new ArrayBuffer(120 * 2));
+      }
+
+      if (this.nowPage.value > this.page.value) {
+        this.nowPage.value = this.page.value;
+        this.drawScale();
+      }
+      this.nowPage.max = this.page.value;
+      this.channel.postMessage({
+        instruction: "Set Plugin Data",
+        musicalNotation: this.musicalNotation
+      });
+    });
+    document.querySelector("#PageInput").addEventListener("change", () => {
+      this.page.value = document.querySelector("#PageInput").value;
       let oldLength = this.musicalNotation.length;
       this.musicalNotation.length = this.page.value * 16;
       for (let i = oldLength; i < this.musicalNotation.length; i++) {
@@ -366,6 +408,11 @@ export default {
     this.nowPage.listen("MDCSlider:input", () => {
       this.drawScale();
     });
+    document.querySelector("#NowPageInput").addEventListener("input", () => {
+      this.nowPage.value = document.querySelector("#NowPageInput").value;
+      this.drawScale();
+    });
+
     this.octave.listen("MDCSlider:input", () => {
       this.drawScale();
     });
