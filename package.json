@@ -38,7 +38,7 @@
   "devDependencies": {
     "@types/tone": "git+https://github.com/Tonejs/TypeScript.git",
     "@vue/component-compiler-utils": "^2.6.0",
-    "pug": "^2.0.3",
+    "pug": "^3.0.1",
     "sass": "^1.17.4",
     "typescript": "^3.4.1",
     "vue-template-compiler": "^2.6.10"
